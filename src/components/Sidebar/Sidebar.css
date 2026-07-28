@@ -1,0 +1,22 @@
+.sidebar {
+  width: 280px;
+  background: white;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar li:hover {
+  background: #ececec;
+}
