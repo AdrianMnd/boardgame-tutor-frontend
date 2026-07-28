@@ -1,9 +1,20 @@
+import "./App.css";
+
+import Layout from "./components/Layout/Layout";
+import Header from "./components/Header/Header";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Chat from "./components/Chat/Chat";
+
 function App() {
   return (
-    <div>
-      <h1>BoardGame AI</h1>
-      <p>Bienvenido a la aplicación.</p>
-    </div>
+    <Layout>
+      <Header />
+
+      <main className="main-content">
+        <Sidebar />
+        <Chat />
+      </main>
+    </Layout>
   );
 }
 
