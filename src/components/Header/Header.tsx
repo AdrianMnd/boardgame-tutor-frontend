@@ -3,7 +3,7 @@ import "./Header.css";
 function Header() {
   return (
     <header className="header">
-      <h1>🎲 BoardGame AI</h1>
+      <h1>🎲 BoardGame Tutor </h1>
     </header>
   );
 }

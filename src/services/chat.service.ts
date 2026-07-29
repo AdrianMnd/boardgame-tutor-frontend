@@ -1,25 +1,31 @@
 import axios from "axios";
 
+
 const API_URL = "http://localhost:3000/api/chat";
 
 
-interface ChatResponse {
+export interface ChatResponse {
+
     answer: string;
+
 }
 
 
 export async function sendQuestion(
-    game: string,
+    gameId: number,
     question: string
 ): Promise<ChatResponse> {
+
 
     const response = await axios.post<ChatResponse>(
         API_URL,
         {
-            game,
+            gameId,
             question
         }
     );
 
+
     return response.data;
+
 }

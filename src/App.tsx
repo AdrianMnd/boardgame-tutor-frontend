@@ -10,6 +10,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 
 import { getGames } from "./services/games.service";
+
 import type { Game } from "./types/Game";
 
 
@@ -36,7 +37,10 @@ function App() {
 
 
     const selectedGame = games.find(
-        game => game.id === selectedGameId
+
+        game =>
+            game.id === selectedGameId
+
     ) ?? games[0] ?? null;
 
 
@@ -63,7 +67,9 @@ function App() {
 
             <Header />
 
+
             <main className="main-content">
+
 
                 <Sidebar
 
@@ -84,7 +90,9 @@ function App() {
 
                 />
 
+
             </main>
+
 
         </Layout>
 

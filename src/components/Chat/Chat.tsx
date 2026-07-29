@@ -1,12 +1,11 @@
 import "./Chat.css";
 
-import { useState } from "react";
-
 import type { Game } from "../../types/Game";
-import type { Message } from "../../types/Message";
-import { sendQuestion } from "../../services/chat.service";
 
 import MessageComponent from "./Message";
+
+import { useChat } from "../../hooks/useChat";
+
 
 interface Props {
 
@@ -14,132 +13,120 @@ interface Props {
 
 }
 
+
+
 function Chat({ game }: Props) {
 
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: 1,
-            role: "assistant",
-            content: "Hola. Pregúntame cualquier duda sobre este juego."
-        }
-    ]);
 
-    const [question, setQuestion] = useState("");
+    const {
 
-    const sendMessage = async () => {
+        messages,
 
-    if (!question.trim() || !game) return;
+        question,
 
+        setQuestion,
 
-    const userMessage: Message = {
+        sendMessage,
 
-        id: Date.now(),
+        isLoading,
 
-        role: "user",
+        errorMessage
 
-        content: question
-
-    };
+    } = useChat(game);
 
 
-    setMessages(previous => [
-        ...previous,
-        userMessage
-    ]);
-
-
-    setQuestion("");
-
-
-    try {
-
-        const response = await sendQuestion(
-            game.name,
-            question
-        );
-
-
-        const assistantMessage: Message = {
-
-            id: Date.now() + 1,
-
-            role: "assistant",
-
-            content: response.answer
-
-        };
-
-
-        setMessages(previous => [
-            ...previous,
-            assistantMessage
-        ]);
-
-
-    } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
-        const errorMessage: Message = {
-
-            id: Date.now() + 2,
-
-            role: "assistant",
-
-            content: "Error al conectar con el servidor."
-
-        };
-
-
-        setMessages(previous => [
-            ...previous,
-            errorMessage
-        ]);
-
-    }
-
-};
 
     return (
 
         <section className="chat">
 
+
             <div className="chat-messages">
 
-                <h2>{game?.name}</h2>
+
+                <h2>
+
+                    {game?.name}
+
+                </h2>
+
+                {
+                    errorMessage && (
+
+                        <p className="chat-error">
+
+                            {errorMessage}
+
+                        </p>
+
+                    )
+                }
 
                 {messages.map(message => (
 
+
                     <MessageComponent
+
                         key={message.id}
+
                         message={message}
+
                     />
+
 
                 ))}
 
+
             </div>
 
+
+
             <div className="chat-input">
+
 
                 <input
 
                     value={question}
 
-                    onChange={(e) => setQuestion(e.target.value)}
+                    onChange={(e) =>
+                        setQuestion(e.target.value)
+                    }
 
                     placeholder="Pregunta sobre el juego..."
 
+                    disabled={isLoading}
+
                 />
 
-                <button onClick={sendMessage}>
 
-                    Enviar
+
+                <button
+
+                    onClick={sendMessage}
+
+                    disabled={isLoading}
+
+                >
+
+                    {
+                        isLoading
+                            ? "Pensando..."
+                            : "Enviar"
+                    }
+
 
                 </button>
 
+
             </div>
+
 
         </section>
 
     );
 
 }
+
+
 
 export default Chat;
