@@ -1,0 +1,31 @@
+.message {
+
+    max-width: 70%;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin: 12px;
+
+    word-break: break-word;
+
+}
+
+.user {
+
+    background: #2563eb;
+
+    color: white;
+
+    margin-left: auto;
+
+}
+
+.assistant {
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+}

@@ -20,3 +20,8 @@
 .sidebar li:hover {
   background: #ececec;
 }
+
+.selected {
+    background-color: #2563eb;
+    color: white;
+}
