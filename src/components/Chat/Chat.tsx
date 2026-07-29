@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { Game } from "../../types/Game";
 import type { Message } from "../../types/Message";
+import { sendQuestion } from "../../services/chat.service";
 
 import MessageComponent from "./Message";
 
@@ -25,19 +26,38 @@ function Chat({ game }: Props) {
 
     const [question, setQuestion] = useState("");
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
 
-        if (!question.trim()) return;
+    if (!question.trim() || !game) return;
 
-        const userMessage: Message = {
 
-            id: Date.now(),
+    const userMessage: Message = {
 
-            role: "user",
+        id: Date.now(),
 
-            content: question
+        role: "user",
 
-        };
+        content: question
+
+    };
+
+
+    setMessages(previous => [
+        ...previous,
+        userMessage
+    ]);
+
+
+    setQuestion("");
+
+
+    try {
+
+        const response = await sendQuestion(
+            game.name,
+            question
+        );
+
 
         const assistantMessage: Message = {
 
@@ -45,19 +65,37 @@ function Chat({ game }: Props) {
 
             role: "assistant",
 
-            content: "Esta respuesta es simulada. Más adelante responderá la IA."
+            content: response.answer
 
         };
 
+
         setMessages(previous => [
             ...previous,
-            userMessage,
             assistantMessage
         ]);
 
-        setQuestion("");
 
-    };
+    } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+        const errorMessage: Message = {
+
+            id: Date.now() + 2,
+
+            role: "assistant",
+
+            content: "Error al conectar con el servidor."
+
+        };
+
+
+        setMessages(previous => [
+            ...previous,
+            errorMessage
+        ]);
+
+    }
+
+};
 
     return (
 
