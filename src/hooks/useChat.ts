@@ -105,7 +105,9 @@ export function useChat(
                 });
 
             addAssistantMessage(
-                response.answer
+                response.answer,
+
+                response.sources
             );
 
         }

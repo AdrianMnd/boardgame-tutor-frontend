@@ -2,6 +2,8 @@ import {
     useConversationContext
 } from "../contexts/ConversationContext";
 
+import type { MessageSource } from "../types/MessageSource";
+
 
 export function useConversation(
     gameId: string | undefined
@@ -51,7 +53,8 @@ export function useConversation(
 
 
     function addAssistantMessage(
-        content: string
+        content: string,
+        sources: MessageSource[] = []
     ) {
 
         if (!gameId) return;
@@ -66,7 +69,9 @@ export function useConversation(
 
                 role: "assistant",
 
-                content
+                content,
+
+                sources
 
             }
 
