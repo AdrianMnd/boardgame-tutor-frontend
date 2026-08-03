@@ -2,27 +2,23 @@ import { useState } from "react";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { sendQuestion } from "../services/chat.service";
+import { chatService } from "../services/chat.service";
 
 import { useConversation } from "./useConversation";
 
 import type { Game } from "../types/Game";
 
+import type { AskQuestionResponse } from "../types/AskQuestionResponse";
 
 export function useChat(
     game: Game | null
 ) {
 
-
     const [question, setQuestion] =
         useState("");
 
-
-
     const [errorMessage, setErrorMessage] =
         useState<string | null>(null);
-
-
 
     const {
 
@@ -34,61 +30,41 @@ export function useChat(
 
     } = useConversation(game?.id);
 
-
-
-
     const mutation = useMutation({
 
+        mutationFn: (
 
-        mutationFn: ({
+            request: {
 
-            gameId,
+                gameId: string;
 
-            question
+                question: string;
 
-        }: {
+            }
 
-            gameId: number;
+        ): Promise<AskQuestionResponse> =>
 
-            question: string;
-
-        }) =>
-
-            sendQuestion(
-                gameId,
-                question
-            ),
-
-
+            chatService.askQuestion(request),
 
         onError: () => {
 
-
             setErrorMessage(
-                "No se pudo obtener respuesta del servidor."
-            );
 
+                "No se pudo obtener respuesta del servidor."
+
+            );
 
         },
 
-
         onSuccess: () => {
-
 
             setErrorMessage(null);
 
-
         }
-
 
     });
 
-
-
-
-
     async function sendMessage() {
-
 
         if (
 
@@ -108,87 +84,58 @@ export function useChat(
 
         }
 
-
-
         const currentQuestion =
             question.trim();
-
-
 
         addUserMessage(
             currentQuestion
         );
 
-
-
         setQuestion("");
 
-
-
         try {
-
 
             const response =
                 await mutation.mutateAsync({
 
-
                     gameId: game.id,
 
-
-                    question:
-                        currentQuestion
-
+                    question: currentQuestion
 
                 });
-
-
 
             addAssistantMessage(
                 response.answer
             );
 
-
         }
 
         catch {
 
-
             addAssistantMessage(
-                "Lo siento, ha ocurrido un error."
-            );
 
+                "Lo siento, ha ocurrido un error."
+
+            );
 
         }
 
-
     }
-
-
-
 
     return {
 
-
         messages,
-
 
         question,
 
-
         setQuestion,
-
 
         sendMessage,
 
-
-        isLoading:
-            mutation.isPending,
-
+        isLoading: mutation.isPending,
 
         errorMessage
 
-
     };
-
 
 }

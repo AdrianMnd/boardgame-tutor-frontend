@@ -15,11 +15,11 @@ interface ConversationContextType {
     conversations: Conversation[];
 
     getMessages: (
-        gameId: number
+        gameId: string
     ) => Message[];
 
     addMessage: (
-        gameId: number,
+        gameId: string,
         message: Message
     ) => void;
 
@@ -57,7 +57,7 @@ export function ConversationProvider({
 
 
     function getMessages(
-        gameId: number
+        gameId: string
     ): Message[] {
 
 
@@ -85,7 +85,7 @@ export function ConversationProvider({
 
 
     function addMessage(
-        gameId: number,
+        gameId: string,
         message: Message
     ) {
 

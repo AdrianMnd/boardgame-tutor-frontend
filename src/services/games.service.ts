@@ -1,17 +1,20 @@
-import axios from "axios";
+import { apiClient } from "./apiClient";
 
 import type { Game } from "../types/Game";
 
+export class GameService {
 
-const API_URL = "http://localhost:3000/api/games";
+    async getGames(): Promise<Game[]> {
 
+        return apiClient.get<Game[]>(
 
-export async function getGames(): Promise<Game[]> {
+            "/api/games"
 
-    const response = await axios.get<Game[]>(
-        API_URL
-    );
+        );
 
-    return response.data;
+    }
 
 }
+
+export const gameService =
+    new GameService();

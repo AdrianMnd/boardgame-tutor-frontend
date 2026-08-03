@@ -1,31 +1,27 @@
-import axios from "axios";
+import { apiClient } from "./apiClient";
 
+import type { AskQuestionRequest } from "../types/AskQuestionRequest";
+import type { AskQuestionResponse } from "../types/AskQuestionResponse";
 
-const API_URL = "http://localhost:3000/api/chat";
+export class ChatService {
 
+    async askQuestion(
 
-export interface ChatResponse {
+        request: AskQuestionRequest
 
-    answer: string;
+    ): Promise<AskQuestionResponse> {
 
-}
+        return apiClient.post<AskQuestionResponse>(
 
+            "/api/chat",
 
-export async function sendQuestion(
-    gameId: number,
-    question: string
-): Promise<ChatResponse> {
+            request
 
+        );
 
-    const response = await axios.post<ChatResponse>(
-        API_URL,
-        {
-            gameId,
-            question
-        }
-    );
-
-
-    return response.data;
+    }
 
 }
+
+export const chatService =
+    new ChatService();

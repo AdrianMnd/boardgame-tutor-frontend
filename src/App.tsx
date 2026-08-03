@@ -9,41 +9,46 @@ import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 
-import { getGames } from "./services/games.service";
+import { gameService } from "./services/games.service";
 
 import type { Game } from "./types/Game";
 
-
 function App() {
 
-
     const [selectedGameId, setSelectedGameId] =
-        useState<number | null>(null);
-
-
+        useState<string | null>(null);
 
     const {
+
         data: games = [],
+
         isLoading,
+
         isError
-    } = useQuery({
+
+    } = useQuery<Game[]>({
 
         queryKey: ["games"],
 
-        queryFn: getGames
+        queryFn: () =>
+
+            gameService.getGames()
 
     });
 
+    const selectedGame =
 
+        games.find(
 
-    const selectedGame = games.find(
+            game =>
 
-        game =>
-            game.id === selectedGameId
+                game.id === selectedGameId
 
-    ) ?? games[0] ?? null;
+        )
 
+        ?? games[0]
 
+        ?? null;
 
     if (isLoading) {
 
@@ -51,15 +56,11 @@ function App() {
 
     }
 
-
-
     if (isError) {
 
         return <p>Error cargando juegos</p>;
 
     }
-
-
 
     return (
 
@@ -67,9 +68,7 @@ function App() {
 
             <Header />
 
-
             <main className="main-content">
-
 
                 <Sidebar
 
@@ -78,11 +77,16 @@ function App() {
                     selectedGame={selectedGame}
 
                     onSelectGame={(game: Game) =>
-                        setSelectedGameId(game.id)
+
+                        setSelectedGameId(
+
+                            game.id
+
+                        )
+
                     }
 
                 />
-
 
                 <Chat
 
@@ -90,15 +94,12 @@ function App() {
 
                 />
 
-
             </main>
-
 
         </Layout>
 
     );
 
 }
-
 
 export default App;

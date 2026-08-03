@@ -4,7 +4,7 @@ import {
 
 
 export function useConversation(
-    gameId: number | undefined
+    gameId: string | undefined
 ) {
 
 
