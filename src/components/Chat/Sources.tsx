@@ -18,6 +18,12 @@ function Sources({
 
     }
 
+    console.table(
+    sources.map(source => ({
+        id: source.id,
+        page: source.page
+    }))
+);
     return (
 
         <div className="message-sources">

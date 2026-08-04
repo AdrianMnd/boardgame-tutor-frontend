@@ -8,17 +8,25 @@ import { useConversation } from "./useConversation";
 
 import type { Game } from "../types/Game";
 
-import type { AskQuestionResponse } from "../types/AskQuestionResponse";
-
 export function useChat(
     game: Game | null
 ) {
 
-    const [question, setQuestion] =
-        useState("");
+    const [
 
-    const [errorMessage, setErrorMessage] =
-        useState<string | null>(null);
+        question,
+
+        setQuestion
+
+    ] = useState("");
+
+    const [
+
+        errorMessage,
+
+        setErrorMessage
+
+    ] = useState<string | null>(null);
 
     const {
 
@@ -26,25 +34,39 @@ export function useChat(
 
         addUserMessage,
 
-        addAssistantMessage
+        addLoadingMessage,
 
-    } = useConversation(game?.id);
+        updateAssistantMessage
+
+    } = useConversation(
+        game?.id
+    );
 
     const mutation = useMutation({
 
         mutationFn: (
 
-            request: {
+            question: string
 
-                gameId: string;
+        ) =>
 
-                question: string;
+            chatService.askQuestion({
 
-            }
+                gameId:
 
-        ): Promise<AskQuestionResponse> =>
+                    game!.id,
 
-            chatService.askQuestion(request),
+                question
+
+            }),
+
+        onSuccess: () => {
+
+            setErrorMessage(
+                null
+            );
+
+        },
 
         onError: () => {
 
@@ -53,12 +75,6 @@ export function useChat(
                 "No se pudo obtener respuesta del servidor."
 
             );
-
-        },
-
-        onSuccess: () => {
-
-            setErrorMessage(null);
 
         }
 
@@ -85,40 +101,72 @@ export function useChat(
         }
 
         const currentQuestion =
+
             question.trim();
 
         addUserMessage(
+
             currentQuestion
+
         );
 
         setQuestion("");
 
+        const loadingMessage =
+
+            addLoadingMessage();
+
+        if (!loadingMessage) {
+
+            return;
+
+        }
+
         try {
 
             const response =
-                await mutation.mutateAsync({
 
-                    gameId: game.id,
+                await mutation.mutateAsync(
 
-                    question: currentQuestion
+                    currentQuestion
 
-                });
+                );
 
-            addAssistantMessage(
-                response.answer,
+            updateAssistantMessage({
 
-                response.sources
-            );
+                ...loadingMessage,
+
+                content:
+
+                    response.answer,
+
+                sources:
+
+                    response.sources,
+
+                isLoading:
+
+                    false
+
+            });
 
         }
 
         catch {
 
-            addAssistantMessage(
+            updateAssistantMessage({
 
-                "Lo siento, ha ocurrido un error."
+                ...loadingMessage,
 
-            );
+                content:
+
+                    "Lo siento, ha ocurrido un error.",
+
+                isLoading:
+
+                    false
+
+            });
 
         }
 
@@ -134,7 +182,9 @@ export function useChat(
 
         sendMessage,
 
-        isLoading: mutation.isPending,
+        isLoading:
+
+            mutation.isPending,
 
         errorMessage
 

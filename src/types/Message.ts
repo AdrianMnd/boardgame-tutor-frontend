@@ -2,12 +2,14 @@ import type { MessageSource } from "./MessageSource";
 
 export interface Message {
 
-    id: number;
+    id: string;
 
     role: "user" | "assistant";
 
     content: string;
 
     sources?: MessageSource[];
+
+    isLoading?: boolean;
 
 }
