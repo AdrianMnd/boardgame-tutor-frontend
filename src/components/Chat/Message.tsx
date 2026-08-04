@@ -15,9 +15,7 @@ function Message({
     message
 
 }: Props) {
-console.log(
-    message.sources?.map(source => source.id)
-);
+
     return (
 
         <div
@@ -34,21 +32,51 @@ console.log(
 
         >
 
-            <div>
+            {
 
-                {message.content}
+                message.isLoading
 
-            </div>
+                    ?
 
-            <Sources
+                    <div className="thinking">
 
-                sources={
+                        <span>Pensando</span>
 
-                    message.sources ?? []
+                        <span className="thinking-dots">
 
-                }
+                            <span></span>
 
-            />
+                            <span></span>
+
+                            <span></span>
+
+                        </span>
+
+                    </div>
+
+                    :
+
+                    <>
+
+                        <div>
+
+                            {message.content}
+
+                        </div>
+
+                        <Sources
+
+                            sources={
+
+                                message.sources ?? []
+
+                            }
+
+                        />
+
+                    </>
+
+            }
 
         </div>
 

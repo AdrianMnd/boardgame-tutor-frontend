@@ -1,11 +1,18 @@
 import "./Chat.css";
 
+import {
+
+    useEffect,
+
+    useRef
+
+} from "react";
+
 import type { Game } from "../../types/Game";
 
 import MessageComponent from "./Message";
 
 import { useChat } from "../../hooks/useChat";
-
 
 interface Props {
 
@@ -13,10 +20,11 @@ interface Props {
 
 }
 
+function Chat({
 
+    game
 
-function Chat({ game }: Props) {
-
+}: Props) {
 
     const {
 
@@ -28,21 +36,89 @@ function Chat({ game }: Props) {
 
         sendMessage,
 
+        handleQuestionKeyDown,
+
         isLoading,
 
         errorMessage
 
     } = useChat(game);
 
+    const messagesEndRef =
 
+        useRef<HTMLDivElement>(null);
+
+    const textareaRef =
+
+        useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+
+        messagesEndRef.current?.scrollIntoView({
+
+            behavior: "smooth"
+
+        });
+
+    }, [
+
+        messages
+
+    ]);
+
+    useEffect(() => {
+
+        const textarea =
+
+            textareaRef.current;
+
+        if (!textarea) {
+
+            return;
+
+        }
+
+        if (!question) {
+
+            textarea.style.height = "auto";
+
+            return;
+
+        }
+
+        textarea.style.height = "auto";
+
+        textarea.style.height =
+
+            `${textarea.scrollHeight}px`;
+
+    }, [
+
+        question
+
+    ]);
+
+    useEffect(() => {
+
+        if (!isLoading) {
+
+            textareaRef.current?.focus();
+
+        }
+
+    }, [
+
+        game?.id,
+
+        isLoading
+
+    ]);
 
     return (
 
         <section className="chat">
 
-
             <div className="chat-messages">
-
 
                 <h2>
 
@@ -51,6 +127,7 @@ function Chat({ game }: Props) {
                 </h2>
 
                 {
+
                     errorMessage && (
 
                         <p className="chat-error">
@@ -60,45 +137,64 @@ function Chat({ game }: Props) {
                         </p>
 
                     )
+
                 }
 
-                {messages.map(message => (
+                {
 
+                    messages.map(message => (
 
-                    <MessageComponent
+                        <MessageComponent
 
-                        key={message.id}
+                            key={message.id}
 
-                        message={message}
+                            message={message}
 
-                    />
+                        />
 
+                    ))
 
-                ))}
+                }
 
+                <div
+
+                    ref={messagesEndRef}
+
+                />
 
             </div>
 
-
-
             <div className="chat-input">
 
+                <textarea
 
-                <input
+                    ref={textareaRef}
 
                     value={question}
 
-                    onChange={(e) =>
-                        setQuestion(e.target.value)
+                    onChange={event =>
+
+                        setQuestion(
+
+                            event.target.value
+
+                        )
+
                     }
+
+                    onKeyDown={
+
+                        handleQuestionKeyDown
+
+                    }
+
+                    rows={1}
 
                     placeholder="Pregunta sobre el juego..."
 
                     disabled={isLoading}
 
                 />
-
-
 
                 <button
 
@@ -109,24 +205,23 @@ function Chat({ game }: Props) {
                 >
 
                     {
-                        isLoading
-                            ? "Pensando..."
-                            : "Enviar"
-                    }
 
+                        isLoading
+
+                            ? "Generando..."
+
+                            : "Enviar"
+
+                    }
 
                 </button>
 
-
             </div>
-
 
         </section>
 
     );
 
 }
-
-
 
 export default Chat;

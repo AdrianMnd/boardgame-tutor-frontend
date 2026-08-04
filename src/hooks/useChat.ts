@@ -172,6 +172,30 @@ export function useChat(
 
     }
 
+    function handleQuestionKeyDown(
+        event: React.KeyboardEvent<HTMLTextAreaElement>
+    ) {
+
+        if (
+
+            event.key !== "Enter"
+
+            ||
+
+            event.shiftKey
+
+        ) {
+
+            return;
+
+        }
+
+        event.preventDefault();
+
+        void sendMessage();
+
+    }
+
     return {
 
         messages,
@@ -181,6 +205,8 @@ export function useChat(
         setQuestion,
 
         sendMessage,
+
+        handleQuestionKeyDown,
 
         isLoading:
 
