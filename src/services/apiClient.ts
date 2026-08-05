@@ -1,5 +1,10 @@
+import { ApiError }
+    from "./apiError";
+
 const API_URL =
-    "http://localhost:3000";
+
+    import.meta.env.VITE_API_URL
+    ?? "http://localhost:3000";
 
 export class ApiClient {
 
@@ -9,25 +14,17 @@ export class ApiClient {
 
     ): Promise<T> {
 
-        const response =
+        return this.request<T>(
 
-            await fetch(
+            endpoint,
 
-                `${API_URL}${endpoint}`
+            {
 
-            );
+                method: "GET"
 
-        if (!response.ok) {
+            }
 
-            throw new Error(
-
-                `HTTP ${response.status}`
-
-            );
-
-        }
-
-        return response.json();
+        );
 
     }
 
@@ -39,6 +36,86 @@ export class ApiClient {
 
     ): Promise<T> {
 
+        return this.request<T>(
+
+            endpoint,
+
+            {
+
+                method: "POST",
+
+                body:
+
+                    JSON.stringify(
+
+                        body
+
+                    )
+
+            }
+
+        );
+
+    }
+
+    async put<T>(
+
+        endpoint: string,
+
+        body: unknown
+
+    ): Promise<T> {
+
+        return this.request<T>(
+
+            endpoint,
+
+            {
+
+                method: "PUT",
+
+                body:
+
+                    JSON.stringify(
+
+                        body
+
+                    )
+
+            }
+
+        );
+
+    }
+
+    async delete<T>(
+
+        endpoint: string
+
+    ): Promise<T> {
+
+        return this.request<T>(
+
+            endpoint,
+
+            {
+
+                method: "DELETE"
+
+            }
+
+        );
+
+    }
+
+    private async request<T>(
+
+        endpoint: string,
+
+        init: RequestInit
+
+    ): Promise<T> {
+
         const response =
 
             await fetch(
@@ -47,39 +124,106 @@ export class ApiClient {
 
                 {
 
-                    method: "POST",
+                    ...init,
 
                     headers: {
 
                         "Content-Type":
 
-                            "application/json"
+                            "application/json",
 
-                    },
+                        ...(init.headers ?? {})
 
-                    body:
-
-                        JSON.stringify(body)
+                    }
 
                 }
 
             );
 
-        if (!response.ok) {
+        const contentType =
 
-            throw new Error(
+    response.headers.get(
 
-                `HTTP ${response.status}`
+        "content-type"
+
+    );
+
+let body: unknown =
+
+    contentType?.includes(
+
+        "application/json"
+
+    )
+
+        ? await response.json()
+
+        : await response.text();
+
+if (
+
+    !response.ok
+
+) {
+
+    throw new ApiError(
+
+        response.status,
+
+        body
+
+    );
+
+}
+
+return body as T;
+
+        if (
+
+            contentType?.includes(
+
+                "application/json"
+
+            )
+
+        ) {
+
+            body =
+
+                await response.json();
+
+        }
+
+        else {
+
+            body =
+
+                await response.text();
+
+        }
+
+        if (
+
+            !response.ok
+
+        ) {
+
+            throw new ApiError(
+
+                response.status,
+
+                body
 
             );
 
         }
 
-        return response.json();
+        return body as T;
 
     }
 
 }
 
 export const apiClient =
+
     new ApiClient();

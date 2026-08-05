@@ -1,4 +1,16 @@
-import type { MessageSource } from "../../types/MessageSource";
+import "./Sources.css";
+
+import {
+
+    useState
+
+} from "react";
+
+import type {
+
+    MessageSource
+
+} from "../../types/MessageSource";
 
 interface Props {
 
@@ -12,45 +24,213 @@ function Sources({
 
 }: Props) {
 
-    if (sources.length === 0) {
+    const [
+
+        expanded,
+
+        setExpanded
+
+    ] = useState<Set<string>>(
+
+        new Set()
+
+    );
+
+    if (
+
+        sources.length === 0
+
+    ) {
 
         return null;
 
     }
 
+    function toggle(
+
+        id: string
+
+    ) {
+
+        setExpanded(previous => {
+
+            const next =
+
+                new Set(previous);
+
+            if (
+
+                next.has(id)
+
+            ) {
+
+                next.delete(id);
+
+            }
+
+            else {
+
+                next.add(id);
+
+            }
+
+            return next;
+
+        });
+
+    }
+
     return (
 
-        <div className="message-sources">
+        <section className="sources">
 
-            <strong>
+            <h4>
 
-                Fuentes
+                Fuentes consultadas
 
-            </strong>
+            </h4>
 
-            <ul>
+            {
 
-                {
+                sources.map(source => {
 
-                    sources.map(source => (
+                    const percentage =
 
-                        <li key={source.id}>
+                        Math.round(
 
-                            Página {source.page}
+                            source.score * 100
 
-                            {" · "}
+                        );
 
-                            {(source.score * 100).toFixed(0)}%
+                    const preview =
 
-                        </li>
+                        source.text.length > 220
 
-                    ))
+                            ? source.text.substring(
 
-                }
+                                0,
 
-            </ul>
+                                220
 
-        </div>
+                            ) + "..."
+
+                            : source.text;
+
+                    const open =
+
+                        expanded.has(
+
+                            source.id
+
+                        );
+
+                    return (
+
+                        <article
+
+                            key={source.id}
+
+                            className="source-card"
+
+                        >
+
+                            <div className="source-header">
+
+                                <div>
+
+                                    <strong>
+
+                                        📄 Página {source.page}
+
+                                    </strong>
+
+                                </div>
+
+                                <div>
+
+                                    {percentage}%
+
+                                </div>
+
+                            </div>
+
+                            <div className="source-score">
+
+                                <div
+
+                                    className="source-score-bar"
+
+                                    style={{
+
+                                        width:
+
+                                            `${percentage}%`
+
+                                    }}
+
+                                />
+
+                            </div>
+
+                            <p>
+
+                                {
+
+                                    open
+
+                                        ? source.text
+
+                                        : preview
+
+                                }
+
+                            </p>
+
+                            {
+
+                                source.text.length > 220 && (
+
+                                    <button
+
+                                        className="source-toggle"
+
+                                        onClick={() =>
+
+                                            toggle(
+
+                                                source.id
+
+                                            )
+
+                                        }
+
+                                    >
+
+                                        {
+
+                                            open
+
+                                                ? "Ver menos"
+
+                                                : "Ver completo"
+
+                                        }
+
+                                    </button>
+
+                                )
+
+                            }
+
+                        </article>
+
+                    );
+
+                })
+
+            }
+
+        </section>
 
     );
 

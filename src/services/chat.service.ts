@@ -1,7 +1,24 @@
-import { apiClient } from "./apiClient";
+import { apiClient }
+    from "./apiClient";
 
-import type { AskQuestionRequest } from "../types/AskQuestionRequest";
-import type { AskQuestionResponse } from "../types/AskQuestionResponse";
+import type { MessageSource }
+    from "../types/MessageSource";
+
+export interface AskQuestionRequest {
+
+    gameId: string;
+
+    question: string;
+
+}
+
+export interface AskQuestionResponse {
+
+    answer: string;
+
+    sources: MessageSource[];
+
+}
 
 export class ChatService {
 
@@ -24,4 +41,5 @@ export class ChatService {
 }
 
 export const chatService =
+
     new ChatService();

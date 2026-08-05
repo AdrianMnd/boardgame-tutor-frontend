@@ -120,11 +120,27 @@ function Chat({
 
             <div className="chat-messages">
 
-                <h2>
+                <header className="chat-header">
 
-                    {game?.name}
+                    <h2>
 
-                </h2>
+                        {game?.name}
+
+                    </h2>
+
+                    {
+
+                        game?.version &&
+
+                        <span>
+
+                            v{game.version}
+
+                        </span>
+
+                    }
+
+                </header>
 
                 {
 
@@ -139,6 +155,86 @@ function Chat({
                     )
 
                 }
+
+                {
+    messages.length === 0 && (
+
+        <div className="chat-empty">
+
+            <h3>
+
+                {game?.name}
+
+            </h3>
+
+            <p>
+
+                Haz cualquier pregunta sobre el reglamento.
+
+            </p>
+
+            <div className="chat-suggestions">
+
+                <button
+
+                    onClick={() =>
+
+                        setQuestion(
+
+                            "¿Cómo se gana la partida?"
+
+                        )
+
+                    }
+
+                >
+
+                    ¿Cómo se gana la partida?
+
+                </button>
+
+                <button
+
+                    onClick={() =>
+
+                        setQuestion(
+
+                            "¿Cómo empieza una partida?"
+
+                        )
+
+                    }
+
+                >
+
+                    ¿Cómo empieza una partida?
+
+                </button>
+
+                <button
+
+                    onClick={() =>
+
+                        setQuestion(
+
+                            "Explícame el turno de un jugador."
+
+                        )
+
+                    }
+
+                >
+
+                    Explícame el turno
+
+                </button>
+
+            </div>
+
+        </div>
+
+    )
+}
 
                 {
 

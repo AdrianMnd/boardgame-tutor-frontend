@@ -8,6 +8,9 @@ import { useConversation } from "./useConversation";
 
 import type { Game } from "../types/Game";
 
+import { ApiError }
+    from "../services/apiError";
+
 export function useChat(
     game: Game | null
 ) {
@@ -68,15 +71,43 @@ export function useChat(
 
         },
 
-        onError: () => {
+        onError: (
+
+    error
+
+) => {
+
+    if (
+
+        error instanceof ApiError
+
+    ) {
+
+        if (
+
+            typeof error.body === "string"
+
+        ) {
 
             setErrorMessage(
 
-                "No se pudo obtener respuesta del servidor."
+                error.body
 
             );
 
+            return;
+
         }
+
+    }
+
+    setErrorMessage(
+
+        "No se pudo obtener respuesta del servidor."
+
+    );
+
+}
 
     });
 
@@ -159,6 +190,9 @@ export function useChat(
                 ...loadingMessage,
 
                 content:
+
+                    errorMessage
+                    ??
 
                     "Lo siento, ha ocurrido un error.",
 

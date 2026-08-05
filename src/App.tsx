@@ -9,7 +9,7 @@ import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 
-import { gameService } from "./services/games.service";
+import { gamesService } from "./services/games.service";
 
 import type { Game } from "./types/Game";
 
@@ -32,7 +32,7 @@ function App() {
 
         queryFn: () =>
 
-            gameService.getGames()
+            gamesService.listGames()
 
     });
 

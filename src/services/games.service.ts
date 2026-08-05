@@ -1,10 +1,18 @@
-import { apiClient } from "./apiClient";
+import { apiClient }
+    from "./apiClient";
 
-import type { Game } from "../types/Game";
+import type { Game }
+    from "../types/Game";
 
-export class GameService {
+export interface ImportGameRequest {
 
-    async getGames(): Promise<Game[]> {
+    url: string;
+
+}
+
+export class GamesService {
+
+    async listGames(): Promise<Game[]> {
 
         return apiClient.get<Game[]>(
 
@@ -14,7 +22,38 @@ export class GameService {
 
     }
 
+    async importGame(
+
+        request: ImportGameRequest
+
+    ): Promise<void> {
+
+        await apiClient.post<void>(
+
+            "/api/games/import",
+
+            request
+
+        );
+
+    }
+
+    async deleteGame(
+
+        id: string
+
+    ): Promise<void> {
+
+        await apiClient.delete<void>(
+
+            `/api/games/${id}`
+
+        );
+
+    }
+
 }
 
-export const gameService =
-    new GameService();
+export const gamesService =
+
+    new GamesService();

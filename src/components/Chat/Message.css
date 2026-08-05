@@ -28,6 +28,8 @@
 
     border: 1px solid #ddd;
 
+    color: #222;
+
 }
 
 .thinking {
@@ -75,6 +77,38 @@
 .thinking-dots span:nth-child(3) {
 
     animation-delay: .4s;
+
+}
+
+.message-toolbar {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 12px;
+
+}
+
+.message-toolbar button {
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: .85rem;
+
+    color: #7aa7ff;
+
+    padding: 0;
+
+}
+
+.message-toolbar button:hover {
+
+    text-decoration: underline;
 
 }
 

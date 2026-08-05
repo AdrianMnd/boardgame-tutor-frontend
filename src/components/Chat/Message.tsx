@@ -1,8 +1,27 @@
 import "./Message.css";
 
-import type { Message as MessageType } from "../../types/Message";
+import ReactMarkdown
+    from "react-markdown";
 
-import Sources from "./Sources";
+import remarkGfm
+    from "remark-gfm";
+
+import rehypeHighlight
+    from "rehype-highlight";
+
+import "highlight.js/styles/github-dark.css";
+
+import type { Message as MessageType }
+    from "../../types/Message";
+
+import Sources
+    from "./Sources";
+
+import {
+
+    useState
+
+} from "react";
 
 interface Props {
 
@@ -15,6 +34,36 @@ function Message({
     message
 
 }: Props) {
+
+    const [
+
+        copied,
+
+        setCopied
+
+    ] = useState(false);
+
+    async function copyAnswer() {
+
+        await navigator.clipboard.writeText(
+
+            message.content
+
+        );
+
+        setCopied(true);
+
+        window.setTimeout(
+
+            () =>
+
+                setCopied(false),
+
+            2000
+
+        );
+
+    }
 
     return (
 
@@ -40,15 +89,19 @@ function Message({
 
                     <div className="thinking">
 
-                        <span>Pensando</span>
+                        <span>
+
+                            Pensando
+
+                        </span>
 
                         <span className="thinking-dots">
 
-                            <span></span>
+                            <span />
 
-                            <span></span>
+                            <span />
 
-                            <span></span>
+                            <span />
 
                         </span>
 
@@ -58,11 +111,55 @@ function Message({
 
                     <>
 
-                        <div>
+                        <ReactMarkdown
+
+                            remarkPlugins={[
+
+                                remarkGfm
+
+                            ]}
+
+                            rehypePlugins={[
+
+                                rehypeHighlight
+
+                            ]}
+
+                        >
 
                             {message.content}
 
-                        </div>
+                        </ReactMarkdown>
+
+                        {
+
+                            message.role === "assistant"
+
+                            &&
+
+                            <div className="message-toolbar">
+
+                                <button
+
+                                    onClick={copyAnswer}
+
+                                >
+
+                                    {
+
+                                        copied
+
+                                            ? "✅ Copiado"
+
+                                            : "📋 Copiar"
+
+                                    }
+
+                                </button>
+
+                            </div>
+
+                        }
 
                         <Sources
 
