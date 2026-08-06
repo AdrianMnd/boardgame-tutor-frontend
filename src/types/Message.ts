@@ -1,4 +1,8 @@
-import type { MessageSource } from "./MessageSource";
+import type {
+
+    MessageSource
+
+} from "./MessageSource";
 
 export interface Message {
 
@@ -8,8 +12,10 @@ export interface Message {
 
     content: string;
 
-    sources?: MessageSource[];
+    createdAt: Date;
 
     isLoading?: boolean;
+
+    sources?: MessageSource[];
 
 }

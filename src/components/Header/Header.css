@@ -1,10 +1,107 @@
 .header {
-  height: 70px;
-  background: #1f2937;
-  color: white;
 
-  display: flex;
-  align-items: center;
+    height: var(--header-height);
 
-  padding: 0 24px;
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 var(--space-6);
+
+    background: var(--color-surface);
+
+    border-bottom: 1px solid var(--color-border);
+
+    box-shadow: var(--shadow-sm);
+
+    flex-shrink: 0;
+
+    z-index: 10;
+
+}
+
+.header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: var(--space-4);
+
+}
+
+.logo {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: var(--radius-md);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    box-shadow: var(--shadow-sm);
+
+    flex-shrink: 0;
+
+}
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 1.25rem;
+
+    font-weight: 700;
+
+}
+
+.header p {
+
+    margin: 2px 0 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: .9rem;
+
+}
+
+.status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: var(--space-2);
+
+    color: var(--color-success);
+
+    font-size: .9rem;
+
+    font-weight: 600;
+
+}
+
+.status-dot {
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--color-success);
+
+    box-shadow: 0 0 8px var(--color-success);
+
 }

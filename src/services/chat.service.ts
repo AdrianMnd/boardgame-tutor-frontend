@@ -10,6 +10,8 @@ export interface AskQuestionRequest {
 
     question: string;
 
+    signal?: AbortSignal;
+
 }
 
 export interface AskQuestionResponse {
@@ -24,19 +26,29 @@ export class ChatService {
 
     async askQuestion(
 
-        request: AskQuestionRequest
+    request: AskQuestionRequest
 
-    ): Promise<AskQuestionResponse> {
+): Promise<AskQuestionResponse> {
 
-        return apiClient.post<AskQuestionResponse>(
+    const {
 
-            "/api/chat",
+        signal,
 
-            request
+        ...body
 
-        );
+    } = request;
 
-    }
+    return apiClient.post<AskQuestionResponse>(
+
+        "/api/chat",
+
+        body,
+
+        signal
+
+    );
+
+}
 
 }
 

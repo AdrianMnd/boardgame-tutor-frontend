@@ -1,15 +1,7 @@
 import "./Sources.css";
 
-import {
-
-    useState
-
-} from "react";
-
 import type {
-
     MessageSource
-
 } from "../../types/MessageSource";
 
 interface Props {
@@ -24,213 +16,71 @@ function Sources({
 
 }: Props) {
 
-    const [
-
-        expanded,
-
-        setExpanded
-
-    ] = useState<Set<string>>(
-
-        new Set()
-
-    );
-
-    if (
-
-        sources.length === 0
-
-    ) {
+    if (sources.length === 0) {
 
         return null;
 
     }
 
-    function toggle(
-
-        id: string
-
-    ) {
-
-        setExpanded(previous => {
-
-            const next =
-
-                new Set(previous);
-
-            if (
-
-                next.has(id)
-
-            ) {
-
-                next.delete(id);
-
-            }
-
-            else {
-
-                next.add(id);
-
-            }
-
-            return next;
-
-        });
-
-    }
-
     return (
 
-        <section className="sources">
+        <div className="sources">
 
-            <h4>
+            <details>
 
-                Fuentes consultadas
+                <summary>
 
-            </h4>
+                    📚 Fuentes ({sources.length})
 
-            {
+                </summary>
 
-                sources.map(source => {
+                <div className="sources-list">
 
-                    const percentage =
+                    {
 
-                        Math.round(
+                        sources.map(source => (
 
-                            source.score * 100
+                            <div
 
-                        );
+                                key={source.id}
 
-                    const preview =
+                                className="source-card"
 
-                        source.text.length > 220
+                            >
 
-                            ? source.text.substring(
+                                <div className="source-header">
 
-                                0,
+                                    <span className="source-page">
 
-                                220
+                                        Página {source.page}
 
-                            ) + "..."
+                                    </span>
 
-                            : source.text;
+                                    <span className="source-score">
 
-                    const open =
+                                        {(source.score * 100).toFixed(0)}%
 
-                        expanded.has(
-
-                            source.id
-
-                        );
-
-                    return (
-
-                        <article
-
-                            key={source.id}
-
-                            className="source-card"
-
-                        >
-
-                            <div className="source-header">
-
-                                <div>
-
-                                    <strong>
-
-                                        📄 Página {source.page}
-
-                                    </strong>
+                                    </span>
 
                                 </div>
 
-                                <div>
+                                <div className="source-text">
 
-                                    {percentage}%
+                                    {source.text}
 
                                 </div>
 
                             </div>
 
-                            <div className="source-score">
+                        ))
 
-                                <div
+                    }
 
-                                    className="source-score-bar"
+                </div>
 
-                                    style={{
+            </details>
 
-                                        width:
-
-                                            `${percentage}%`
-
-                                    }}
-
-                                />
-
-                            </div>
-
-                            <p>
-
-                                {
-
-                                    open
-
-                                        ? source.text
-
-                                        : preview
-
-                                }
-
-                            </p>
-
-                            {
-
-                                source.text.length > 220 && (
-
-                                    <button
-
-                                        className="source-toggle"
-
-                                        onClick={() =>
-
-                                            toggle(
-
-                                                source.id
-
-                                            )
-
-                                        }
-
-                                    >
-
-                                        {
-
-                                            open
-
-                                                ? "Ver menos"
-
-                                                : "Ver completo"
-
-                                        }
-
-                                    </button>
-
-                                )
-
-                            }
-
-                        </article>
-
-                    );
-
-                })
-
-            }
-
-        </section>
+        </div>
 
     );
 

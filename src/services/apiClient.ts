@@ -32,7 +32,9 @@ export class ApiClient {
 
         endpoint: string,
 
-        body: unknown
+        body: unknown,
+
+        signal?: AbortSignal
 
     ): Promise<T> {
 
@@ -46,11 +48,9 @@ export class ApiClient {
 
                 body:
 
-                    JSON.stringify(
+                    JSON.stringify(body),
 
-                        body
-
-                    )
+                signal
 
             }
 
@@ -110,118 +110,75 @@ export class ApiClient {
 
     private async request<T>(
 
-        endpoint: string,
+    endpoint: string,
 
-        init: RequestInit
+    init: RequestInit
 
-    ): Promise<T> {
+): Promise<T> {
 
-        const response =
+    const response =
 
-            await fetch(
+        await fetch(
 
-                `${API_URL}${endpoint}`,
+            `${API_URL}${endpoint}`,
 
-                {
+            {
 
-                    ...init,
+                ...init,
 
-                    headers: {
+                headers: {
 
-                        "Content-Type":
+                    "Content-Type":
 
-                            "application/json",
+                        "application/json",
 
-                        ...(init.headers ?? {})
-
-                    }
+                    ...(init.headers ?? {})
 
                 }
 
-            );
+            }
 
-        const contentType =
+        );
 
-    response.headers.get(
+    const contentType =
 
-        "content-type"
+        response.headers.get(
 
-    );
+            "content-type"
 
-let body: unknown =
+        );
 
-    contentType?.includes(
+    const body: unknown =
 
-        "application/json"
+        contentType?.includes(
 
-    )
+            "application/json"
 
-        ? await response.json()
+        )
 
-        : await response.text();
+            ? await response.json()
 
-if (
+            : await response.text();
 
-    !response.ok
+    if (
 
-) {
+        !response.ok
 
-    throw new ApiError(
+    ) {
 
-        response.status,
+        throw new ApiError(
 
-        body
+            response.status,
 
-    );
+            body
 
-}
-
-return body as T;
-
-        if (
-
-            contentType?.includes(
-
-                "application/json"
-
-            )
-
-        ) {
-
-            body =
-
-                await response.json();
-
-        }
-
-        else {
-
-            body =
-
-                await response.text();
-
-        }
-
-        if (
-
-            !response.ok
-
-        ) {
-
-            throw new ApiError(
-
-                response.status,
-
-                body
-
-            );
-
-        }
-
-        return body as T;
+        );
 
     }
 
+    return body as T;
+
+}
 }
 
 export const apiClient =

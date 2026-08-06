@@ -1,0 +1,71 @@
+:root {
+
+    /* ===== Brand ===== */
+
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+
+    /* ===== Backgrounds ===== */
+
+    --color-background: #f3f6fb;
+    --color-surface: #ffffff;
+    --color-surface-secondary: #f8fafc;
+
+    /* ===== Text ===== */
+
+    --color-text: #111827;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
+
+    /* ===== Borders ===== */
+
+    --color-border: #dbe4ef;
+
+    /* ===== Feedback ===== */
+
+    --color-success: #16a34a;
+    --color-warning: #d97706;
+    --color-danger: #dc2626;
+
+    /* ===== Radius ===== */
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+
+    /* ===== Shadows ===== */
+
+    --shadow-sm:
+        0 1px 3px rgba(0,0,0,.05);
+
+    --shadow-md:
+        0 8px 24px rgba(15,23,42,.08);
+
+    --shadow-lg:
+        0 20px 45px rgba(15,23,42,.10);
+
+    /* ===== Spacing ===== */
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 40px;
+    --space-8: 48px;
+
+    /* ===== Header ===== */
+
+    --header-height: 72px;
+
+    /* ===== Sidebar ===== */
+
+    --sidebar-width: 320px;
+
+    /* ===== Animation ===== */
+
+    --transition-fast: .15s ease;
+    --transition: .25s ease;
+}

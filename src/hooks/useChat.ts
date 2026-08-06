@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { useMutation } from "@tanstack/react-query";
 
@@ -39,29 +39,51 @@ export function useChat(
 
         addLoadingMessage,
 
-        updateAssistantMessage
+        updateAssistantMessage,
+
+        startNewConversation
 
     } = useConversation(
         game?.id
+    );
+
+    const abortController =
+
+    useRef<AbortController | null>(
+
+        null
+
     );
 
     const mutation = useMutation({
 
         mutationFn: (
 
-            question: string
+    request: {
 
-        ) =>
+        question: string;
 
-            chatService.askQuestion({
+        signal: AbortSignal;
 
-                gameId:
+    }
 
-                    game!.id,
+) =>
 
-                question
+    chatService.askQuestion({
 
-            }),
+        gameId:
+
+            game!.id,
+
+        question:
+
+            request.question,
+
+        signal:
+
+            request.signal
+
+    }),
 
         onSuccess: () => {
 
@@ -155,13 +177,23 @@ export function useChat(
 
         try {
 
+            abortController.current =
+
+                new AbortController();
+
             const response =
 
-                await mutation.mutateAsync(
+            await mutation.mutateAsync({
 
-                    currentQuestion
+                question:
 
-                );
+                    currentQuestion,
+
+                signal:
+
+                    abortController.current.signal
+
+            });
 
             updateAssistantMessage({
 
@@ -183,28 +215,63 @@ export function useChat(
 
         }
 
-        catch {
+        catch (error) {
 
-            updateAssistantMessage({
+    if (
 
-                ...loadingMessage,
+        error instanceof DOMException
 
-                content:
+        &&
 
-                    errorMessage
-                    ??
+        error.name === "AbortError"
 
-                    "Lo siento, ha ocurrido un error.",
+    ) {
 
-                isLoading:
+        updateAssistantMessage({
 
-                    false
+            ...loadingMessage,
 
-            });
+            content:
 
-        }
+                "Respuesta cancelada.",
+
+            isLoading:
+
+                false
+
+        });
+
+        return;
 
     }
+
+    updateAssistantMessage({
+
+        ...loadingMessage,
+
+        content:
+
+            errorMessage
+
+            ??
+
+            "Lo siento, ha ocurrido un error.",
+
+        isLoading:
+
+            false
+
+    });
+
+}
+
+    }
+
+    function cancelGeneration() {
+
+    abortController.current?.abort();
+
+}
 
     function handleQuestionKeyDown(
         event: React.KeyboardEvent<HTMLTextAreaElement>
@@ -241,6 +308,10 @@ export function useChat(
         sendMessage,
 
         handleQuestionKeyDown,
+
+        startNewConversation,
+
+        cancelGeneration,
 
         isLoading:
 

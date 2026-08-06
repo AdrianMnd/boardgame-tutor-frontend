@@ -1,27 +1,25 @@
 import "./Message.css";
 
-import ReactMarkdown
-    from "react-markdown";
+import { useState } from "react";
 
-import remarkGfm
-    from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
-import rehypeHighlight
-    from "rehype-highlight";
+import "highlight.js/styles/github.css";
 
-import "highlight.js/styles/github-dark.css";
-
-import type { Message as MessageType }
-    from "../../types/Message";
-
-import Sources
-    from "./Sources";
+import Avatar from "../UI/Avatar";
+import Icon from "../UI/Icon";
+import Sources from "./Sources";
 
 import {
+    Clock3,
+    Copy
+} from "lucide-react";
 
-    useState
-
-} from "react";
+import type {
+    Message as MessageType
+} from "../../types/Message";
 
 interface Props {
 
@@ -43,7 +41,7 @@ function Message({
 
     ] = useState(false);
 
-    async function copyAnswer() {
+    async function copy() {
 
         await navigator.clipboard.writeText(
 
@@ -53,7 +51,7 @@ function Message({
 
         setCopied(true);
 
-        window.setTimeout(
+        setTimeout(
 
             () =>
 
@@ -65,25 +63,95 @@ function Message({
 
     }
 
+    const assistant =
+
+        message.role === "assistant";
+
     return (
 
-        <div
+        <article
 
             className={
 
-                message.role === "user"
+                assistant
 
-                    ? "message user"
+                    ? "message assistant"
 
-                    : "message assistant"
+                    : "message user"
 
             }
 
         >
 
-            {
+            <Avatar
 
-                message.isLoading
+                role={message.role}
+
+            />
+
+            <div className="message-body">
+
+                <header className="message-header">
+
+                    <div>
+
+                        <strong>
+
+                            {
+
+                                assistant
+
+                                    ? "BoardGame Tutor"
+
+                                    : "Tú"
+
+                            }
+
+                        </strong>
+
+                    </div>
+
+                    {
+
+                        message.createdAt &&
+
+                        <div className="message-time">
+
+                            <Icon
+
+                                icon={Clock3}
+
+                                size={14}
+
+                            />
+
+                            {
+
+                                message.createdAt.toLocaleTimeString(
+
+                                    [],
+
+                                    {
+
+                                        hour: "2-digit",
+
+                                        minute: "2-digit"
+
+                                    }
+
+                                )
+
+                            }
+
+                        </div>
+
+                    }
+
+                </header>
+
+                {
+
+                    message.isLoading
 
                     ?
 
@@ -111,71 +179,93 @@ function Message({
 
                     <>
 
-                        <ReactMarkdown
+                        <div className="message-content">
 
-                            remarkPlugins={[
+                            <ReactMarkdown
 
-                                remarkGfm
+                                remarkPlugins={[
 
-                            ]}
+                                    remarkGfm
 
-                            rehypePlugins={[
+                                ]}
 
-                                rehypeHighlight
+                                rehypePlugins={[
 
-                            ]}
+                                    rehypeHighlight
 
-                        >
+                                ]}
 
-                            {message.content}
+                            >
 
-                        </ReactMarkdown>
+                                {
+
+                                    message.content
+
+                                }
+
+                            </ReactMarkdown>
+
+                        </div>
 
                         {
 
-                            message.role === "assistant"
+                            assistant &&
 
-                            &&
+                            <Sources
 
-                            <div className="message-toolbar">
+                                sources={
+
+                                    message.sources ?? []
+
+                                }
+
+                            />
+
+                        }
+
+                        {
+
+                            assistant &&
+
+                            <footer className="message-toolbar">
 
                                 <button
 
-                                    onClick={copyAnswer}
+                                    onClick={copy}
 
                                 >
+
+                                    <Icon
+
+                                        icon={Copy}
+
+                                        size={15}
+
+                                    />
 
                                     {
 
                                         copied
 
-                                            ? "✅ Copiado"
+                                            ? "Copiado"
 
-                                            : "📋 Copiar"
+                                            : "Copiar respuesta"
 
                                     }
 
                                 </button>
 
-                            </div>
+                            </footer>
 
                         }
 
-                        <Sources
-
-                            sources={
-
-                                message.sources ?? []
-
-                            }
-
-                        />
-
                     </>
 
-            }
+                }
 
-        </div>
+            </div>
+
+        </article>
 
     );
 

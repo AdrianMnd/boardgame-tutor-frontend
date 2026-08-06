@@ -40,7 +40,11 @@ function Chat({
 
         isLoading,
 
-        errorMessage
+        errorMessage,
+
+        startNewConversation,
+
+        cancelGeneration
 
     } = useChat(game);
 
@@ -122,23 +126,33 @@ function Chat({
 
                 <header className="chat-header">
 
+                <div>
+
                     <h2>
 
                         {game?.name}
 
                     </h2>
 
-                    {
+                    <p>
 
-                        game?.version &&
+                        Pregunta cualquier duda sobre el reglamento.
 
-                        <span>
+                    </p>
 
-                            v{game.version}
+                </div>
 
-                        </span>
+                <button
 
-                    }
+                    className="new-chat-button"
+
+                    onClick={startNewConversation}
+
+                >
+
+                    🗑 Nueva conversación
+
+                </button>
 
                 </header>
 
@@ -157,7 +171,7 @@ function Chat({
                 }
 
                 {
-    messages.length === 0 && (
+                    messages.length === 0 && (
 
         <div className="chat-empty">
 
@@ -292,25 +306,35 @@ function Chat({
 
                 />
 
-                <button
+                {
 
-                    onClick={sendMessage}
+    isLoading
 
-                    disabled={isLoading}
+        ?
 
-                >
+        <button
 
-                    {
+            onClick={cancelGeneration}
 
-                        isLoading
+        >
 
-                            ? "Generando..."
+            Cancelar
 
-                            : "Enviar"
+        </button>
 
-                    }
+        :
 
-                </button>
+        <button
+
+            onClick={sendMessage}
+
+        >
+
+            Enviar
+
+        </button>
+
+}
 
             </div>
 

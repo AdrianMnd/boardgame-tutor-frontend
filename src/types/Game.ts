@@ -8,6 +8,12 @@ export interface Game {
 
     version: string;
 
+    minPlayers: number;
+
+    maxPlayers: number;
+
+    year: number;
+
     coverUrl?: string;
 
 }

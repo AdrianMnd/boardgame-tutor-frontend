@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode } from "react"
 import { createRoot } from "react-dom/client";
 
 import {
@@ -11,6 +11,8 @@ import App from "./App";
 import {
     ConversationProvider
 } from "./contexts/ConversationContext";
+
+import "./styles/global.css";
 
 
 const queryClient =

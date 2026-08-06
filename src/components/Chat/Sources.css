@@ -1,34 +1,88 @@
 .sources {
 
-    margin-top: 24px;
+    margin-top: 18px;
+
+    border-top: 1px solid #e5e7eb;
+
+    padding-top: 12px;
 
 }
 
-.sources h4 {
+.sources summary {
 
-    margin-bottom: 16px;
+    cursor: pointer;
 
-    color: #4b5563;
+    list-style: none;
+
+    user-select: none;
+
+    color: #2563eb;
+
+    font-weight: 600;
 
     font-size: .95rem;
 
-    font-weight: 600;
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+.sources summary::-webkit-details-marker {
+
+    display: none;
+
+}
+
+.sources summary::before {
+
+    content: "▶";
+
+    font-size: .75rem;
+
+    transition: transform .2s;
+
+}
+
+.sources details[open] summary::before {
+
+    transform: rotate(90deg);
+
+}
+
+.sources-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    margin-top: 14px;
 
 }
 
 .source-card {
 
-    background: #ffffff;
+    background: #f8fafc;
 
-    border: 1px solid #dbe3ef;
+    border: 1px solid #dbe3ec;
 
-    border-radius: 12px;
+    border-radius: 10px;
 
-    padding: 16px;
+    padding: 14px;
 
-    margin-bottom: 14px;
+    transition: .2s;
 
-    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+}
+
+.source-card:hover {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 2px 8px rgba(37,99,235,.08);
 
 }
 
@@ -40,68 +94,42 @@
 
     align-items: center;
 
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 
-    color: #1f2937;
+}
+
+.source-page {
 
     font-weight: 600;
+
+    color: #1f2937;
 
 }
 
 .source-score {
 
-    height: 6px;
+    background: #2563eb;
 
-    background: #e5e7eb;
+    color: white;
 
     border-radius: 999px;
 
-    overflow: hidden;
+    padding: 3px 10px;
 
-    margin-bottom: 16px;
+    font-size: .75rem;
 
-}
-
-.source-score-bar {
-
-    height: 100%;
-
-    background: #2563eb;
+    font-weight: 600;
 
 }
 
-.source-card p {
+.source-text {
 
     color: #374151;
 
+    font-size: .92rem;
+
     line-height: 1.6;
 
-    margin: 0;
-
     white-space: pre-wrap;
-
-}
-
-.source-toggle {
-
-    margin-top: 14px;
-
-    padding: 0;
-
-    border: none;
-
-    background: none;
-
-    color: #2563eb;
-
-    cursor: pointer;
-
-    font-weight: 500;
-
-}
-
-.source-toggle:hover {
-
-    text-decoration: underline;
 
 }

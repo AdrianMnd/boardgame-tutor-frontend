@@ -8,6 +8,8 @@ import Layout from "./components/Layout/Layout";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
+import Workspace
+    from "./components/Layout/Workspace";
 
 import { gamesService } from "./services/games.service";
 
@@ -68,7 +70,7 @@ function App() {
 
             <Header />
 
-            <main className="main-content">
+            <Workspace>
 
                 <Sidebar
 
@@ -94,7 +96,7 @@ function App() {
 
                 />
 
-            </main>
+            </Workspace>
 
         </Layout>
 
