@@ -1,13 +1,5 @@
 import "./Header.css";
 
-import Icon from "../UI/Icon";
-
-import {
-
-    Dice5
-
-} from "lucide-react";
-
 function Header() {
 
     return (
@@ -18,13 +10,7 @@ function Header() {
 
                 <div className="logo">
 
-                    <Icon
-
-                        icon={Dice5}
-
-                        size={24}
-
-                    />
+                    🎲
 
                 </div>
 
@@ -49,8 +35,6 @@ function Header() {
             <div className="header-right">
 
                 <span className="status">
-
-                    <span className="status-dot" />
 
                     IA conectada
 

@@ -69,7 +69,11 @@ export function useConversation(
 
                     "user",
 
-                content
+                content,
+
+                createdAt:
+
+                    new Date()
 
             }
 
@@ -103,7 +107,11 @@ export function useConversation(
 
             content,
 
-            sources
+            sources,
+
+            createdAt:
+
+                new Date()
 
         };
 
@@ -143,7 +151,11 @@ export function useConversation(
 
             isLoading:
 
-                true
+                true,
+
+            createdAt:
+
+                new Date()
 
         };
 

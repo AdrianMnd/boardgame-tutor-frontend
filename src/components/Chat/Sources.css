@@ -1,32 +1,43 @@
 .sources {
 
-    margin-top: 18px;
+    margin-top: 20px;
 
-    border-top: 1px solid #e5e7eb;
+}
 
-    padding-top: 12px;
+.sources details {
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 14px;
+
+    background: #fafbfc;
+
+    overflow: hidden;
 
 }
 
 .sources summary {
 
-    cursor: pointer;
-
-    list-style: none;
-
-    user-select: none;
-
-    color: #2563eb;
-
-    font-weight: 600;
-
-    font-size: .95rem;
-
-    display: inline-flex;
+    display: flex;
 
     align-items: center;
 
-    gap: 6px;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    font-weight: 600;
+
+    color: var(--color-text);
+
+    transition:
+        background .2s;
+
+    list-style: none;
 
 }
 
@@ -36,19 +47,25 @@
 
 }
 
-.sources summary::before {
+.sources summary:hover {
 
-    content: "▶";
+    background: white;
 
-    font-size: .75rem;
+}
+
+.sources summary::after {
+
+    content: "⌄";
+
+    color: var(--color-text-secondary);
 
     transition: transform .2s;
 
 }
 
-.sources details[open] summary::before {
+.sources details[open] summary::after {
 
-    transform: rotate(90deg);
+    transform: rotate(180deg);
 
 }
 
@@ -60,29 +77,36 @@
 
     gap: 14px;
 
-    margin-top: 14px;
+    padding: 18px;
+
+    border-top: 1px solid var(--color-border);
 
 }
 
 .source-card {
 
-    background: #f8fafc;
+    padding: 18px;
 
-    border: 1px solid #dbe3ec;
+    border: 1px solid var(--color-border);
 
-    border-radius: 10px;
+    border-radius: 14px;
 
-    padding: 14px;
+    background: white;
 
-    transition: .2s;
+    transition:
+        border-color .2s,
+        transform .2s,
+        box-shadow .2s;
 
 }
 
 .source-card:hover {
 
-    border-color: #2563eb;
+    border-color: var(--color-primary);
 
-    box-shadow: 0 2px 8px rgba(37,99,235,.08);
+    transform: translateY(-1px);
+
+    box-shadow: var(--shadow-sm);
 
 }
 
@@ -94,29 +118,37 @@
 
     align-items: center;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 
 }
 
 .source-page {
 
-    font-weight: 600;
+    display: inline-flex;
 
-    color: #1f2937;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    background: var(--color-primary-soft);
+
+    color: var(--color-primary);
+
+    font-size: .8rem;
+
+    font-weight: 700;
 
 }
 
 .source-score {
 
-    background: #2563eb;
+    color: var(--color-text-secondary);
 
-    color: white;
-
-    border-radius: 999px;
-
-    padding: 3px 10px;
-
-    font-size: .75rem;
+    font-size: .82rem;
 
     font-weight: 600;
 
@@ -124,11 +156,11 @@
 
 .source-text {
 
-    color: #374151;
+    color: var(--color-text);
+
+    line-height: 1.65;
 
     font-size: .92rem;
-
-    line-height: 1.6;
 
     white-space: pre-wrap;
 

@@ -1,194 +1,332 @@
 .message {
 
-    max-width: 100%;
+    display: flex;
 
-    margin-bottom: var(--space-6);
+    gap: 18px;
 
-    animation: fadeIn .25s ease;
+    margin-bottom: 32px;
+
+    align-items: flex-start;
 
 }
 
-.user {
+.message:last-child {
+
+    margin-bottom: 0;
+
+}
+
+/* ===========================
+   Avatar
+=========================== */
+
+.message>.avatar {
+
+    flex-shrink: 0;
+
+}
+
+/* ===========================
+   Cuerpo
+=========================== */
+
+.message-body {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+/* ===========================
+   Cabecera
+=========================== */
+
+.message-header {
 
     display: flex;
 
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 14px;
 
 }
 
-.user>div,
-.user>p,
-.user article {
+.message-header strong {
 
-    max-width: 80%;
+    font-size: .95rem;
 
-    background: var(--color-primary);
+    font-weight: 700;
+
+    color: var(--color-text);
+
+}
+
+.message-time {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--color-text-light);
+
+    font-size: .8rem;
+
+}
+
+/* ===========================
+   Usuario
+=========================== */
+
+.user .message-body {
+
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        #6366f1
+    );
 
     color: white;
 
-    padding: var(--space-4);
+    border-radius: 18px;
 
-    border-radius: var(--radius-lg);
+    padding: 18px 20px;
 
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 8px 20px rgba(79,70,229,.16);
 
 }
 
-.assistant {
+.user .message-header strong,
 
-    background: var(--color-surface);
+.user .message-time {
+
+    color: rgba(255,255,255,.92);
+
+}
+
+.user .message-content {
+
+    color: white;
+
+}
+
+.user .message-content p,
+
+.user .message-content li,
+
+.user .message-content strong,
+
+.user .message-content em {
+
+    color: inherit;
+
+}
+
+/* ===========================
+   Asistente
+=========================== */
+
+.assistant .message-body {
+
+    background: white;
 
     border: 1px solid var(--color-border);
 
-    border-radius: var(--radius-lg);
+    border-radius: 18px;
 
-    padding: var(--space-5);
+    padding: 22px;
 
     box-shadow: var(--shadow-sm);
 
 }
 
-.assistant-header {
+/* ===========================
+   Markdown
+=========================== */
 
-    display: flex;
+.message-content {
 
-    align-items: center;
+    color: var(--color-text);
 
-    gap: var(--space-3);
+    line-height: 1.75;
 
-    margin-bottom: var(--space-5);
-
-}
-
-.assistant-avatar {
-
-    width: 42px;
-
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: var(--color-primary);
-
-    color: white;
-
-    font-size: 1.2rem;
+    overflow-wrap: anywhere;
 
 }
 
-.assistant-header strong {
+.message-content>*:first-child {
 
-    display: block;
-
-}
-
-.assistant-header span {
-
-    color: var(--color-text-secondary);
-
-    font-size: .85rem;
+    margin-top: 0;
 
 }
 
-.message-toolbar {
+.message-content>*:last-child {
 
-    display: flex;
-
-    align-items: center;
-
-    gap: var(--space-3);
-
-    margin-top: var(--space-5);
-
-    margin-bottom: var(--space-5);
+    margin-bottom: 0;
 
 }
 
-.message-toolbar button {
+.message-content h1,
 
-    border: none;
+.message-content h2,
 
-    background: transparent;
+.message-content h3 {
 
-    color: var(--color-primary);
+    margin: 28px 0 14px;
 
-    cursor: pointer;
-
-    font-weight: 500;
+    color: var(--color-text);
 
 }
 
-.message-toolbar button:hover {
+.message-content p {
 
-    text-decoration: underline;
-
-}
-
-.message p {
-
-    margin-bottom: var(--space-3);
+    margin: 0 0 16px;
 
 }
 
-.message ul {
+.message-content ul,
 
-    padding-left: 20px;
+.message-content ol {
 
-}
+    margin: 0 0 18px;
 
-.message li {
-
-    margin-bottom: 6px;
+    padding-left: 24px;
 
 }
 
-.message code {
+.message-content li {
 
-    background: #eef2ff;
-
-    padding: 2px 5px;
-
-    border-radius: 4px;
+    margin-bottom: 8px;
 
 }
 
-.message pre {
+.message-content blockquote {
 
-    overflow-x: auto;
+    margin: 20px 0;
 
-    padding: var(--space-4);
+    padding: 12px 18px;
 
-    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
 
     background: #f8fafc;
 
+    color: var(--color-text-secondary);
+
 }
 
-.message table {
+.message-content table {
 
     width: 100%;
 
     border-collapse: collapse;
 
-    margin-top: var(--space-4);
+    margin: 20px 0;
 
 }
 
-.message th,
+.message-content th,
 
-.message td {
+.message-content td {
 
-    padding: 10px;
+    padding: 12px;
 
     border: 1px solid var(--color-border);
 
 }
+
+.message-content th {
+
+    background: #f8fafc;
+
+    text-align: left;
+
+}
+
+.message-content code {
+
+    padding: 2px 6px;
+
+    border-radius: 6px;
+
+    background: #eef2ff;
+
+    font-size: .9em;
+
+}
+
+.message-content pre {
+
+    margin: 20px 0;
+
+    border-radius: 14px;
+
+    overflow: auto;
+
+}
+
+.message-content pre code {
+
+    background: transparent;
+
+    padding: 0;
+
+}
+
+/* ===========================
+   Toolbar
+=========================== */
+
+.message-toolbar {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 18px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--color-border);
+
+}
+
+.message-toolbar button {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+
+    font-size: .88rem;
+
+    font-weight: 500;
+
+    transition: .2s;
+
+}
+
+.message-toolbar button:hover {
+
+    color: var(--color-primary);
+
+}
+
+/* ===========================
+   Thinking
+=========================== */
 
 .thinking {
 
@@ -196,7 +334,7 @@
 
     align-items: center;
 
-    gap: var(--space-3);
+    gap: 12px;
 
     color: var(--color-text-secondary);
 
@@ -240,9 +378,7 @@
 
 @keyframes thinking-dot {
 
-    0%,
-    80%,
-    100% {
+    0%,80%,100% {
 
         transform: scale(.5);
 

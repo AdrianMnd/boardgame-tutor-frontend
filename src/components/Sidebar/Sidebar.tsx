@@ -114,23 +114,19 @@ function Sidebar({
 
             <div className="sidebar-header">
 
-                <h2>
+    <div>
 
-                    Juegos
+        <h2>Juegos</h2>
 
-                </h2>
+    </div>
 
-                <span>
+    <span>
 
-                    {
+        {filteredGames.length}
 
-                        filteredGames.length
+    </span>
 
-                    }
-
-                </span>
-
-            </div>
+</div>
 
             <div className="sidebar-search">
 
