@@ -10,6 +10,8 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 import Workspace
     from "./components/Layout/Workspace";
+import SplashScreen
+    from "./components/UI/SplashScreen";
 
 import { gamesService } from "./services/games.service";
 
@@ -26,7 +28,9 @@ function App() {
 
         isLoading,
 
-        isError
+        isError,
+
+        refetch
 
     } = useQuery<Game[]>({
 
@@ -54,13 +58,20 @@ function App() {
 
     if (isLoading) {
 
-        return <p>Cargando juegos...</p>;
+        return <SplashScreen variant="loading" />;
 
     }
 
     if (isError) {
 
-        return <p>Error cargando juegos</p>;
+        return (
+
+            <SplashScreen
+                variant="error"
+                onRetry={() => refetch()}
+            />
+
+        );
 
     }
 

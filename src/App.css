@@ -17,9 +17,9 @@ body {
     background:
         radial-gradient(
             circle at top,
-            #f8fbff 0%,
-            #eef3f8 42%,
-            #e6edf6 100%
+            #171b26 0%,
+            #12151d 42%,
+            #0e1015 100%
         );
 
     color: var(--color-text);
@@ -116,7 +116,7 @@ a {
 
 ::selection {
 
-    background: rgba(79,70,229,.18);
+    background: rgba(99,102,241,.28);
 
 }
 
@@ -140,13 +140,13 @@ a {
 
     border-radius: 999px;
 
-    background: #ccd7e4;
+    background: #3a4150;
 
 }
 
 ::-webkit-scrollbar-thumb:hover {
 
-    background: #b7c4d4;
+    background: #4a5164;
 
 }
 

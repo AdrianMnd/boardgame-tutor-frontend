@@ -7,7 +7,8 @@ import Icon from "../UI/Icon";
 import {
     Search,
     Users,
-    Clock3
+    Clock3,
+    Dices
 } from "lucide-react";
 
 import type { Game } from "../../types/Game";
@@ -19,6 +20,43 @@ interface Props {
     selectedGame: Game | null;
 
     onSelectGame: (game: Game) => void;
+
+}
+
+function GameCover({ game }: { game: Game }) {
+
+    const [failed, setFailed] = useState(false);
+
+    if (!game.coverUrl || failed) {
+
+        return (
+
+            <div className="game-icon-fallback">
+
+                <Icon
+                    icon={Dices}
+                    size={22}
+                />
+
+            </div>
+
+        );
+
+    }
+
+    return (
+
+        <img
+
+            src={game.coverUrl}
+
+            alt=""
+
+            onError={() => setFailed(true)}
+
+        />
+
+    );
 
 }
 
@@ -136,6 +174,31 @@ function Sidebar({
 
                 {
 
+                    filteredGames.length === 0 && (
+
+                        <div className="sidebar-empty">
+
+                            <Icon
+                                icon={Dices}
+                                size={26}
+                            />
+
+                            <p>
+                                {
+                                    search
+                                        ? "Ningún juego coincide con tu búsqueda."
+                                        : "Todavía no hay juegos disponibles."
+                                }
+                            </p>
+
+                        </div>
+
+                    )
+
+                }
+
+                {
+
                     filteredGames.map(
 
                         game => (
@@ -170,7 +233,7 @@ function Sidebar({
 
                                     <div className="game-icon">
 
-                                        🎲
+                                        <GameCover game={game} />
 
                                     </div>
 
