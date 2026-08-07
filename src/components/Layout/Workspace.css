@@ -14,13 +14,7 @@
 
     overflow: hidden;
 
-    background:
-        radial-gradient(
-            circle at top,
-            #f4f7fb 0%,
-            #edf2f8 45%,
-            #e8eef6 100%
-        );
+    background: transparent;
 
 }
 

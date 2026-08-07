@@ -20,9 +20,9 @@ body {
     background:
         radial-gradient(
             circle at top,
-            #f8fbff 0%,
-            #eef3f8 45%,
-            #e7edf6 100%
+            #171b26 0%,
+            #12151d 45%,
+            #0e1015 100%
         );
 
     color: var(--color-text);
@@ -70,7 +70,7 @@ textarea {
     outline: none;
 
     box-shadow:
-        0 0 0 4px rgba(79,70,229,.12);
+        0 0 0 4px var(--color-primary-shadow);
 
 }
 
@@ -82,7 +82,7 @@ textarea {
 
     scrollbar-width: thin;
 
-    scrollbar-color: #cdd8e4 transparent;
+    scrollbar-color: #3a4150 transparent;
 
 }
 
@@ -104,12 +104,12 @@ textarea {
 
     border-radius: 999px;
 
-    background: #ccd7e4;
+    background: #3a4150;
 
 }
 
 *::-webkit-scrollbar-thumb:hover {
 
-    background: #bac7d7;
+    background: #4a5164;
 
 }

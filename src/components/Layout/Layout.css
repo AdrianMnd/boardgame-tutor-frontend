@@ -11,11 +11,21 @@
     overflow: hidden;
 
     background:
+        radial-gradient(
+            circle at 8% 0%,
+            rgba(99,102,241,.16),
+            rgba(99,102,241,0) 42%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(56,189,248,.10),
+            rgba(56,189,248,0) 45%
+        ),
         linear-gradient(
             180deg,
-            #edf2f8 0%,
-            #eef4fa 40%,
-            #f3f7fb 100%
+            #14171f 0%,
+            #10131a 45%,
+            #0e1015 100%
         );
 
 }

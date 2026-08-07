@@ -57,6 +57,48 @@ const ConversationContext =
 const STORAGE_KEY =
     "boardgame-tutor-conversations";
 
+function reviveConversations(
+
+    raw: unknown
+
+): Conversation[] {
+
+    if (!Array.isArray(raw)) {
+
+        return [];
+
+    }
+
+    return raw.map(conversation => ({
+
+        ...conversation,
+
+        messages: Array.isArray(conversation?.messages)
+
+            ? conversation.messages.map(
+
+                (message: Message) => ({
+
+                    ...message,
+
+                    createdAt:
+
+                        message.createdAt
+
+                            ? new Date(message.createdAt)
+
+                            : message.createdAt
+
+                })
+
+            )
+
+            : []
+
+    }));
+
+}
+
 
 export function ConversationProvider({
 
@@ -92,11 +134,11 @@ export function ConversationProvider({
 
             }
 
-            return JSON.parse(
+            return reviveConversations(
 
-                stored
+                JSON.parse(stored)
 
-            ) as Conversation[];
+            );
 
         }
 

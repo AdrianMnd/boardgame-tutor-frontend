@@ -76,11 +76,29 @@ function Chat({
 
         }
 
+        const maxHeight = 180;
+
         textarea.style.height = "auto";
 
-        textarea.style.height =
+        const nextHeight =
+            Math.min(
 
-            `${textarea.scrollHeight}px`;
+                textarea.scrollHeight,
+
+                maxHeight
+
+            );
+
+        textarea.style.height =
+            `${nextHeight}px`;
+
+        textarea.style.overflowY =
+
+            textarea.scrollHeight > maxHeight
+
+                ? "auto"
+
+                : "hidden";
 
     }, [
 

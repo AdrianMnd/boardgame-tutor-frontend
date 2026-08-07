@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 
-import "highlight.js/styles/github.css";
+import "highlight.js/styles/github-dark.css";
 
 import Avatar from "../UI/Avatar";
 import Icon from "../UI/Icon";
@@ -28,6 +28,48 @@ interface Props {
 
 }
 
+function formatTime(
+
+    value: Date | string | undefined
+
+): string | null {
+
+    if (!value) {
+
+        return null;
+
+    }
+
+    const date =
+
+        value instanceof Date
+
+            ? value
+
+            : new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+
+        return null;
+
+    }
+
+    return date.toLocaleTimeString(
+
+        [],
+
+        {
+
+            hour: "2-digit",
+
+            minute: "2-digit"
+
+        }
+
+    );
+
+}
+
 function Message({
 
     message
@@ -41,6 +83,8 @@ function Message({
         setCopied
 
     ] = useState(false);
+
+    const time = formatTime(message.createdAt);
 
     async function copy() {
 
@@ -114,7 +158,7 @@ function Message({
 
                     {
 
-                        message.createdAt && (
+                        time && (
 
                             <div className="message-time">
 
@@ -126,23 +170,7 @@ function Message({
 
                                 />
 
-                                {
-
-                                    message.createdAt.toLocaleTimeString(
-
-                                        [],
-
-                                        {
-
-                                            hour: "2-digit",
-
-                                            minute: "2-digit"
-
-                                        }
-
-                                    )
-
-                                }
+                                {time}
 
                             </div>
 
