@@ -1,17 +1,11 @@
 import "./Workspace.css";
 
-import type { ReactNode } from "react";
-
 interface WorkspaceProps {
-
-    children: ReactNode;
-
+    children: React.ReactNode;
 }
 
 function Workspace({
-
     children
-
 }: WorkspaceProps) {
 
     return (

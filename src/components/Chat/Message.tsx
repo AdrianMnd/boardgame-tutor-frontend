@@ -14,7 +14,8 @@ import Sources from "./Sources";
 
 import {
     Clock3,
-    Copy
+    Copy,
+    Check
 } from "lucide-react";
 
 import type {
@@ -93,7 +94,7 @@ function Message({
 
                 <header className="message-header">
 
-                    <div>
+                    <div className="message-author">
 
                         <strong>
 
@@ -113,37 +114,39 @@ function Message({
 
                     {
 
-                        message.createdAt &&
+                        message.createdAt && (
 
-                        <div className="message-time">
+                            <div className="message-time">
 
-                            <Icon
+                                <Icon
 
-                                icon={Clock3}
+                                    icon={Clock3}
 
-                                size={14}
+                                    size={14}
 
-                            />
+                                />
 
-                            {
+                                {
 
-                                message.createdAt.toLocaleTimeString(
+                                    message.createdAt.toLocaleTimeString(
 
-                                    [],
+                                        [],
 
-                                    {
+                                        {
 
-                                        hour: "2-digit",
+                                            hour: "2-digit",
 
-                                        minute: "2-digit"
+                                            minute: "2-digit"
 
-                                    }
+                                        }
 
-                                )
+                                    )
 
-                            }
+                                }
 
-                        </div>
+                            </div>
+
+                        )
 
                     }
 
@@ -209,53 +212,65 @@ function Message({
 
                         {
 
-                            assistant &&
+                            assistant && (
 
-                            <Sources
+                                <Sources
 
-                                sources={
+                                    sources={
 
-                                    message.sources ?? []
+                                        message.sources ?? []
 
-                                }
+                                    }
 
-                            />
+                                />
+
+                            )
 
                         }
 
                         {
 
-                            assistant &&
+                            assistant && (
 
-                            <footer className="message-toolbar">
+                                <footer className="message-toolbar">
 
-                                <button
+                                    <button
 
-                                    onClick={copy}
+                                        onClick={copy}
 
-                                >
+                                    >
 
-                                    <Icon
+                                        <Icon
 
-                                        icon={Copy}
+                                            icon={
 
-                                        size={15}
+                                                copied
 
-                                    />
+                                                    ? Check
 
-                                    {
+                                                    : Copy
 
-                                        copied
+                                            }
 
-                                            ? "Copiado"
+                                            size={16}
 
-                                            : "Copiar respuesta"
+                                        />
 
-                                    }
+                                        {
 
-                                </button>
+                                            copied
 
-                            </footer>
+                                                ? "Copiado"
+
+                                                : "Copiar respuesta"
+
+                                        }
+
+                                    </button>
+
+                                </footer>
+
+                            )
 
                         }
 

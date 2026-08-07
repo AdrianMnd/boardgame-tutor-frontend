@@ -1,30 +1,36 @@
 .sources {
 
-    margin-top: 22px;
+    margin-top: 24px;
 
 }
 
 .sources details {
 
-    background: #f8fafc;
-
-    border: 1px solid #dde5ef;
-
-    border-radius: 16px;
-
     overflow: hidden;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 18px;
+
+    background: linear-gradient(
+        180deg,
+        #fbfcfe,
+        #f6f8fb
+    );
 
     transition:
         border-color .2s,
-        box-shadow .2s;
+        box-shadow .2s,
+        background .2s;
 
 }
 
 .sources details[open] {
 
-    border-color: #cfd8e3;
+    border-color: rgba(79,70,229,.18);
 
-    box-shadow: 0 6px 18px rgba(15,23,42,.04);
+    box-shadow:
+        0 12px 30px rgba(15,23,42,.05);
 
 }
 
@@ -36,17 +42,17 @@
 
     justify-content: space-between;
 
-    padding: 16px 20px;
+    padding: 18px 22px;
 
     cursor: pointer;
 
-    user-select: none;
-
     list-style: none;
 
-    font-weight: 600;
+    user-select: none;
 
-    color: var(--color-text);
+    font-weight: 700;
+
+    color: #334155;
 
     transition: background .2s;
 
@@ -60,7 +66,7 @@
 
 .sources summary:hover {
 
-    background: white;
+    background: rgba(79,70,229,.04);
 
 }
 
@@ -68,7 +74,9 @@
 
     content: "⌄";
 
-    color: var(--color-text-light);
+    font-size: 1.1rem;
+
+    color: #94a3b8;
 
     transition: transform .2s;
 
@@ -86,23 +94,23 @@
 
     flex-direction: column;
 
-    gap: 14px;
+    gap: 16px;
 
-    padding: 18px;
+    padding: 20px;
 
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid #e8edf5;
 
 }
 
 .source-card {
 
-    background: white;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 14px;
-
     padding: 18px;
+
+    border-radius: 16px;
+
+    border: 1px solid #e5ebf3;
+
+    background: white;
 
     transition:
         transform .18s,
@@ -113,11 +121,12 @@
 
 .source-card:hover {
 
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 
-    border-color: var(--color-primary);
+    border-color: rgba(79,70,229,.25);
 
-    box-shadow: 0 8px 20px rgba(15,23,42,.06);
+    box-shadow:
+        0 12px 28px rgba(15,23,42,.06);
 
 }
 
@@ -139,7 +148,11 @@
 
     align-items: center;
 
-    padding: 5px 12px;
+    justify-content: center;
+
+    height: 30px;
+
+    padding: 0 12px;
 
     border-radius: 999px;
 
@@ -155,7 +168,7 @@
 
 .source-score {
 
-    color: var(--color-text-secondary);
+    color: #64748b;
 
     font-size: .82rem;
 
@@ -165,11 +178,11 @@
 
 .source-text {
 
-    color: var(--color-text);
+    color: #334155;
 
-    line-height: 1.7;
+    line-height: 1.75;
 
-    font-size: .92rem;
+    font-size: .93rem;
 
     white-space: pre-wrap;
 

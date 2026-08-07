@@ -1,5 +1,12 @@
 import "./Header.css";
 
+import Icon from "../UI/Icon";
+
+import {
+    Bot,
+    Sparkles
+} from "lucide-react";
+
 function Header() {
 
     return (
@@ -8,13 +15,16 @@ function Header() {
 
             <div className="header-left">
 
-                <div className="logo">
+                <div className="header-logo">
 
-                    🎲
+                    <Icon
+                        icon={Bot}
+                        size={26}
+                    />
 
                 </div>
 
-                <div>
+                <div className="header-title">
 
                     <h1>
 
@@ -24,7 +34,7 @@ function Header() {
 
                     <p>
 
-                        Tu asistente inteligente para reglamentos
+                        Tu asistente para reglamentos de juegos de mesa
 
                     </p>
 
@@ -34,15 +44,22 @@ function Header() {
 
             <div className="header-right">
 
-    <div className="status">
+                <div className="header-status">
 
-        <span className="status-dot" />
+                    <Icon
+                        icon={Sparkles}
+                        size={16}
+                    />
 
-        IA conectada
+                    <span>
 
-    </div>
+                        IA preparada
 
-</div>
+                    </span>
+
+                </div>
+
+            </div>
 
         </header>
 

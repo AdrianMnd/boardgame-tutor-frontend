@@ -5,34 +5,20 @@ import { useMemo, useState } from "react";
 import Icon from "../UI/Icon";
 
 import {
-
-    Calendar,
-
-    Dice5,
-
-    Languages,
-
     Search,
-
-    Users
-
+    Users,
+    Clock3
 } from "lucide-react";
 
-import type {
+import type { Game } from "../../types/Game";
 
-    Game
-
-} from "../../types/Game";
-
-interface SidebarProps {
+interface Props {
 
     games: Game[];
 
     selectedGame: Game | null;
 
-    onSelectGame: (
-        game: Game
-    ) => void;
+    onSelectGame: (game: Game) => void;
 
 }
 
@@ -44,7 +30,7 @@ function Sidebar({
 
     onSelectGame
 
-}: SidebarProps) {
+}: Props) {
 
     const [
 
@@ -54,79 +40,65 @@ function Sidebar({
 
     ] = useState("");
 
-    const filteredGames =
+    const filteredGames = useMemo(
 
-        useMemo(
+        () => {
 
-            () =>
+            const text =
 
-                games.filter(game =>
+                search.toLowerCase().trim();
+
+            if (!text) {
+
+                return games;
+
+            }
+
+            return games.filter(
+
+                game =>
 
                     game.name
-
                         .toLowerCase()
+                        .includes(text)
 
-                        .includes(
+            );
 
-                            search.toLowerCase()
+        },
 
-                        )
+        [
 
-                ),
+            games,
 
-            [
+            search
 
-                games,
+        ]
 
-                search
-
-            ]
-
-        );
-
-    function languageName(
-
-        language: string
-
-    ) {
-
-        switch (language) {
-
-            case "es":
-
-                return "Español";
-
-            case "en":
-
-                return "English";
-
-            default:
-
-                return language;
-
-        }
-
-    }
+    );
 
     return (
 
         <aside className="sidebar">
 
-            <div className="sidebar-header">
+            <header className="sidebar-header">
 
-    <div>
+                <div>
 
-        <h2>Juegos</h2>
+                    <h2>
 
-    </div>
+                        Juegos
 
-    <span>
+                    </h2>
 
-        {filteredGames.length}
+                    <span>
 
-    </span>
+                        {filteredGames.length}
 
-</div>
+                    </span>
+
+                </div>
+
+            </header>
 
             <div className="sidebar-search">
 
@@ -164,77 +136,57 @@ function Sidebar({
 
                 {
 
-                    filteredGames.map(game => (
+                    filteredGames.map(
 
-                        <button
+                        game => (
 
-                            key={game.id}
+                            <button
 
-                            className={
+                                key={game.id}
 
-                                selectedGame?.id === game.id
+                                className={
 
-                                    ?
+                                    selectedGame?.id === game.id
 
-                                    "game-card selected"
+                                        ? "game-card selected"
 
-                                    :
+                                        : "game-card"
 
-                                    "game-card"
+                                }
 
-                            }
+                                onClick={() =>
 
-                            onClick={() =>
+                                    onSelectGame(
 
-                                onSelectGame(
+                                        game
 
-                                    game
+                                    )
 
-                                )
+                                }
 
-                            }
+                            >
 
-                        >
+                                <div className="game-card-header">
 
-                            <div className="game-card-header">
+                                    <div className="game-icon">
 
-                                <div className="game-icon">
+                                        🎲
 
-                                    <Icon
+                                    </div>
 
-                                        icon={Dice5}
+                                    <div>
 
-                                        size={22}
+                                        <h3>
 
-                                    />
+                                            {game.name}
 
-                                </div>
+                                        </h3>
 
-                                <div>
-
-                                    <h3>
-
-                                        {game.name}
-
-                                    </h3>
-
-                                    <p>
-
-                                        v{game.version}
-
-                                    </p>
+                                    </div>
 
                                 </div>
 
-                            </div>
-
-                            <div className="game-meta">
-
-                                {
-
-                                    game.minPlayers &&
-
-                                    game.maxPlayers &&
+                                <div className="game-meta">
 
                                     <div>
 
@@ -248,19 +200,10 @@ function Sidebar({
 
                                         <span>
 
-                                            {
+                                            {game.minPlayers}
 
-                                                game.minPlayers
-
-                                            }
-
-                                            –
-
-                                            {
-
-                                                game.maxPlayers
-
-                                            }
+                                            {" - "}
+                                            {game.maxPlayers}
 
                                             jugadores
 
@@ -268,17 +211,11 @@ function Sidebar({
 
                                     </div>
 
-                                }
-
-                                {
-
-                                    game.year &&
-
                                     <div>
 
                                         <Icon
 
-                                            icon={Calendar}
+                                            icon={Clock3}
 
                                             size={15}
 
@@ -286,49 +223,21 @@ function Sidebar({
 
                                         <span>
 
-                                            {
+                                            {" Año:"}
 
-                                                game.year
-
-                                            }
+                                            {game.year}
 
                                         </span>
 
                                     </div>
 
-                                }
-
-                                <div>
-
-                                    <Icon
-
-                                        icon={Languages}
-
-                                        size={15}
-
-                                    />
-
-                                    <span>
-
-                                        {
-
-                                            languageName(
-
-                                                game.language
-
-                                            )
-
-                                        }
-
-                                    </span>
-
                                 </div>
 
-                            </div>
+                            </button>
 
-                        </button>
+                        )
 
-                    ))
+                    )
 
                 }
 

@@ -1,11 +1,8 @@
 import "./Chat.css";
 
 import {
-
     useEffect,
-
     useRef
-
 } from "react";
 
 import type { Game } from "../../types/Game";
@@ -49,11 +46,9 @@ function Chat({
     } = useChat(game);
 
     const messagesEndRef =
-
         useRef<HTMLDivElement>(null);
 
     const textareaRef =
-
         useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -73,18 +68,9 @@ function Chat({
     useEffect(() => {
 
         const textarea =
-
             textareaRef.current;
 
         if (!textarea) {
-
-            return;
-
-        }
-
-        if (!question) {
-
-            textarea.style.height = "auto";
 
             return;
 
@@ -122,11 +108,9 @@ function Chat({
 
         <section className="chat">
 
-            <div className="chat-messages">
+            <div className="chat-topbar">
 
-                <header className="chat-header">
-
-                <div>
+                <div className="chat-title">
 
                     <h2>
 
@@ -134,11 +118,11 @@ function Chat({
 
                     </h2>
 
-                    <p>
+                    <span>
 
-                        Pregunta cualquier duda sobre el reglamento.
+                        Pregunta cualquier duda sobre el reglamento
 
-                    </p>
+                    </span>
 
                 </div>
 
@@ -150,119 +134,127 @@ function Chat({
 
                 >
 
-                    🗑 Nueva conversación
+                    Nueva conversación
 
                 </button>
 
-                </header>
+            </div>
+
+            <div className="chat-messages">
 
                 {
 
                     errorMessage && (
 
-                        <p className="chat-error">
+                        <div className="chat-error">
 
                             {errorMessage}
 
-                        </p>
+                        </div>
 
                     )
 
                 }
 
                 {
+
                     messages.length === 0 && (
 
-        <div className="chat-empty">
+                        <div className="chat-empty">
 
-            <h3>
+                            <h1>
 
-                {game?.name}
+                                {game?.name}
 
-            </h3>
+                            </h1>
 
-            <p>
+                            <p>
 
-                Haz cualquier pregunta sobre el reglamento.
+                                Haz cualquier pregunta sobre el reglamento.
 
-            </p>
+                            </p>
 
-            <div className="chat-suggestions">
+                            <div className="chat-suggestions">
 
-                <button
+                                <button
 
-                    onClick={() =>
+                                    onClick={() =>
 
-                        setQuestion(
+                                        setQuestion(
 
-                            "¿Cómo se gana la partida?"
+                                            "¿Cómo se gana la partida?"
 
-                        )
+                                        )
 
-                    }
+                                    }
 
-                >
+                                >
 
-                    ¿Cómo se gana la partida?
+                                    ¿Cómo se gana la partida?
 
-                </button>
+                                </button>
 
-                <button
+                                <button
 
-                    onClick={() =>
+                                    onClick={() =>
 
-                        setQuestion(
+                                        setQuestion(
 
-                            "¿Cómo empieza una partida?"
+                                            "¿Cómo empieza una partida?"
 
-                        )
+                                        )
 
-                    }
+                                    }
 
-                >
+                                >
 
-                    ¿Cómo empieza una partida?
+                                    ¿Cómo empieza una partida?
 
-                </button>
+                                </button>
 
-                <button
+                                <button
 
-                    onClick={() =>
+                                    onClick={() =>
 
-                        setQuestion(
+                                        setQuestion(
 
-                            "Explícame el turno de un jugador."
+                                            "Explícame el turno de un jugador."
 
-                        )
+                                        )
 
-                    }
+                                    }
 
-                >
+                                >
 
-                    Explícame el turno
+                                    Explícame el turno
 
-                </button>
+                                </button>
 
-            </div>
+                            </div>
 
-        </div>
+                        </div>
 
-    )
-}
+                    )
+
+                }
 
                 {
 
-                    messages.map(message => (
+                    messages.map(
 
-                        <MessageComponent
+                        message => (
 
-                            key={message.id}
+                            <MessageComponent
 
-                            message={message}
+                                key={message.id}
 
-                        />
+                                message={message}
 
-                    ))
+                            />
+
+                        )
+
+                    )
 
                 }
 
@@ -280,7 +272,13 @@ function Chat({
 
                     ref={textareaRef}
 
+                    rows={1}
+
                     value={question}
+
+                    placeholder="Escribe tu pregunta…"
+
+                    disabled={isLoading}
 
                     onChange={event =>
 
@@ -298,43 +296,37 @@ function Chat({
 
                     }
 
-                    rows={1}
-
-                    placeholder="Pregunta sobre el juego..."
-
-                    disabled={isLoading}
-
                 />
 
                 {
 
-    isLoading
+                    isLoading
 
-        ?
+                        ?
 
-        <button
+                        <button
 
-            onClick={cancelGeneration}
+                            onClick={cancelGeneration}
 
-        >
+                        >
 
-            Cancelar
+                            Cancelar
 
-        </button>
+                        </button>
 
-        :
+                        :
 
-        <button
+                        <button
 
-            onClick={sendMessage}
+                            onClick={sendMessage}
 
-        >
+                        >
 
-            Enviar
+                            Enviar
 
-        </button>
+                        </button>
 
-}
+                }
 
             </div>
 
