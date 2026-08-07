@@ -34,13 +34,15 @@ function Header() {
 
             <div className="header-right">
 
-                <span className="status">
+    <div className="status">
 
-                    IA conectada
+        <span className="status-dot" />
 
-                </span>
+        IA conectada
 
-            </div>
+    </div>
+
+</div>
 
         </header>
 

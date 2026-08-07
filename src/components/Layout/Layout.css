@@ -10,6 +10,12 @@
 
     overflow: hidden;
 
-    background: var(--color-background);
+    background:
+        radial-gradient(
+            circle at top,
+            #f8fafc 0%,
+            #eef2f7 45%,
+            #e9eef5 100%
+        );
 
 }
