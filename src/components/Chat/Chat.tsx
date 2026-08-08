@@ -8,6 +8,9 @@ import {
 import type { Game } from "../../types/Game";
 
 import MessageComponent from "./Message";
+import Icon from "../UI/Icon";
+
+import { BookOpen } from "lucide-react";
 
 import { useChat } from "../../hooks/useChat";
 
@@ -15,11 +18,15 @@ interface Props {
 
     game: Game | null;
 
+    onOpenManual: (page?: number) => void;
+
 }
 
 function Chat({
 
-    game
+    game,
+
+    onOpenManual
 
 }: Props) {
 
@@ -144,17 +151,47 @@ function Chat({
 
                 </div>
 
-                <button
+                <div className="chat-topbar-actions">
 
-                    className="new-chat-button"
+                    <button
 
-                    onClick={startNewConversation}
+                        className="manual-button"
 
-                >
+                        onClick={() =>
 
-                    Nueva conversación
+                            onOpenManual()
 
-                </button>
+                        }
+
+                        disabled={!game}
+
+                    >
+
+                        <Icon
+
+                            icon={BookOpen}
+
+                            size={16}
+
+                        />
+
+                        Ver manual completo
+
+                    </button>
+
+                    <button
+
+                        className="new-chat-button"
+
+                        onClick={startNewConversation}
+
+                    >
+
+                        Nueva conversación
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -267,6 +304,18 @@ function Chat({
                                 key={message.id}
 
                                 message={message}
+
+                                onOpenSource={
+
+                                    page =>
+
+                                        onOpenManual(
+
+                                            page
+
+                                        )
+
+                                }
 
                             />
 

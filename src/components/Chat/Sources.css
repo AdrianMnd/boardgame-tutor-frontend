@@ -100,6 +100,10 @@
 
 .source-card {
 
+    width: 100%;
+
+    text-align: left;
+
     padding: 18px;
 
     border-radius: 16px;
@@ -108,6 +112,8 @@
 
     background: var(--color-surface);
 
+    cursor: pointer;
+
     transition:
         transform .18s,
         border-color .18s,
@@ -115,7 +121,7 @@
 
 }
 
-.source-card:hover {
+.source-card:hover:not(:disabled) {
 
     transform: translateY(-2px);
 
@@ -123,6 +129,12 @@
 
     box-shadow:
         0 12px 28px rgba(0,0,0,.28);
+
+}
+
+.source-card:disabled {
+
+    cursor: default;
 
 }
 
@@ -181,5 +193,27 @@
     font-size: .93rem;
 
     white-space: pre-wrap;
+
+}
+
+.source-open-hint {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 14px;
+
+    padding-top: 14px;
+
+    border-top: 1px solid var(--color-border-light);
+
+    color: var(--color-primary-text);
+
+    font-size: .8rem;
+
+    font-weight: 600;
 
 }

@@ -1,5 +1,9 @@
 import "./Sources.css";
 
+import Icon from "../UI/Icon";
+
+import { FileText } from "lucide-react";
+
 import type {
     MessageSource
 } from "../../types/MessageSource";
@@ -8,11 +12,15 @@ interface Props {
 
     sources: MessageSource[];
 
+    onOpenSource?: (page: number) => void;
+
 }
 
 function Sources({
 
-    sources
+    sources,
+
+    onOpenSource
 
 }: Props) {
 
@@ -40,11 +48,25 @@ function Sources({
 
                         sources.map(source => (
 
-                            <div
+                            <button
 
                                 key={source.id}
 
+                                type="button"
+
                                 className="source-card"
+
+                                disabled={!onOpenSource}
+
+                                onClick={() =>
+
+                                    onOpenSource?.(
+
+                                        source.page
+
+                                    )
+
+                                }
 
                             >
 
@@ -70,7 +92,29 @@ function Sources({
 
                                 </div>
 
-                            </div>
+                                {
+
+                                    onOpenSource && (
+
+                                        <div className="source-open-hint">
+
+                                            <Icon
+
+                                                icon={FileText}
+
+                                                size={14}
+
+                                            />
+
+                                            Ver en el reglamento
+
+                                        </div>
+
+                                    )
+
+                                }
+
+                            </button>
 
                         ))
 

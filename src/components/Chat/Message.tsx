@@ -26,6 +26,8 @@ interface Props {
 
     message: MessageType;
 
+    onOpenSource?: (page: number) => void;
+
 }
 
 function formatTime(
@@ -72,7 +74,9 @@ function formatTime(
 
 function Message({
 
-    message
+    message,
+
+    onOpenSource
 
 }: Props) {
 
@@ -247,6 +251,12 @@ function Message({
                                     sources={
 
                                         message.sources ?? []
+
+                                    }
+
+                                    onOpenSource={
+
+                                        onOpenSource
 
                                     }
 

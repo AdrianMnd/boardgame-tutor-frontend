@@ -1,8 +1,6 @@
-import { apiClient }
-    from "./apiClient";
+import { apiClient, API_URL } from "./apiClient";
 
-import type { Game }
-    from "../types/Game";
+import type { Game } from "../types/Game";
 
 export interface ImportGameRequest {
 
@@ -15,9 +13,7 @@ export class GamesService {
     async listGames(): Promise<Game[]> {
 
         return apiClient.get<Game[]>(
-
             "/api/games"
-
         );
 
     }
@@ -49,6 +45,23 @@ export class GamesService {
             `/api/games/${id}`
 
         );
+
+    }
+
+    getManualUrl(
+
+        id: string,
+
+        page?: number
+
+    ): string {
+
+        const base =
+            `${API_URL}/api/games/${id}/manual`;
+
+        return page
+            ? `${base}#page=${page}`
+            : base;
 
     }
 
