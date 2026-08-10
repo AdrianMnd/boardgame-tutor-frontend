@@ -8,7 +8,8 @@ import {
     Search,
     Users,
     Clock3,
-    Dices
+    Dices,
+    X
 } from "lucide-react";
 
 import type { Game } from "../../types/Game";
@@ -20,6 +21,10 @@ interface Props {
     selectedGame: Game | null;
 
     onSelectGame: (game: Game) => void;
+
+    isOpen: boolean;
+
+    onClose: () => void;
 
 }
 
@@ -66,7 +71,11 @@ function Sidebar({
 
     selectedGame,
 
-    onSelectGame
+    onSelectGame,
+
+    isOpen,
+
+    onClose
 
 }: Props) {
 
@@ -116,7 +125,37 @@ function Sidebar({
 
     return (
 
-        <aside className="sidebar">
+        <>
+
+            {
+
+                isOpen && (
+
+                    <div
+
+                        className="sidebar-backdrop"
+
+                        onClick={onClose}
+
+                    />
+
+                )
+
+            }
+
+            <aside
+
+                className={
+
+                    isOpen
+
+                        ? "sidebar open"
+
+                        : "sidebar"
+
+                }
+
+            >
 
             <header className="sidebar-header">
 
@@ -128,11 +167,35 @@ function Sidebar({
 
                     </h2>
 
-                    <span>
+                    <div className="sidebar-header-actions">
 
-                        {filteredGames.length}
+                        <span>
 
-                    </span>
+                            {filteredGames.length}
+
+                        </span>
+
+                        <button
+
+                            className="sidebar-close-button"
+
+                            onClick={onClose}
+
+                            aria-label="Cerrar lista de juegos"
+
+                        >
+
+                            <Icon
+
+                                icon={X}
+
+                                size={20}
+
+                            />
+
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -307,6 +370,8 @@ function Sidebar({
             </div>
 
         </aside>
+
+        </>
 
     );
 

@@ -24,6 +24,9 @@ function App() {
     const [manualState, setManualState] =
         useState<{ page?: number } | null>(null);
 
+    const [isSidebarOpen, setIsSidebarOpen] =
+        useState(false);
+
     const {
 
         data: games = [],
@@ -81,7 +84,15 @@ function App() {
 
         <Layout>
 
-            <Header />
+            <Header
+
+                onMenuClick={
+
+                    () => setIsSidebarOpen(true)
+
+                }
+
+            />
 
             <Workspace>
 
@@ -91,15 +102,25 @@ function App() {
 
                     selectedGame={selectedGame}
 
-                    onSelectGame={(game: Game) =>
+                    isOpen={isSidebarOpen}
+
+                    onClose={
+
+                        () => setIsSidebarOpen(false)
+
+                    }
+
+                    onSelectGame={(game: Game) => {
 
                         setSelectedGameId(
 
                             game.id
 
-                        )
+                        );
 
-                    }
+                        setIsSidebarOpen(false);
+
+                    }}
 
                 />
 
@@ -112,6 +133,12 @@ function App() {
                         page =>
 
                             setManualState({ page })
+
+                    }
+
+                    onOpenSidebar={
+
+                        () => setIsSidebarOpen(true)
 
                     }
 
