@@ -6,6 +6,35 @@ export const API_URL =
     import.meta.env.VITE_API_URL
     ?? "http://localhost:3000";
 
+if (
+
+    typeof window !== "undefined" &&
+
+    /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) === false &&
+
+    /^https?:\/\/(localhost|127\.0\.0\.1)/.test(API_URL)
+
+) {
+
+    // La app está desplegada en un dominio real pero sigue
+    // apuntando a localhost — esto solo puede pasar si falta
+    // configurar VITE_API_URL en el hosting (ej. Vercel:
+    // Settings → Environment Variables) antes de compilar.
+    // eslint-disable-next-line no-console
+    console.error(
+
+        "[Config] VITE_API_URL no está configurada (o apunta a localhost) " +
+
+        "en este despliegue. Las peticiones a la API y las imágenes de " +
+
+        "portada van a fallar. Configura VITE_API_URL con la URL pública " +
+
+        "de tu backend y vuelve a desplegar."
+
+    );
+
+}
+
 export class ApiClient {
 
     async get<T>(

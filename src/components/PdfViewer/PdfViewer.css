@@ -234,11 +234,41 @@
 
         flex-wrap: wrap;
 
+        padding: 14px 16px;
+
     }
 
     .pdf-viewer-external span {
 
         display: none;
+
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .pdf-viewer-header h2 {
+
+        font-size: 1rem;
+
+    }
+
+    .pdf-viewer-header p {
+
+        font-size: .78rem;
+
+    }
+
+    .pdf-viewer-external,
+
+    .pdf-viewer-close {
+
+        width: 36px;
+
+        height: 36px;
+
+        padding: 0;
 
     }
 
