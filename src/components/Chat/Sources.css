@@ -217,3 +217,35 @@
     font-weight: 600;
 
 }
+
+@media (max-width: 768px) {
+
+    .sources summary {
+
+        padding: 14px 16px;
+
+        font-size: .9rem;
+
+    }
+
+    .sources-list {
+
+        padding: 14px;
+
+        gap: 12px;
+
+    }
+
+    .source-card {
+
+        padding: 14px;
+
+    }
+
+    .source-text {
+
+        font-size: .88rem;
+
+    }
+
+}

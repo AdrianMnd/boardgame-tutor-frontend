@@ -4,16 +4,44 @@ import Icon from "../UI/Icon";
 
 import {
     Bot,
-    Sparkles
+    Sparkles,
+    Menu
 } from "lucide-react";
 
-function Header() {
+interface Props {
+
+    onMenuClick: () => void;
+
+}
+
+function Header({
+
+    onMenuClick
+
+}: Props) {
 
     return (
 
         <header className="header">
 
             <div className="header-left">
+
+                <button
+
+                    className="header-menu-button"
+
+                    onClick={onMenuClick}
+
+                    aria-label="Abrir lista de juegos"
+
+                >
+
+                    <Icon
+                        icon={Menu}
+                        size={22}
+                    />
+
+                </button>
 
                 <div className="header-logo">
 

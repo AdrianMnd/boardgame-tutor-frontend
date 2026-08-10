@@ -10,7 +10,7 @@ import type { Game } from "../../types/Game";
 import MessageComponent from "./Message";
 import Icon from "../UI/Icon";
 
-import { BookOpen } from "lucide-react";
+import { BookOpen, Menu, Plus, Send, Square } from "lucide-react";
 
 import { useChat } from "../../hooks/useChat";
 
@@ -20,13 +20,17 @@ interface Props {
 
     onOpenManual: (page?: number) => void;
 
+    onOpenSidebar: () => void;
+
 }
 
 function Chat({
 
     game,
 
-    onOpenManual
+    onOpenManual,
+
+    onOpenSidebar
 
 }: Props) {
 
@@ -135,6 +139,26 @@ function Chat({
 
             <div className="chat-topbar">
 
+                <button
+
+                    className="chat-menu-button"
+
+                    onClick={onOpenSidebar}
+
+                    aria-label="Ver lista de juegos"
+
+                >
+
+                    <Icon
+
+                        icon={Menu}
+
+                        size={20}
+
+                    />
+
+                </button>
+
                 <div className="chat-title">
 
                     <h2>
@@ -165,6 +189,8 @@ function Chat({
 
                         disabled={!game}
 
+                        aria-label="Ver manual completo"
+
                     >
 
                         <Icon
@@ -175,7 +201,11 @@ function Chat({
 
                         />
 
-                        Ver manual completo
+                        <span>
+
+                            Ver manual completo
+
+                        </span>
 
                     </button>
 
@@ -185,9 +215,25 @@ function Chat({
 
                         onClick={startNewConversation}
 
+                        aria-label="Nueva conversación"
+
                     >
 
-                        Nueva conversación
+                        <Icon
+
+                            icon={Plus}
+
+                            size={16}
+
+                            className="new-chat-icon"
+
+                        />
+
+                        <span>
+
+                            Nueva conversación
+
+                        </span>
 
                     </button>
 
@@ -373,11 +419,25 @@ function Chat({
 
                         <button
 
+                            className="chat-send-button cancel"
+
                             onClick={cancelGeneration}
 
                         >
 
-                            Cancelar
+                            <Icon
+
+                                icon={Square}
+
+                                size={16}
+
+                            />
+
+                            <span>
+
+                                Cancelar
+
+                            </span>
 
                         </button>
 
@@ -385,11 +445,25 @@ function Chat({
 
                         <button
 
+                            className="chat-send-button"
+
                             onClick={sendMessage}
 
                         >
 
-                            Enviar
+                            <Icon
+
+                                icon={Send}
+
+                                size={16}
+
+                            />
+
+                            <span>
+
+                                Enviar
+
+                            </span>
 
                         </button>
 

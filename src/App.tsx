@@ -24,6 +24,9 @@ function App() {
     const [manualState, setManualState] =
         useState<{ page?: number } | null>(null);
 
+    const [isSidebarOpen, setIsSidebarOpen] =
+        useState(false);
+
     const {
 
         data: games = [],
@@ -58,6 +61,60 @@ function App() {
 
         ?? null;
 
+    function openManual(
+
+        page?: number
+
+    ) {
+
+        if (!selectedGame) {
+
+            return;
+
+        }
+
+        // Los visores de PDF integrados en <iframe> de los
+        // navegadores móviles no soportan de forma fiable el
+        // salto a una página concreta (#page=N) — en cambio, el
+        // visor nativo a pantalla completa del sistema sí lo
+        // hace correctamente. Por eso en móvil se abre
+        // directamente ahí en vez de en nuestro modal.
+        const isMobile =
+
+            window.matchMedia(
+                "(max-width: 768px)"
+            ).matches;
+
+        if (isMobile) {
+
+            const url =
+
+                gamesService.getManualUrl(
+
+                    selectedGame.id,
+
+                    page
+
+                );
+
+            window.open(
+
+                url,
+
+                "_blank",
+
+                "noopener,noreferrer"
+
+            );
+
+            return;
+
+        }
+
+        setManualState({ page });
+
+    }
+
     if (isLoading) {
 
         return <SplashScreen variant="loading" />;
@@ -81,7 +138,15 @@ function App() {
 
         <Layout>
 
-            <Header />
+            <Header
+
+                onMenuClick={
+
+                    () => setIsSidebarOpen(true)
+
+                }
+
+            />
 
             <Workspace>
 
@@ -91,15 +156,25 @@ function App() {
 
                     selectedGame={selectedGame}
 
-                    onSelectGame={(game: Game) =>
+                    isOpen={isSidebarOpen}
+
+                    onClose={
+
+                        () => setIsSidebarOpen(false)
+
+                    }
+
+                    onSelectGame={(game: Game) => {
 
                         setSelectedGameId(
 
                             game.id
 
-                        )
+                        );
 
-                    }
+                        setIsSidebarOpen(false);
+
+                    }}
 
                 />
 
@@ -109,9 +184,13 @@ function App() {
 
                     onOpenManual={
 
-                        page =>
+                        openManual
 
-                            setManualState({ page })
+                    }
+
+                    onOpenSidebar={
+
+                        () => setIsSidebarOpen(true)
 
                     }
 

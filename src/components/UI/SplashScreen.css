@@ -144,3 +144,18 @@
     transform: translateY(-2px);
     box-shadow: 0 18px 40px rgba(79, 70, 229, .3);
 }
+
+@media (max-width: 420px) {
+
+    .splash {
+        padding: 16px;
+    }
+
+    .splash-card {
+        padding: 32px 24px;
+    }
+
+    .splash-card h1 {
+        font-size: 1.05rem;
+    }
+}
