@@ -194,12 +194,6 @@ function App() {
 
                     }
 
-                    onOpenSidebar={
-
-                        () => setIsSidebarOpen(true)
-
-                    }
-
                 />
 
             </Workspace>
