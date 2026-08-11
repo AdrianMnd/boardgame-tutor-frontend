@@ -1,12 +1,11 @@
 import { useState, useRef } from "react";
 
-import { useMutation } from "@tanstack/react-query";
-
 import { chatService } from "../services/chat.service";
 
 import { useConversation } from "./useConversation";
 
 import type { Game } from "../types/Game";
+import type { Message } from "../types/Message";
 
 import { ApiError }
     from "../services/apiError";
@@ -30,6 +29,14 @@ export function useChat(
         setErrorMessage
 
     ] = useState<string | null>(null);
+
+    const [
+
+        isLoading,
+
+        setIsLoading
+
+    ] = useState(false);
 
     const {
 
@@ -55,84 +62,6 @@ export function useChat(
 
     );
 
-    const mutation = useMutation({
-
-        mutationFn: (
-
-    request: {
-
-        question: string;
-
-        signal: AbortSignal;
-
-    }
-
-) =>
-
-    chatService.askQuestion({
-
-        gameId:
-
-            game!.id,
-
-        question:
-
-            request.question,
-
-        signal:
-
-            request.signal
-
-    }),
-
-        onSuccess: () => {
-
-            setErrorMessage(
-                null
-            );
-
-        },
-
-        onError: (
-
-    error
-
-) => {
-
-    if (
-
-        error instanceof ApiError
-
-    ) {
-
-        if (
-
-            typeof error.body === "string"
-
-        ) {
-
-            setErrorMessage(
-
-                error.body
-
-            );
-
-            return;
-
-        }
-
-    }
-
-    setErrorMessage(
-
-        "No se pudo obtener respuesta del servidor."
-
-    );
-
-}
-
-    });
-
     async function sendMessage() {
 
         if (
@@ -145,7 +74,7 @@ export function useChat(
 
             ||
 
-            mutation.isPending
+            isLoading
 
         ) {
 
@@ -175,25 +104,149 @@ export function useChat(
 
         }
 
+        setIsLoading(true);
+
+        setErrorMessage(null);
+
+        let content = "";
+
+        let sources: Message["sources"] = [];
+
         try {
 
             abortController.current =
 
                 new AbortController();
 
-            const response =
+            await chatService.askQuestionStream(
 
-            await mutation.mutateAsync({
+                {
 
-                question:
+                    gameId:
 
-                    currentQuestion,
+                        game.id,
 
-                signal:
+                    question:
 
-                    abortController.current.signal
+                        currentQuestion,
 
-            });
+                    signal:
+
+                        abortController.current.signal
+
+                },
+
+                {
+
+                    onSources: receivedSources => {
+
+                        sources = receivedSources;
+
+                    },
+
+                    onChunk: text => {
+
+                        content += text;
+
+                        updateAssistantMessage({
+
+                            ...loadingMessage,
+
+                            content,
+
+                            sources,
+
+                            isLoading: false
+
+                        });
+
+                    },
+
+                    onError: message => {
+
+                        throw new Error(message);
+
+                    }
+
+                }
+
+            );
+
+            if (!content) {
+
+                // El stream terminó sin ningún fragmento de
+                // texto (raro, pero por seguridad no se deja
+                // el mensaje colgado en "Pensando...").
+                updateAssistantMessage({
+
+                    ...loadingMessage,
+
+                    content:
+
+                        "No he podido generar una respuesta.",
+
+                    sources,
+
+                    isLoading: false
+
+                });
+
+            }
+
+        }
+        catch (error) {
+
+            if (
+
+                error instanceof DOMException
+
+                &&
+
+                error.name === "AbortError"
+
+            ) {
+
+                updateAssistantMessage({
+
+                    ...loadingMessage,
+
+                    content:
+
+                        content || "Respuesta cancelada.",
+
+                    sources,
+
+                    isLoading: false
+
+                });
+
+                setIsLoading(false);
+
+                return;
+
+            }
+
+            const message =
+
+                error instanceof ApiError
+
+                &&
+
+                typeof error.body === "string"
+
+                &&
+
+                error.body
+
+                    ? error.body
+
+                    : error instanceof Error
+
+                        ? error.message
+
+                        : "No se pudo obtener respuesta del servidor.";
+
+            setErrorMessage(message);
 
             updateAssistantMessage({
 
@@ -201,69 +254,20 @@ export function useChat(
 
                 content:
 
-                    response.answer,
+                    content || "Lo siento, ha ocurrido un error.",
 
-                sources:
+                sources,
 
-                    response.sources,
-
-                isLoading:
-
-                    false
+                isLoading: false
 
             });
 
         }
+        finally {
 
-        catch (error) {
+            setIsLoading(false);
 
-    if (
-
-        error instanceof DOMException
-
-        &&
-
-        error.name === "AbortError"
-
-    ) {
-
-        updateAssistantMessage({
-
-            ...loadingMessage,
-
-            content:
-
-                "Respuesta cancelada.",
-
-            isLoading:
-
-                false
-
-        });
-
-        return;
-
-    }
-
-    updateAssistantMessage({
-
-        ...loadingMessage,
-
-        content:
-
-            errorMessage
-
-            ??
-
-            "Lo siento, ha ocurrido un error.",
-
-        isLoading:
-
-            false
-
-    });
-
-}
+        }
 
     }
 
@@ -313,9 +317,7 @@ export function useChat(
 
         cancelGeneration,
 
-        isLoading:
-
-            mutation.isPending,
+        isLoading,
 
         errorMessage
 
