@@ -2,7 +2,8 @@ import "./Chat.css";
 
 import {
     useEffect,
-    useRef
+    useRef,
+    useCallback
 } from "react";
 
 import type { Game } from "../../types/Game";
@@ -10,9 +11,10 @@ import type { Game } from "../../types/Game";
 import MessageComponent from "./Message";
 import Icon from "../UI/Icon";
 
-import { BookOpen, Menu, Plus, Send, Square } from "lucide-react";
+import { BookOpen, Menu, Plus, Send, Square, Mic, MicOff } from "lucide-react";
 
 import { useChat } from "../../hooks/useChat";
+import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 
 interface Props {
 
@@ -55,6 +57,36 @@ function Chat({
         cancelGeneration
 
     } = useChat(game);
+
+    const handleVoiceResult =
+
+        useCallback((transcript: string) => {
+
+            setQuestion(previous =>
+
+                previous.trim()
+
+                    ? `${previous.trim()} ${transcript}`
+
+                    : transcript
+
+            );
+
+        }, [setQuestion]);
+
+    const {
+
+        isSupported: isVoiceSupported,
+
+        isListening,
+
+        toggle: toggleVoice
+
+    } = useSpeechRecognition({
+
+        onResult: handleVoiceResult
+
+    });
 
     const messagesEndRef =
         useRef<HTMLDivElement>(null);
@@ -389,7 +421,15 @@ function Chat({
 
                     value={question}
 
-                    placeholder="Escribe tu pregunta…"
+                    placeholder={
+
+                        isListening
+
+                            ? "Escuchando…"
+
+                            : "Escribe tu pregunta…"
+
+                    }
 
                     disabled={isLoading}
 
@@ -410,6 +450,62 @@ function Chat({
                     }
 
                 />
+
+                {
+
+                    isVoiceSupported && (
+
+                        <button
+
+                            className={
+
+                                isListening
+
+                                    ? "chat-voice-button listening"
+
+                                    : "chat-voice-button"
+
+                            }
+
+                            onClick={toggleVoice}
+
+                            disabled={isLoading}
+
+                            aria-label={
+
+                                isListening
+
+                                    ? "Detener dictado por voz"
+
+                                    : "Preguntar por voz"
+
+                            }
+
+                            type="button"
+
+                        >
+
+                            <Icon
+
+                                icon={
+
+                                    isListening
+
+                                        ? MicOff
+
+                                        : Mic
+
+                                }
+
+                                size={18}
+
+                            />
+
+                        </button>
+
+                    )
+
+                }
 
                 {
 
