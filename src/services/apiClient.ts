@@ -20,7 +20,6 @@ if (
     // apuntando a localhost — esto solo puede pasar si falta
     // configurar VITE_API_URL en el hosting (ej. Vercel:
     // Settings → Environment Variables) antes de compilar.
-    // eslint-disable-next-line no-console
     console.error(
 
         "[Config] VITE_API_URL no está configurada (o apunta a localhost) " +
