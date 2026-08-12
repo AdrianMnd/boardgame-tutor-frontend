@@ -19,6 +19,22 @@ import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
+// Se define fuera del componente (referencia estable) — si se
+// pasara un objeto literal nuevo en cada render, react-pdf
+// recargaría el PDF entero cada vez sin motivo.
+//
+// wasmUrl le dice a pdf.js dónde están los ficheros WASM que
+// necesita para decodificar imágenes JPEG2000 (formato JPX,
+// usado en algunos PDFs para portadas/ilustraciones). Sin esto,
+// esas páginas fallan al renderizar con errores de "OpenJPEG
+// failed to initialize" en la consola — el PDF entero o algunas
+// páginas concretas se quedan en blanco.
+const PDF_DOCUMENT_OPTIONS = {
+
+    wasmUrl: "/pdfjs-wasm/"
+
+};
+
 import Icon from "../UI/Icon";
 
 import {
@@ -311,6 +327,8 @@ function PdfViewer({
                             <Document
 
                                 file={pdfUrl}
+
+                                options={PDF_DOCUMENT_OPTIONS}
 
                                 onLoadSuccess={
 

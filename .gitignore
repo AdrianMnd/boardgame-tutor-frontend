@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Generado automáticamente por scripts/copy-pdfjs-wasm.cjs
+# (ver package.json: predev/prebuild)
+public/pdfjs-wasm/
+
 # Editor directories and files
 .env
 .vscode/*
