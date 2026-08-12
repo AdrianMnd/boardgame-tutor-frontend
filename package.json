@@ -5,7 +5,9 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/copy-pdfjs-wasm.cjs",
     "dev": "vite",
+    "prebuild": "node scripts/copy-pdfjs-wasm.cjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
