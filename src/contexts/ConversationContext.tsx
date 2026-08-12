@@ -152,17 +152,29 @@ export function ConversationProvider({
 
     useEffect(() => {
 
-        localStorage.setItem(
+        try {
 
-            STORAGE_KEY,
+            localStorage.setItem(
 
-            JSON.stringify(
+                STORAGE_KEY,
 
-                conversations
+                JSON.stringify(
 
-            )
+                    conversations
 
-        );
+                )
+
+            );
+
+        }
+        catch {
+
+            // localStorage lleno, deshabilitado (Safari en modo
+            // privado) o no disponible: se ignora — la
+            // conversación se sigue viendo en esta sesión,
+            // simplemente no persiste para la próxima.
+
+        }
 
     }, [
 
