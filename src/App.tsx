@@ -73,44 +73,6 @@ function App() {
 
         }
 
-        // Los visores de PDF integrados en <iframe> de los
-        // navegadores móviles no soportan de forma fiable el
-        // salto a una página concreta (#page=N) — en cambio, el
-        // visor nativo a pantalla completa del sistema sí lo
-        // hace correctamente. Por eso en móvil se abre
-        // directamente ahí en vez de en nuestro modal.
-        const isMobile =
-
-            window.matchMedia(
-                "(max-width: 768px)"
-            ).matches;
-
-        if (isMobile) {
-
-            const url =
-
-                gamesService.getManualUrl(
-
-                    selectedGame.id,
-
-                    page
-
-                );
-
-            window.open(
-
-                url,
-
-                "_blank",
-
-                "noopener,noreferrer"
-
-            );
-
-            return;
-
-        }
-
         setManualState({ page });
 
     }
@@ -203,6 +165,8 @@ function App() {
                 manualState && selectedGame && (
 
                     <PdfViewer
+
+                        key={`${selectedGame.id}-${manualState.page ?? "full"}`}
 
                         game={selectedGame}
 
