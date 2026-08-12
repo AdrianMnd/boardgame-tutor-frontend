@@ -3,20 +3,25 @@ import "./Header.css";
 import Icon from "../UI/Icon";
 
 import {
-    Bot,
     Sparkles,
     Menu
 } from "lucide-react";
+
+import logo from "../../assets/logo.svg";
 
 interface Props {
 
     onMenuClick: () => void;
 
+    onLogoClick: () => void;
+
 }
 
 function Header({
 
-    onMenuClick
+    onMenuClick,
+
+    onLogoClick
 
 }: Props) {
 
@@ -43,30 +48,49 @@ function Header({
 
                 </button>
 
-                <div className="header-logo">
+                <button
 
-                    <Icon
-                        icon={Bot}
-                        size={26}
-                    />
+                    className="header-brand"
 
-                </div>
+                    onClick={onLogoClick}
 
-                <div className="header-title">
+                    aria-label="Ir a la pantalla de inicio"
 
-                    <h1>
+                >
 
-                        BoardGame Tutor
+                    <div className="header-logo">
 
-                    </h1>
+                        <img
 
-                    <p>
+                            src={logo}
 
-                        Tu asistente para reglamentos de juegos de mesa
+                            alt=""
 
-                    </p>
+                            width={50}
 
-                </div>
+                            height={50}
+
+                        />
+
+                    </div>
+
+                    <div className="header-title">
+
+                        <h1>
+
+                            BoardGame Tutor
+
+                        </h1>
+
+                        <p>
+
+                            Resuelve dudas de reglamento al instante
+
+                        </p>
+
+                    </div>
+
+                </button>
 
             </div>
 

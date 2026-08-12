@@ -9,7 +9,8 @@ import {
     Users,
     Clock3,
     Dices,
-    X
+    X,
+    Star
 } from "lucide-react";
 
 import type { Game } from "../../types/Game";
@@ -25,6 +26,10 @@ interface Props {
     isOpen: boolean;
 
     onClose: () => void;
+
+    isFavorite: (gameId: string) => boolean;
+
+    onToggleFavorite: (gameId: string) => void;
 
 }
 
@@ -75,7 +80,11 @@ function Sidebar({
 
     isOpen,
 
-    onClose
+    onClose,
+
+    isFavorite,
+
+    onToggleFavorite
 
 }: Props) {
 
@@ -95,19 +104,37 @@ function Sidebar({
 
                 search.toLowerCase().trim();
 
-            if (!text) {
+            const base =
 
-                return games;
+                text
 
-            }
+                    ? games.filter(
 
-            return games.filter(
+                        game =>
 
-                game =>
+                            game.name
+                                .toLowerCase()
+                                .includes(text)
 
-                    game.name
-                        .toLowerCase()
-                        .includes(text)
+                    )
+
+                    : games;
+
+            // Los favoritos siempre van primero — el orden entre
+            // ellos (y entre el resto) se conserva tal como
+            // vienen del catálogo, para no reordenar cada vez
+            // que cambie algo sin motivo aparente.
+            return [...base].sort(
+
+                (a, b) => {
+
+                    const favA = isFavorite(a.id) ? 0 : 1;
+
+                    const favB = isFavorite(b.id) ? 0 : 1;
+
+                    return favA - favB;
+
+                }
 
             );
 
@@ -117,7 +144,9 @@ function Sidebar({
 
             games,
 
-            search
+            search,
+
+            isFavorite
 
         ]
 
@@ -300,7 +329,7 @@ function Sidebar({
 
                                     </div>
 
-                                    <div>
+                                    <div className="game-card-title">
 
                                         <h3>
 
@@ -309,6 +338,72 @@ function Sidebar({
                                         </h3>
 
                                     </div>
+
+                                    <span
+
+                                        role="button"
+
+                                        tabIndex={0}
+
+                                        className={
+
+                                            isFavorite(game.id)
+
+                                                ? "favorite-button active"
+
+                                                : "favorite-button"
+
+                                        }
+
+                                        aria-label={
+
+                                            isFavorite(game.id)
+
+                                                ? `Quitar ${game.name} de favoritos`
+
+                                                : `Marcar ${game.name} como favorito`
+
+                                        }
+
+                                        aria-pressed={isFavorite(game.id)}
+
+                                        onClick={event => {
+
+                                            event.stopPropagation();
+
+                                            onToggleFavorite(game.id);
+
+                                        }}
+
+                                        onKeyDown={event => {
+
+                                            if (
+
+                                                event.key === "Enter" ||
+                                                event.key === " "
+
+                                            ) {
+
+                                                event.preventDefault();
+                                                event.stopPropagation();
+
+                                                onToggleFavorite(game.id);
+
+                                            }
+
+                                        }}
+
+                                    >
+
+                                        <Icon
+
+                                            icon={Star}
+
+                                            size={16}
+
+                                        />
+
+                                    </span>
 
                                 </div>
 
@@ -330,7 +425,7 @@ function Sidebar({
 
                                             {" - "}
                                             {game.maxPlayers}
-
+                                            {"  "}
                                             jugadores
 
                                         </span>
@@ -350,7 +445,7 @@ function Sidebar({
                                         <span>
 
                                             {" Año:"}
-
+                                            {"  "}
                                             {game.year}
 
                                         </span>

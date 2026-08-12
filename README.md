@@ -1,203 +1,66 @@
-# BoardGame Tutor
+# BoardGame Tutor — Frontend
 
-BoardGame Tutor es una aplicación web que permite seleccionar un juego de mesa, consultar su reglamento mediante lenguaje natural y abrir el reglamento PDF para revisar las páginas utilizadas como fuente.
+Aplicación web en React que permite elegir un juego de mesa, preguntarle en lenguaje natural sobre sus reglas y consultar el reglamento en PDF, saltando directamente a la página que se usó como fuente de cada respuesta.
 
-## Arquitectura
+Repositorio del backend: [boardgame-tutor-backend](https://github.com/AdrianMnd/boardgame-tutor-backend)
 
-```text
-┌───────────────────────────────┐
-│ React + Vite                  │
-│ Frontend                      │
-│                               │
-│ Sidebar · Chat · PDF Viewer   │
-└───────────────┬───────────────┘
-                │ HTTP/JSON
-                ▼
-┌───────────────────────────────┐
-│ Node.js + Express             │
-│ Backend                       │
-│                               │
-│ API · RAG · IA · importador   │
-└───────────────┬───────────────┘
-                │
-                ▼
-        games/<gameId>/
-        ├── metadata.json
-        ├── source/rulebook.pdf
-        ├── generated/
-        │   ├── knowledge.json
-        │   └── embeddings-checkpoint.json (temporal)
-        └── assets/cover.png
-```
+## Características
+
+- **Respuestas en streaming**: el texto aparece progresivamente (Server-Sent Events), no hay que esperar a la respuesta completa.
+- **Pregunta por voz**: dictado con la Web Speech API nativa del navegador, sin backend ni coste adicional.
+- **Visor de PDF integrado** (`pdf.js`, no un `<iframe>`): salta a la página exacta usada como fuente de cada respuesta, de forma fiable en cualquier dispositivo — incluidos navegadores móviles, donde el visor nativo del sistema no siempre respeta ese salto.
+- **Totalmente responsive**: panel de juegos como *drawer* deslizante en móvil, diseño adaptado desde 320px hasta escritorio.
+- **Tema oscuro** con paleta índigo/púrpura.
+- **Cero usos de `any`** en TypeScript.
 
 ## Tecnologías
 
-### Frontend
-
-- React 19
-- TypeScript 6
-- Vite 8
+- React 19 + TypeScript
+- Vite
 - TanStack React Query
-- Axios (dependencia instalada; el cliente actual usa `fetch`)
-- React Router DOM (dependencia instalada; la aplicación actual no registra rutas)
-- `react-pdf` y `pdfjs-dist` (el visor actual utiliza un `iframe`)
-- React Markdown
-- remark-gfm
-- rehype-highlight / highlight.js
+- `react-pdf` / `pdfjs-dist`
+- React Markdown + remark-gfm + rehype-highlight
 - lucide-react
 
-### Backend
-
-- Node.js
-- TypeScript
-- Express 5
-- `tsx`
-- `pdf2json`
-- Vitest
-- Google GenAI SDK
-- clientes compatibles con la API de OpenAI para varios proveedores
-
-## Desarrollo local
-
-### Frontend
+## Puesta en marcha local
 
 ```bash
-cd boardgame-tutor-frontend
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-La configuración entregada contiene:
-
-```env
-VITE_API_URL=http://localhost:3000
-API_PUBLIC_URL=http://localhost:3000
-```
-
-`VITE_API_URL` es la variable utilizada por el frontend para las llamadas HTTP.
-
-### Backend
-
-```bash
-cd boardgame-tutor-backend
-npm install
-npm run dev
-```
-
-El backend utiliza el puerto definido por `PORT` y, si no existe, usa `3000`.
+Necesitas el [backend](https://github.com/AdrianMnd/boardgame-tutor-backend) corriendo (por defecto en `http://localhost:3000`) para que la aplicación tenga datos con los que funcionar.
 
 ## Scripts
 
-### Frontend
-
 ```bash
-npm run dev
-npm run build
-npm run lint
-npm run preview
+npm run dev       # servidor de desarrollo
+npm run build     # compilar para producción
+npm run lint      # ESLint
+npm run preview   # servir la build de producción en local
 ```
 
-### Backend
-
-```bash
-npm run dev
-npm run build
-npm run import <gameId>
-npm run ask <gameId> <pregunta>
-npm test
-npm run test:watch
-npm run test:coverage
-```
-
-También existen comandos de prueba individuales para los proveedores:
-
-```bash
-npm run test:gemini
-npm run test:openrouter
-npm run test:mistral
-npm run test:openai
-npm run test:deepinfra
-npm run test:together
-```
-
-## Juegos incluidos en la versión documentada
-
-- `catan`
-- `zombicide`
-- `nemesis`
-- `cdmd` (Cthulhu Death May Die)
-
-Cada juego se descubre leyendo la carpeta `games/`; no existe un registro obligatorio adicional para que `FileGameRepository` lo encuentre.
-
-## Flujo de una pregunta
+## Estructura
 
 ```text
-Frontend
-  │
-  │ POST /api/chat
-  ▼
-ChatController
-  │
-  ▼
-AskQuestionUseCase
-  │
-  ├── valida el juego
-  ├── genera embedding de la pregunta
-  ├── recupera chunks semánticos
-  ├── reordena contexto
-  ├── comprime contexto
-  ├── construye contexto
-  └── genera respuesta
-  │
-  ▼
-ChatMapper
-  │
-  ▼
-answer + sources
+src/
+├── components/
+│   ├── Chat/         # conversación, mensajes, fuentes
+│   ├── Header/        # cabecera + menú móvil
+│   ├── Layout/         # estructura general y workspace
+│   ├── Sidebar/        # panel de juegos (drawer en móvil)
+│   ├── PdfViewer/       # visor de PDF con pdf.js
+│   └── UI/              # componentes reutilizables
+├── hooks/            # useChat, useConversation, useSpeechRecognition
+├── services/          # clientes HTTP (games, chat)
+└── types/               # tipos compartidos
 ```
-
-## Flujo de importación
-
-```text
-PDF
- ↓
-Pdf2JsonExtractor
- ↓
-TextCleaner
- ↓
-ChunkGenerator
- ↓
-EmbeddingGenerator
- ↓
-KnowledgeWriter
- ↓
-generated/knowledge.json
-```
-
-El proceso dispone de checkpoints para poder reanudar una importación interrumpida durante la generación de embeddings.
-
-## Visor PDF
-
-El frontend solicita:
-
-```text
-GET /api/games/:id/manual
-```
-
-El backend devuelve el PDF con `response.sendFile()`.
-
-El frontend utiliza la URL resultante como fuente de un `iframe`. Las fuentes de las respuestas pueden abrir el visor en una página concreta.
 
 ## Seguridad de configuración
 
-No deben subirse valores de claves API al repositorio.
+`VITE_API_URL` se incrusta en el bundle de producción durante la compilación — no debe contener secretos, y hay que recompilar (no solo redesplegar) si cambia.
 
-## Estado y límites conocidos
+## Licencia
 
-- El almacenamiento de juegos es filesystem local (`games/`).
-- La persistencia de conversaciones del frontend se realiza en `localStorage`.
-- El backend expone `games/` como contenido estático.
-- El frontend y backend están desacoplados por URL mediante `VITE_API_URL`.
-- El backend tiene fallback entre proveedores de IA.
-- OpenRouter está configurado como cliente de chat compatible con OpenAI, pero su cliente actual declara que no implementa embeddings.
-- Las APIs de importación y borrado que aparecen como métodos en `GamesService` del frontend no tienen rutas equivalentes en el backend entregado; la importación disponible actualmente es un comando CLI.
+ISC — ver [LICENSE](./LICENSE).
