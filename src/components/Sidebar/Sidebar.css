@@ -281,6 +281,71 @@
 
 }
 
+.game-card-title {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.game-card-title h3 {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+.favorite-button {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 32px;
+
+    height: 32px;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    color: var(--color-text-light);
+
+    transition:
+        color .2s,
+        background .2s,
+        transform .15s;
+
+}
+
+.favorite-button:hover {
+
+    background: var(--color-surface-tertiary);
+
+    color: var(--color-text-secondary);
+
+    transform: scale(1.08);
+
+}
+
+.favorite-button.active {
+
+    color: #fbbf24;
+
+}
+
+.favorite-button.active svg {
+
+    fill: #fbbf24;
+
+}
+
 .game-icon {
 
     width: 50px;

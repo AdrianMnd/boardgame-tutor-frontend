@@ -11,8 +11,11 @@ import Chat from "./components/Chat/Chat";
 import Workspace from "./components/Layout/Workspace";
 import SplashScreen from "./components/UI/SplashScreen";
 import PdfViewer from "./components/PdfViewer/PdfViewer";
+import WelcomePage from "./components/Welcome/WelcomePage";
 
 import { gamesService } from "./services/games.service";
+
+import { useFavorites } from "./hooks/useFavorites";
 
 import type { Game } from "./types/Game";
 
@@ -26,6 +29,14 @@ function App() {
 
     const [isSidebarOpen, setIsSidebarOpen] =
         useState(false);
+
+    const {
+
+        isFavorite,
+
+        toggleFavorite
+
+    } = useFavorites();
 
     const {
 
@@ -47,6 +58,9 @@ function App() {
 
     });
 
+    // A diferencia de antes, si no se ha elegido ningún juego
+    // todavía no se cae automáticamente al primero del catálogo
+    // — se muestra la pantalla de bienvenida en su lugar.
     const selectedGame =
 
         games.find(
@@ -57,9 +71,15 @@ function App() {
 
         )
 
-        ?? games[0]
-
         ?? null;
+
+    const favoriteGames =
+
+        games.filter(
+
+            game => isFavorite(game.id)
+
+        );
 
     function openManual(
 
@@ -108,6 +128,12 @@ function App() {
 
                 }
 
+                onLogoClick={
+
+                    () => setSelectedGameId(null)
+
+                }
+
             />
 
             <Workspace>
@@ -138,25 +164,60 @@ function App() {
 
                     }}
 
-                />
+                    isFavorite={isFavorite}
 
-                <Chat
-
-                    game={selectedGame}
-
-                    onOpenManual={
-
-                        openManual
-
-                    }
-
-                    onOpenSidebar={
-
-                        () => setIsSidebarOpen(true)
-
-                    }
+                    onToggleFavorite={toggleFavorite}
 
                 />
+
+                {
+
+                    selectedGame
+
+                        ? (
+
+                            <Chat
+
+                                game={selectedGame}
+
+                                onOpenManual={
+
+                                    openManual
+
+                                }
+
+                                onOpenSidebar={
+
+                                    () => setIsSidebarOpen(true)
+
+                                }
+
+                            />
+
+                        )
+                        : (
+
+                            <WelcomePage
+
+                                favoriteGames={favoriteGames}
+
+                                onSelectGame={(game: Game) =>
+
+                                    setSelectedGameId(game.id)
+
+                                }
+
+                                onOpenSidebar={
+
+                                    () => setIsSidebarOpen(true)
+
+                                }
+
+                            />
+
+                        )
+
+                }
 
             </Workspace>
 
