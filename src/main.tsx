@@ -16,7 +16,15 @@ import "./styles/global.css";
 
 
 const queryClient =
-    new QueryClient();
+    new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: 1000 * 60 * 10,
+                refetchOnWindowFocus: false,
+                refetchOnReconnect: false
+            }
+        }
+    });
 
 
 
