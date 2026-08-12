@@ -141,6 +141,12 @@
 
 .new-chat-button {
 
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
     height: 44px;
 
     padding: 0 18px;

@@ -199,7 +199,7 @@
 
     overflow-y: auto;
 
-    padding: 0 18px 18px;
+    padding: 8px 18px 18px;
 
 }
 
@@ -273,7 +273,7 @@
 
     display: flex;
 
-    align-items: center;
+    align-items: flex-start;
 
     gap: 16px;
 
@@ -291,11 +291,9 @@
 
 .game-card-title h3 {
 
-    overflow: hidden;
+    overflow-wrap: break-word;
 
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
+    line-height: 1.3;
 
 }
 
