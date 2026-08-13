@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -10,7 +10,6 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 import Workspace from "./components/Layout/Workspace";
 import SplashScreen from "./components/UI/SplashScreen";
-import PdfViewer from "./components/PdfViewer/PdfViewer";
 import WelcomePage from "./components/Welcome/WelcomePage";
 
 import { gamesService } from "./services/games.service";
@@ -18,6 +17,17 @@ import { gamesService } from "./services/games.service";
 import { useFavorites } from "./hooks/useFavorites";
 
 import type { Game } from "./types/Game";
+
+// react-pdf + pdfjs-dist pesan bastante (~300KB adicionales) y
+// solo se necesitan cuando alguien abre un manual — cargarlo de
+// forma diferida evita que ese peso retrase la carga inicial de
+// la aplicación, que es lo que se usa el 100% de las veces
+// (nadie abre la app solo para ver un PDF).
+const PdfViewer = lazy(
+
+    () => import("./components/PdfViewer/PdfViewer")
+
+);
 
 function App() {
 
@@ -225,23 +235,47 @@ function App() {
 
                 manualState && selectedGame && (
 
-                    <PdfViewer
+                    <Suspense
 
-                        key={`${selectedGame.id}-${manualState.page ?? "full"}`}
+                        fallback={
 
-                        game={selectedGame}
+                            <div
 
-                        page={manualState.page}
+                                className="pdf-loading-overlay"
 
-                        onClose={
+                                role="status"
 
-                            () =>
+                                aria-live="polite"
 
-                                setManualState(null)
+                            >
+
+                                Cargando visor de PDF…
+
+                            </div>
 
                         }
 
-                    />
+                    >
+
+                        <PdfViewer
+
+                            key={`${selectedGame.id}-${manualState.page ?? "full"}`}
+
+                            game={selectedGame}
+
+                            page={manualState.page}
+
+                            onClose={
+
+                                () =>
+
+                                    setManualState(null)
+
+                            }
+
+                        />
+
+                    </Suspense>
 
                 )
 

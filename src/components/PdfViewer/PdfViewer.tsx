@@ -46,6 +46,8 @@ import {
 
 import { gamesService } from "../../services/games.service";
 
+import { useFocusTrap } from "../../hooks/useFocusTrap";
+
 import type { Game } from "../../types/Game";
 
 interface Props {
@@ -84,6 +86,12 @@ function PdfViewer({
 
     const containerRef =
         useRef<HTMLDivElement>(null);
+
+    // PdfViewer solo existe en el DOM mientras está abierto (lo
+    // monta/desmonta App.tsx condicionalmente) — siempre actúa
+    // como diálogo modal mientras está montado.
+    const dialogRef =
+        useFocusTrap(true);
 
     const [pageWidth, setPageWidth] =
         useState(600);
@@ -192,6 +200,16 @@ function PdfViewer({
 
             <section
 
+                ref={dialogRef as React.RefObject<HTMLElement>}
+
+                role="dialog"
+
+                aria-modal="true"
+
+                aria-labelledby="pdf-viewer-title"
+
+                tabIndex={-1}
+
                 className="pdf-viewer"
 
                 onClick={
@@ -208,7 +226,7 @@ function PdfViewer({
 
                     <div>
 
-                        <h2>
+                        <h2 id="pdf-viewer-title">
 
                             {game.name}
 

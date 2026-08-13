@@ -10,7 +10,15 @@ function Workspace({
 
     return (
 
-        <main className="workspace">
+        <main
+
+            id="main-content"
+
+            tabIndex={-1}
+
+            className="workspace"
+
+        >
 
             {children}
 

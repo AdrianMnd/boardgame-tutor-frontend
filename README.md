@@ -26,6 +26,9 @@ Repositorio del backend: [boardgame-tutor-backend](https://github.com/AdrianMnd/
 - **Juegos favoritos**: persistidos en `localStorage`, siempre visibles al principio de la lista.
 - **Pantalla de bienvenida**: recibe al usuario con un acceso directo a sus juegos favoritos, en vez de forzar la entrada a un juego concreto.
 - **Totalmente responsive**: panel de juegos como *drawer* deslizante en móvil, diseño adaptado desde 320px hasta escritorio.
+- **Accesible**: navegación por teclado con atrapado de foco en diálogos (patrón WAI-ARIA), avisos `aria-live` para las respuestas del chat, contraste de color verificado (WCAG AA), enlace de salto al contenido.
+- **Carga diferida del visor de PDF**: `react-pdf` (~420KB) solo se descarga al abrir un manual, no en la carga inicial de la app.
+- **Recuperación ante errores**: un `ErrorBoundary` evita que un fallo inesperado deje la pantalla en blanco.
 - **Tema oscuro** con paleta índigo/púrpura e identidad visual propia.
 - **Cero usos de `any`** en TypeScript.
 
@@ -51,10 +54,12 @@ Necesitas el [backend](https://github.com/AdrianMnd/boardgame-tutor-backend) cor
 ## Scripts
 
 ```bash
-npm run dev       # servidor de desarrollo
-npm run build     # compilar para producción
-npm run lint      # ESLint
-npm run preview   # servir la build de producción en local
+npm run dev         # servidor de desarrollo
+npm run build       # compilar para producción
+npm run lint        # ESLint
+npm run test        # tests (Vitest + Testing Library)
+npm run test:watch  # tests en modo watch
+npm run preview     # servir la build de producción en local
 ```
 
 ## Estructura
@@ -64,14 +69,18 @@ src/
 ├── assets/            # logo e imágenes propias
 ├── components/
 │   ├── Chat/           # conversación, mensajes, fuentes
-│   ├── Header/          # cabecera + menú móvil
+│   ├── ErrorBoundary/   # captura errores inesperados de renderizado
+│   ├── Header/           # cabecera + menú móvil
 │   ├── Layout/            # estructura general y workspace
 │   ├── Sidebar/            # panel de juegos (drawer en móvil, favoritos)
-│   ├── PdfViewer/           # visor de PDF con pdf.js
+│   ├── PdfViewer/           # visor de PDF con pdf.js (carga diferida)
 │   ├── Welcome/              # pantalla de bienvenida
 │   └── UI/                    # componentes reutilizables
-├── hooks/            # useChat, useConversation, useFavorites, useSpeechRecognition
+│   (cada componente con tests trae su carpeta __tests__/)
+├── hooks/            # useChat, useConversation, useFavorites,
+│                     # useFocusTrap, useSpeechRecognition
 ├── services/          # clientes HTTP (games, chat)
+├── test/               # configuración global de Vitest
 └── types/               # tipos compartidos
 ```
 

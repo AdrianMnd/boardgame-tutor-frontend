@@ -1,6 +1,6 @@
 import "./Sidebar.css";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Icon from "../UI/Icon";
 
@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 
 import type { Game } from "../../types/Game";
+
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 interface Props {
 
@@ -87,6 +89,57 @@ function Sidebar({
     onToggleFavorite
 
 }: Props) {
+
+    const dialogRef =
+        useFocusTrap(isOpen);
+
+    // El panel solo actúa como diálogo modal en móvil (drawer
+    // deslizante); en escritorio es una columna siempre visible.
+    // isOpen únicamente puede ser true a través del botón de
+    // menú del header, que está oculto (y fuera del orden de
+    // tabulación) en escritorio — así que atrapar el foco aquí
+    // nunca afecta a la navegación normal en pantallas grandes.
+    useEffect(() => {
+
+        if (!isOpen) {
+
+            return;
+
+        }
+
+        function handleKeyDown(
+
+            event: KeyboardEvent
+
+        ) {
+
+            if (event.key === "Escape") {
+
+                onClose();
+
+            }
+
+        }
+
+        document.addEventListener(
+
+            "keydown",
+
+            handleKeyDown
+
+        );
+
+        return () =>
+
+            document.removeEventListener(
+
+                "keydown",
+
+                handleKeyDown
+
+            );
+
+    }, [isOpen, onClose]);
 
     const [
 
@@ -174,6 +227,16 @@ function Sidebar({
 
             <aside
 
+                ref={dialogRef as React.RefObject<HTMLElement>}
+
+                role={isOpen ? "dialog" : undefined}
+
+                aria-modal={isOpen ? true : undefined}
+
+                aria-label="Lista de juegos"
+
+                tabIndex={-1}
+
                 className={
 
                     isOpen
@@ -243,6 +306,8 @@ function Sidebar({
                 <input
 
                     type="text"
+
+                    aria-label="Buscar juego"
 
                     placeholder="Buscar juego..."
 

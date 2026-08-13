@@ -12,6 +12,8 @@ import {
     ConversationProvider
 } from "./contexts/ConversationContext";
 
+import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
+
 import "./styles/global.css";
 
 
@@ -35,17 +37,21 @@ createRoot(
 
     <StrictMode>
 
-        <QueryClientProvider
-            client={queryClient}
-        >
+        <ErrorBoundary>
 
-            <ConversationProvider>
+            <QueryClientProvider
+                client={queryClient}
+            >
 
-                <App />
+                <ConversationProvider>
 
-            </ConversationProvider>
+                    <App />
 
-        </QueryClientProvider>
+                </ConversationProvider>
+
+            </QueryClientProvider>
+
+        </ErrorBoundary>
 
     </StrictMode>
 
