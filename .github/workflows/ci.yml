@@ -17,7 +17,12 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          # jsdom 30 (usado por los tests) necesita
+          # util.markAsUncloneable, añadido en Node 22.10 — con
+          # Node 20 los tests fallan al arrancar con un error de
+          # "webidl.util.markAsUncloneable is not a function",
+          # nada que ver con el código de la app en sí.
+          node-version: "22"
           cache: "npm"
 
       - name: Instalar dependencias
