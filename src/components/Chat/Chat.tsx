@@ -71,19 +71,26 @@ function Chat({
     // ilegible, así que solo se avisa al empezar y al terminar.
     const [
 
-        liveAnnouncement,
-
-        setLiveAnnouncement
-
-    ] = useState("");
-
-    const [
-
         isManualMenuOpen,
 
         setIsManualMenuOpen
 
     ] = useState(false);
+
+    // Documentos del juego seleccionado — con `?? []` a
+    // propósito: si el backend desplegado se queda
+    // desincronizado (ej. una versión antigua sin soporte
+    // multi-documento) y no manda este campo, la app degrada a
+    // "un único documento implícito" en vez de romperse.
+    const documents = game?.documents ?? [];
+
+    const [
+
+        liveAnnouncement,
+
+        setLiveAnnouncement
+
+    ] = useState("");
 
     // Patrón recomendado por React para "ajustar estado según
     // cambia otro valor" sin usar un efecto (ver
@@ -340,7 +347,13 @@ function Chat({
 
                     {
 
-                        game && game.documents.length > 1
+                        // Uso siempre de la variable local
+                        // `documents` (con `?? []` ya aplicado)
+                        // en vez de `game.documents` directo —
+                        // esto es justo lo que evita que un
+                        // backend desincronizado (sin este
+                        // campo) rompa toda la pantalla de chat.
+                        documents.length > 1
 
                             ? (
 
@@ -408,7 +421,7 @@ function Chat({
 
                                                 {
 
-                                                    game.documents.map(
+                                                    documents.map(
 
                                                         document => (
 

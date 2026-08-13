@@ -30,7 +30,7 @@ interface Props {
 
         page: number,
 
-        documentId: string
+        documentId?: string
 
     ) => void;
 

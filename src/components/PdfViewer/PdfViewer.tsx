@@ -74,17 +74,23 @@ function PdfViewer({
 
 }: Props) {
 
+    // `?? []` a propósito, misma razón que en Chat.tsx: si el
+    // backend no manda documents (versión desincronizada), se
+    // trata como juego sin documentos detectados en vez de
+    // romper el visor.
+    const documents = game.documents ?? [];
+
     const activeDocument =
 
         documentId
 
-            ? game.documents.find(
+            ? documents.find(
 
                 document => document.id === documentId
 
             )
 
-            : game.documents[0];
+            : documents[0];
 
     const pdfUrl =
         gamesService.getManualUrl(
@@ -251,7 +257,7 @@ function PdfViewer({
 
                             {
 
-                                game.documents.length > 1 &&
+                                documents.length > 1 &&
 
                                 activeDocument && (
 
