@@ -10,6 +10,18 @@ function Layout({ children }: LayoutProps) {
 
         <div className="layout">
 
+            <a
+
+                href="#main-content"
+
+                className="skip-link"
+
+            >
+
+                Saltar al contenido principal
+
+            </a>
+
             {children}
 
         </div>

@@ -3,6 +3,7 @@ import "./Chat.css";
 import {
     useEffect,
     useRef,
+    useState,
     useCallback
 } from "react";
 
@@ -57,6 +58,75 @@ function Chat({
         cancelGeneration
 
     } = useChat(game);
+
+    // Aviso para lectores de pantalla cuando llega una respuesta
+    // nueva — el texto en sí va apareciendo progresivamente
+    // (streaming), pero anunciar cada palabra según llega sería
+    // ilegible, así que solo se avisa al empezar y al terminar.
+    const [
+
+        liveAnnouncement,
+
+        setLiveAnnouncement
+
+    ] = useState("");
+
+    // Patrón recomendado por React para "ajustar estado según
+    // cambia otro valor" sin usar un efecto (ver
+    // https://react.dev/learn/you-might-not-need-an-effect):
+    // se compara con el valor del render anterior directamente
+    // durante el render, en vez de reaccionar a posteriori en
+    // un useEffect (que produciría un renderizado en cascada
+    // innecesario).
+    const [
+
+        previousIsLoading,
+
+        setPreviousIsLoading
+
+    ] = useState(isLoading);
+
+    if (isLoading !== previousIsLoading) {
+
+        setPreviousIsLoading(isLoading);
+
+        setLiveAnnouncement(
+
+            isLoading
+
+                ? "Generando respuesta…"
+
+                : "Respuesta lista"
+
+        );
+
+    }
+
+    // Este efecto sí es un efecto de verdad (programa un
+    // temporizador, un sistema externo al propio render) — el
+    // setState ocurre dentro del callback del timeout, no de
+    // forma síncrona en el cuerpo del efecto.
+    useEffect(() => {
+
+        if (!liveAnnouncement) {
+
+            return;
+
+        }
+
+        const timeout =
+
+            setTimeout(
+
+                () => setLiveAnnouncement(""),
+
+                5000
+
+            );
+
+        return () => clearTimeout(timeout);
+
+    }, [liveAnnouncement]);
 
     const handleVoiceResult =
 
@@ -270,6 +340,20 @@ function Chat({
                     </button>
 
                 </div>
+
+            </div>
+
+            <div
+
+                role="status"
+
+                aria-live="polite"
+
+                className="visually-hidden"
+
+            >
+
+                {liveAnnouncement}
 
             </div>
 
