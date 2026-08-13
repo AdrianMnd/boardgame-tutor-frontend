@@ -35,7 +35,7 @@ function App() {
         useState<string | null>(null);
 
     const [manualState, setManualState] =
-        useState<{ page?: number } | null>(null);
+        useState<{ page?: number; documentId?: string } | null>(null);
 
     const [isSidebarOpen, setIsSidebarOpen] =
         useState(false);
@@ -93,7 +93,9 @@ function App() {
 
     function openManual(
 
-        page?: number
+        page?: number,
+
+        documentId?: string
 
     ) {
 
@@ -103,7 +105,7 @@ function App() {
 
         }
 
-        setManualState({ page });
+        setManualState({ page, documentId });
 
     }
 
@@ -259,11 +261,13 @@ function App() {
 
                         <PdfViewer
 
-                            key={`${selectedGame.id}-${manualState.page ?? "full"}`}
+                            key={`${selectedGame.id}-${manualState.documentId ?? "default"}-${manualState.page ?? "full"}`}
 
                             game={selectedGame}
 
                             page={manualState.page}
+
+                            documentId={manualState.documentId}
 
                             onClose={
 

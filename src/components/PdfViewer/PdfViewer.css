@@ -86,6 +86,26 @@
 
 }
 
+.pdf-viewer-document-badge {
+
+    margin-left: 10px;
+
+    padding: 3px 10px;
+
+    border-radius: 999px;
+
+    background: var(--color-primary-light);
+
+    color: var(--color-primary-text);
+
+    font-size: .72rem;
+
+    font-weight: 700;
+
+    vertical-align: middle;
+
+}
+
 .pdf-viewer-header p {
 
     margin: 4px 0 0;

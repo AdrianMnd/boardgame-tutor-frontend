@@ -56,6 +56,8 @@ interface Props {
 
     page?: number;
 
+    documentId?: string;
+
     onClose: () => void;
 
 }
@@ -66,13 +68,36 @@ function PdfViewer({
 
     page,
 
+    documentId,
+
     onClose
 
 }: Props) {
 
+    // `?? []` a propósito, misma razón que en Chat.tsx: si el
+    // backend no manda documents (versión desincronizada), se
+    // trata como juego sin documentos detectados en vez de
+    // romper el visor.
+    const documents = game.documents ?? [];
+
+    const activeDocument =
+
+        documentId
+
+            ? documents.find(
+
+                document => document.id === documentId
+
+            )
+
+            : documents[0];
+
     const pdfUrl =
         gamesService.getManualUrl(
-            game.id
+            game.id,
+
+            activeDocument?.id
+
         );
 
     const [currentPage, setCurrentPage] =
@@ -229,6 +254,22 @@ function PdfViewer({
                         <h2 id="pdf-viewer-title">
 
                             {game.name}
+
+                            {
+
+                                documents.length > 1 &&
+
+                                activeDocument && (
+
+                                    <span className="pdf-viewer-document-badge">
+
+                                        {activeDocument.name}
+
+                                    </span>
+
+                                )
+
+                            }
 
                         </h2>
 

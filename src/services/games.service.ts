@@ -52,6 +52,8 @@ export class GamesService {
 
         id: string,
 
+        documentId?: string,
+
         page?: number
 
     ): string {
@@ -59,9 +61,27 @@ export class GamesService {
         const base =
             `${API_URL}/api/games/${id}/manual`;
 
+        const params = new URLSearchParams();
+
+        if (documentId) {
+
+            params.set("document", documentId);
+
+        }
+
+        const query =
+
+            params.toString()
+
+                ? `?${params.toString()}`
+
+                : "";
+
         return page
-            ? `${base}#page=${page}`
-            : base;
+
+            ? `${base}${query}#page=${page}`
+
+            : `${base}${query}`;
 
     }
 
