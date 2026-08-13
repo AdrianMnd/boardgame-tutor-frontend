@@ -12,7 +12,13 @@ interface Props {
 
     sources: MessageSource[];
 
-    onOpenSource?: (page: number) => void;
+    onOpenSource?: (
+
+        page: number,
+
+        documentId: string
+
+    ) => void;
 
 }
 
@@ -29,6 +35,18 @@ function Sources({
         return null;
 
     }
+
+    // El nombre del documento solo se muestra si estas fuentes
+    // concretas vienen de más de un documento distinto — para
+    // la gran mayoría de juegos (un único reglamento) no aporta
+    // nada verlo repetido en cada fuente.
+    const hasMultipleDocuments =
+
+        new Set(
+
+            sources.map(source => source.documentId)
+
+        ).size > 1;
 
     return (
 
@@ -62,7 +80,9 @@ function Sources({
 
                                     onOpenSource?.(
 
-                                        source.page
+                                        source.page,
+
+                                        source.documentId
 
                                     )
 
@@ -74,7 +94,15 @@ function Sources({
 
                                     <span className="source-page">
 
-                                        Página {source.page}
+                                        {
+
+                                            hasMultipleDocuments
+
+                                                ? `${source.documentName} — página ${source.page}`
+
+                                                : `Página ${source.page}`
+
+                                        }
 
                                     </span>
 
@@ -106,7 +134,15 @@ function Sources({
 
                                             />
 
-                                            Ver en el reglamento
+                                            {
+
+                                                hasMultipleDocuments
+
+                                                    ? `Ver en ${source.documentName}`
+
+                                                    : "Ver en el reglamento"
+
+                                            }
 
                                         </div>
 

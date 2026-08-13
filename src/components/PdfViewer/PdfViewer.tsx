@@ -56,6 +56,8 @@ interface Props {
 
     page?: number;
 
+    documentId?: string;
+
     onClose: () => void;
 
 }
@@ -66,13 +68,30 @@ function PdfViewer({
 
     page,
 
+    documentId,
+
     onClose
 
 }: Props) {
 
+    const activeDocument =
+
+        documentId
+
+            ? game.documents.find(
+
+                document => document.id === documentId
+
+            )
+
+            : game.documents[0];
+
     const pdfUrl =
         gamesService.getManualUrl(
-            game.id
+            game.id,
+
+            activeDocument?.id
+
         );
 
     const [currentPage, setCurrentPage] =
@@ -229,6 +248,22 @@ function PdfViewer({
                         <h2 id="pdf-viewer-title">
 
                             {game.name}
+
+                            {
+
+                                game.documents.length > 1 &&
+
+                                activeDocument && (
+
+                                    <span className="pdf-viewer-document-badge">
+
+                                        {activeDocument.name}
+
+                                    </span>
+
+                                )
+
+                            }
 
                         </h2>
 

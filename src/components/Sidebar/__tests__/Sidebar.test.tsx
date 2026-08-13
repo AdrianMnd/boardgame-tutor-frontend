@@ -32,7 +32,9 @@ const games: Game[] = [
 
         maxPlayers: 4,
 
-        year: 1995
+        year: 1995,
+
+        documents: [{ id: "rulebook", name: "Rulebook" }]
 
     },
 
@@ -50,7 +52,9 @@ const games: Game[] = [
 
         maxPlayers: 6,
 
-        year: 2021
+        year: 2021,
+
+        documents: [{ id: "rulebook", name: "Rulebook" }]
 
     },
 
@@ -68,7 +72,9 @@ const games: Game[] = [
 
         maxPlayers: 5,
 
-        year: 2018
+        year: 2018,
+
+        documents: [{ id: "rulebook", name: "Rulebook" }]
 
     }
 

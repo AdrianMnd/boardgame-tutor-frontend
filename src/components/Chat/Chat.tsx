@@ -12,7 +12,7 @@ import type { Game } from "../../types/Game";
 import MessageComponent from "./Message";
 import Icon from "../UI/Icon";
 
-import { BookOpen, Menu, Plus, Send, Square, Mic, MicOff } from "lucide-react";
+import { BookOpen, ChevronDown, Menu, Plus, Send, Square, Mic, MicOff } from "lucide-react";
 
 import { useChat } from "../../hooks/useChat";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
@@ -21,7 +21,13 @@ interface Props {
 
     game: Game | null;
 
-    onOpenManual: (page?: number) => void;
+    onOpenManual: (
+
+        page?: number,
+
+        documentId?: string
+
+    ) => void;
 
     onOpenSidebar: () => void;
 
@@ -70,6 +76,14 @@ function Chat({
         setLiveAnnouncement
 
     ] = useState("");
+
+    const [
+
+        isManualMenuOpen,
+
+        setIsManualMenuOpen
+
+    ] = useState(false);
 
     // Patrón recomendado por React para "ajustar estado según
     // cambia otro valor" sin usar un efecto (ver
@@ -235,6 +249,51 @@ function Chat({
 
     ]);
 
+    // Cierra el desplegable de documentos al clicar fuera de él.
+    useEffect(() => {
+
+        if (!isManualMenuOpen) {
+
+            return;
+
+        }
+
+        function handleClickOutside(
+
+            event: MouseEvent
+
+        ) {
+
+            const target = event.target as HTMLElement;
+
+            if (!target.closest(".manual-menu")) {
+
+                setIsManualMenuOpen(false);
+
+            }
+
+        }
+
+        document.addEventListener(
+
+            "mousedown",
+
+            handleClickOutside
+
+        );
+
+        return () =>
+
+            document.removeEventListener(
+
+                "mousedown",
+
+                handleClickOutside
+
+            );
+
+    }, [isManualMenuOpen]);
+
     return (
 
         <section className="chat">
@@ -279,37 +338,159 @@ function Chat({
 
                 <div className="chat-topbar-actions">
 
-                    <button
+                    {
 
-                        className="manual-button"
+                        game && game.documents.length > 1
 
-                        onClick={() =>
+                            ? (
 
-                            onOpenManual()
+                                <div className="manual-menu">
 
-                        }
+                                    <button
 
-                        disabled={!game}
+                                        className="manual-button"
 
-                        aria-label="Ver manual completo"
+                                        onClick={
 
-                    >
+                                            () =>
 
-                        <Icon
+                                                setIsManualMenuOpen(
 
-                            icon={BookOpen}
+                                                    open => !open
 
-                            size={16}
+                                                )
 
-                        />
+                                        }
 
-                        <span>
+                                        aria-haspopup="true"
 
-                            Ver manual completo
+                                        aria-expanded={isManualMenuOpen}
 
-                        </span>
+                                        aria-label="Ver documentos"
 
-                    </button>
+                                    >
+
+                                        <Icon
+
+                                            icon={BookOpen}
+
+                                            size={16}
+
+                                        />
+
+                                        <span>
+
+                                            Ver documentos
+
+                                        </span>
+
+                                        <Icon
+
+                                            icon={ChevronDown}
+
+                                            size={14}
+
+                                        />
+
+                                    </button>
+
+                                    {
+
+                                        isManualMenuOpen && (
+
+                                            <div
+
+                                                className="manual-menu-list"
+
+                                                role="menu"
+
+                                            >
+
+                                                {
+
+                                                    game.documents.map(
+
+                                                        document => (
+
+                                                            <button
+
+                                                                key={document.id}
+
+                                                                role="menuitem"
+
+                                                                onClick={() => {
+
+                                                                    setIsManualMenuOpen(false);
+
+                                                                    onOpenManual(
+
+                                                                        undefined,
+
+                                                                        document.id
+
+                                                                    );
+
+                                                                }}
+
+                                                            >
+
+                                                                {document.name}
+
+                                                            </button>
+
+                                                        )
+
+                                                    )
+
+                                                }
+
+                                            </div>
+
+                                        )
+
+                                    }
+
+                                </div>
+
+                            )
+
+                            : (
+
+                                <button
+
+                                    className="manual-button"
+
+                                    onClick={() =>
+
+                                        onOpenManual()
+
+                                    }
+
+                                    disabled={!game}
+
+                                    aria-label="Ver manual completo"
+
+                                >
+
+                                    <Icon
+
+                                        icon={BookOpen}
+
+                                        size={16}
+
+                                    />
+
+                                    <span>
+
+                                        Ver manual completo
+
+                                    </span>
+
+                                </button>
+
+                            )
+
+                    }
 
                     <button
 
@@ -469,11 +650,13 @@ function Chat({
 
                                 onOpenSource={
 
-                                    page =>
+                                    (page, documentId) =>
 
                                         onOpenManual(
 
-                                            page
+                                            page,
+
+                                            documentId
 
                                         )
 

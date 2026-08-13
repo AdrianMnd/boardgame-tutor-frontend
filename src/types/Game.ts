@@ -16,4 +16,12 @@ export interface Game {
 
     coverUrl?: string;
 
+    documents: {
+
+        id: string;
+
+        name: string;
+
+    }[];
+
 }

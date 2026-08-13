@@ -4,6 +4,10 @@ export interface MessageSource {
 
     gameId: string;
 
+    documentId: string;
+
+    documentName: string;
+
     page: number;
 
     score: number;

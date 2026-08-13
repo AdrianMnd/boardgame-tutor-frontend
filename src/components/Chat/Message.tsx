@@ -26,7 +26,13 @@ interface Props {
 
     message: MessageType;
 
-    onOpenSource?: (page: number) => void;
+    onOpenSource?: (
+
+        page: number,
+
+        documentId: string
+
+    ) => void;
 
 }
 
