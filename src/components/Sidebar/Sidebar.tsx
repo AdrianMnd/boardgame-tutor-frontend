@@ -4,16 +4,21 @@ import { useEffect, useMemo, useState } from "react";
 
 import Icon from "../UI/Icon";
 
+import CategoryPicker from "./CategoryPicker";
+
 import {
     Search,
     Users,
     Clock3,
     Dices,
     X,
-    Star
+    Star,
+    Plus,
+    LayoutGrid
 } from "lucide-react";
 
 import type { Game } from "../../types/Game";
+import type { Category } from "../../hooks/useCategories";
 
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 
@@ -33,7 +38,21 @@ interface Props {
 
     onToggleFavorite: (gameId: string) => void;
 
+    categories: Category[];
+
+    onCreateCategory: (name: string) => string;
+
+    onRenameCategory: (categoryId: string, name: string) => void;
+
+    onDeleteCategory: (categoryId: string) => void;
+
+    onToggleGameInCategory: (categoryId: string, gameId: string) => void;
+
+    isGameInCategory: (categoryId: string, gameId: string) => boolean;
+
 }
+
+type ActiveTab = "all" | "favorites" | string;
 
 function GameCover({ game }: { game: Game }) {
 
@@ -86,19 +105,25 @@ function Sidebar({
 
     isFavorite,
 
-    onToggleFavorite
+    onToggleFavorite,
+
+    categories,
+
+    onCreateCategory,
+
+    onRenameCategory,
+
+    onDeleteCategory,
+
+    onToggleGameInCategory,
+
+    isGameInCategory
 
 }: Props) {
 
     const dialogRef =
         useFocusTrap(isOpen);
 
-    // El panel solo actúa como diálogo modal en móvil (drawer
-    // deslizante); en escritorio es una columna siempre visible.
-    // isOpen únicamente puede ser true a través del botón de
-    // menú del header, que está oculto (y fuera del orden de
-    // tabulación) en escritorio — así que atrapar el foco aquí
-    // nunca afecta a la navegación normal en pantallas grandes.
     useEffect(() => {
 
         if (!isOpen) {
@@ -149,6 +174,74 @@ function Sidebar({
 
     ] = useState("");
 
+    const [activeTab, setActiveTab] =
+        useState<ActiveTab>("all");
+
+    // Si la categoría activa se borra, no te quedas viendo una
+    // pestaña fantasma — vuelve a "Todos". Se ajusta durante el
+    // render (patrón recomendado por React para esto, ver
+    // https://react.dev/learn/you-might-not-need-an-effect) en
+    // vez de en un efecto — la propia condición evita cualquier
+    // bucle, porque en cuanto activeTab pasa a "all" deja de
+    // cumplirse.
+    if (
+
+        activeTab !== "all" &&
+        activeTab !== "favorites" &&
+        !categories.some(category => category.id === activeTab)
+
+    ) {
+
+        setActiveTab("all");
+
+    }
+
+    const [isCreatingCategory, setIsCreatingCategory] =
+        useState(false);
+
+    const [newCategoryName, setNewCategoryName] =
+        useState("");
+
+    const [renamingCategoryId, setRenamingCategoryId] =
+        useState<string | null>(null);
+
+    const [renameValue, setRenameValue] =
+        useState("");
+
+    function commitRename() {
+
+        const name = renameValue.trim();
+
+        if (renamingCategoryId && name) {
+
+            onRenameCategory(renamingCategoryId, name);
+
+        }
+
+        setRenamingCategoryId(null);
+
+    }
+
+    function handleCreateCategory() {
+
+        const name = newCategoryName.trim();
+
+        if (!name) {
+
+            setIsCreatingCategory(false);
+
+            return;
+
+        }
+
+        const id = onCreateCategory(name);
+
+        setNewCategoryName("");
+        setIsCreatingCategory(false);
+        setActiveTab(id);
+
+    }
+
     const filteredGames = useMemo(
 
         () => {
@@ -157,7 +250,7 @@ function Sidebar({
 
                 search.toLowerCase().trim();
 
-            const base =
+            const searched =
 
                 text
 
@@ -173,11 +266,29 @@ function Sidebar({
 
                     : games;
 
-            // Los favoritos siempre van primero — el orden entre
-            // ellos (y entre el resto) se conserva tal como
-            // vienen del catálogo, para no reordenar cada vez
-            // que cambie algo sin motivo aparente.
-            return [...base].sort(
+            const byTab =
+
+                activeTab === "all"
+
+                    ? searched
+
+                    : activeTab === "favorites"
+
+                        ? searched.filter(
+
+                            game => isFavorite(game.id)
+
+                        )
+
+                        : searched.filter(
+
+                            game =>
+
+                                isGameInCategory(activeTab, game.id)
+
+                        );
+
+            return [...byTab].sort(
 
                 (a, b) => {
 
@@ -199,7 +310,11 @@ function Sidebar({
 
             search,
 
-            isFavorite
+            isFavorite,
+
+            activeTab,
+
+            isGameInCategory
 
         ]
 
@@ -293,6 +408,300 @@ function Sidebar({
 
             </header>
 
+            <div
+
+                className="sidebar-tabs"
+
+                role="tablist"
+
+                aria-label="Filtrar juegos por categoría"
+
+            >
+
+                <button
+
+                    role="tab"
+
+                    aria-selected={activeTab === "all"}
+
+                    className={
+
+                        activeTab === "all"
+
+                            ? "sidebar-tab active"
+
+                            : "sidebar-tab"
+
+                    }
+
+                    onClick={() => setActiveTab("all")}
+
+                >
+
+                    Todos
+
+                </button>
+
+                <button
+
+                    role="tab"
+
+                    aria-selected={activeTab === "favorites"}
+
+                    className={
+
+                        activeTab === "favorites"
+
+                            ? "sidebar-tab active"
+
+                            : "sidebar-tab"
+
+                    }
+
+                    onClick={() => setActiveTab("favorites")}
+
+                >
+
+                    <Icon icon={Star} size={13} />
+
+                    Favoritos
+
+                </button>
+
+                {
+
+                    categories.map(
+
+                        category => (
+
+                            <div
+
+                                key={category.id}
+
+                                className={
+
+                                    activeTab === category.id
+
+                                        ? "sidebar-tab-wrapper active"
+
+                                        : "sidebar-tab-wrapper"
+
+                                }
+
+                            >
+
+                                {
+
+                                    renamingCategoryId === category.id
+
+                                        ? (
+
+                                            <input
+
+                                                type="text"
+
+                                                autoFocus
+
+                                                className="sidebar-tab-rename-input"
+
+                                                value={renameValue}
+
+                                                onChange={
+
+                                                    event =>
+
+                                                        setRenameValue(
+
+                                                            event.target.value
+
+                                                        )
+
+                                                }
+
+                                                onKeyDown={
+
+                                                    event => {
+
+                                                        if (event.key === "Enter") {
+
+                                                            commitRename();
+
+                                                        }
+                                                        else if (event.key === "Escape") {
+
+                                                            setRenamingCategoryId(null);
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                                onBlur={commitRename}
+
+                                            />
+
+                                        )
+
+                                        : (
+
+                                            <button
+
+                                                role="tab"
+
+                                                aria-selected={activeTab === category.id}
+
+                                                className="sidebar-tab"
+
+                                                onClick={
+
+                                                    () => setActiveTab(category.id)
+
+                                                }
+
+                                                onDoubleClick={
+
+                                                    () => {
+
+                                                        setRenamingCategoryId(category.id);
+
+                                                        setRenameValue(category.name);
+
+                                                    }
+
+                                                }
+
+                                                title="Doble clic para renombrar"
+
+                                            >
+
+                                                {category.name}
+
+                                            </button>
+
+                                        )
+
+                                }
+
+                                <button
+
+                                    type="button"
+
+                                    className="sidebar-tab-delete"
+
+                                    aria-label={
+
+                                        `Eliminar la categoría ${category.name}`
+
+                                    }
+
+                                    onClick={
+
+                                        () =>
+
+                                            onDeleteCategory(category.id)
+
+                                    }
+
+                                >
+
+                                    <Icon icon={X} size={11} />
+
+                                </button>
+
+                            </div>
+
+                        )
+
+                    )
+
+                }
+
+                {
+
+                    isCreatingCategory
+
+                        ? (
+
+                            <input
+
+                                type="text"
+
+                                autoFocus
+
+                                className="sidebar-tab-new-input"
+
+                                placeholder="Nombre..."
+
+                                value={newCategoryName}
+
+                                onChange={
+
+                                    event =>
+
+                                        setNewCategoryName(
+
+                                            event.target.value
+
+                                        )
+
+                                }
+
+                                onKeyDown={
+
+                                    event => {
+
+                                        if (event.key === "Enter") {
+
+                                            handleCreateCategory();
+
+                                        }
+                                        else if (event.key === "Escape") {
+
+                                            setIsCreatingCategory(false);
+
+                                            setNewCategoryName("");
+
+                                        }
+
+                                    }
+
+                                }
+
+                                onBlur={handleCreateCategory}
+
+                            />
+
+                        )
+
+                        : (
+
+                            <button
+
+                                type="button"
+
+                                className="sidebar-tab-add"
+
+                                aria-label="Crear categoría nueva"
+
+                                onClick={
+
+                                    () => setIsCreatingCategory(true)
+
+                                }
+
+                            >
+
+                                <Icon icon={Plus} size={14} />
+
+                            </button>
+
+                        )
+
+                }
+
+            </div>
+
             <div className="sidebar-search">
 
                 <Icon
@@ -336,7 +745,15 @@ function Sidebar({
                         <div className="sidebar-empty">
 
                             <Icon
-                                icon={Dices}
+                                icon={
+
+                                    activeTab === "all"
+
+                                        ? Dices
+
+                                        : LayoutGrid
+
+                                }
                                 size={26}
                             />
 
@@ -344,7 +761,11 @@ function Sidebar({
                                 {
                                     search
                                         ? "Ningún juego coincide con tu búsqueda."
-                                        : "Todavía no hay juegos disponibles."
+                                        : activeTab === "favorites"
+                                            ? "Todavía no tienes juegos favoritos."
+                                            : activeTab !== "all"
+                                                ? "Todavía no hay juegos en esta categoría."
+                                                : "Todavía no hay juegos disponibles."
                                 }
                             </p>
 
@@ -403,6 +824,20 @@ function Sidebar({
                                         </h3>
 
                                     </div>
+
+                                    <CategoryPicker
+
+                                        game={game}
+
+                                        categories={categories}
+
+                                        isGameInCategory={isGameInCategory}
+
+                                        onToggleGameInCategory={onToggleGameInCategory}
+
+                                        onCreateCategory={onCreateCategory}
+
+                                    />
 
                                     <span
 

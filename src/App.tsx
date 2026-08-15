@@ -15,6 +15,7 @@ import WelcomePage from "./components/Welcome/WelcomePage";
 import { gamesService } from "./services/games.service";
 
 import { useFavorites } from "./hooks/useFavorites";
+import { useCategories } from "./hooks/useCategories";
 
 import type { Game } from "./types/Game";
 
@@ -47,6 +48,22 @@ function App() {
         toggleFavorite
 
     } = useFavorites();
+
+    const {
+
+        categories,
+
+        createCategory,
+
+        renameCategory,
+
+        deleteCategory,
+
+        toggleGameInCategory,
+
+        isGameInCategory
+
+    } = useCategories();
 
     const {
 
@@ -179,6 +196,18 @@ function App() {
                     isFavorite={isFavorite}
 
                     onToggleFavorite={toggleFavorite}
+
+                    categories={categories}
+
+                    onCreateCategory={createCategory}
+
+                    onRenameCategory={renameCategory}
+
+                    onDeleteCategory={deleteCategory}
+
+                    onToggleGameInCategory={toggleGameInCategory}
+
+                    isGameInCategory={isGameInCategory}
 
                 />
 
