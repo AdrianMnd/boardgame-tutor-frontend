@@ -2,7 +2,19 @@
 
     width: 100%;
 
+    /*
+     * 100vh en navegadores móviles representa el alto MÁXIMO
+     * posible (como si la barra de direcciones estuviera oculta
+     * del todo), no el espacio realmente visible — por eso el
+     * contenido quedaba recortado por arriba y por abajo al
+     * mostrarse esas barras. 100dvh sí se ajusta al espacio
+     * visible real. Se declaran ambas a propósito: los
+     * navegadores que no entienden "dvh" simplemente ignoran esa
+     * línea y se quedan con "vh" como alternativa.
+     */
     height: 100vh;
+
+    height: 100dvh;
 
     display: flex;
 

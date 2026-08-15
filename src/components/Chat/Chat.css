@@ -745,6 +745,25 @@
 
     }
 
+    /*
+     * El botón de "varios documentos" lleva DOS iconos (libro +
+     * flecha), no uno solo — con el mismo cuadrado de 40px que
+     * el resto de botones de icono único, apenas quedaba aire
+     * entre ambos. Se le da algo más de ancho y relleno lateral
+     * en vez de forzarlo al mismo tamaño fijo.
+     */
+    .manual-button-multi {
+
+        width: auto;
+
+        min-width: 40px;
+
+        padding: 0 12px;
+
+        gap: 6px;
+
+    }
+
     .manual-button span,
 
     .new-chat-button span {

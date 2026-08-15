@@ -142,6 +142,10 @@
 
     display: flex;
 
+    flex-wrap: wrap;
+
+    gap: 8px;
+
     justify-content: space-between;
 
     align-items: center;
@@ -158,9 +162,15 @@
 
     justify-content: center;
 
-    height: 30px;
+    /*
+     * "min-height", no "height" fijo — con un nombre de
+     * documento largo en pantalla estrecha, el texto puede
+     * pasar a varias líneas. Con una altura fija, el fondo no
+     * crecía con el texto y este quedaba fuera de la etiqueta.
+     */
+    min-height: 30px;
 
-    padding: 0 12px;
+    padding: 6px 12px;
 
     border-radius: 999px;
 
