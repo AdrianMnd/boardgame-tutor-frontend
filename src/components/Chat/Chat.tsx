@@ -7,6 +7,8 @@ import {
     useCallback
 } from "react";
 
+import { createPortal } from "react-dom";
+
 import type { Game } from "../../types/Game";
 
 import MessageComponent from "./Message";
@@ -76,6 +78,21 @@ function Chat({
         setIsManualMenuOpen
 
     ] = useState(false);
+
+    // El botón que abre el menú de documentos — se necesita su
+    // posición real en pantalla para colocar el menú mediante
+    // un portal (ver más abajo, justo antes de por qué hace
+    // falta un portal aquí).
+    const manualButtonRef =
+        useRef<HTMLButtonElement>(null);
+
+    const [
+
+        manualMenuPosition,
+
+        setManualMenuPosition
+
+    ] = useState<{ top: number; right: number } | null>(null);
 
     // Documentos del juego seleccionado — con `?? []` a
     // propósito: si el backend desplegado se queda
@@ -273,7 +290,17 @@ function Chat({
 
             const target = event.target as HTMLElement;
 
-            if (!target.closest(".manual-menu")) {
+            // El propio menú ahora se renderiza mediante un
+            // portal fuera de .manual-menu (ver más abajo, por
+            // qué), así que target.closest(".manual-menu") ya
+            // no encuentra los clics dentro del menú — hay que
+            // comprobar también su propia clase.
+            if (
+
+                !target.closest(".manual-menu") &&
+                !target.closest(".manual-menu-list")
+
+            ) {
 
                 setIsManualMenuOpen(false);
 
@@ -298,6 +325,76 @@ function Chat({
                 handleClickOutside
 
             );
+
+    }, [isManualMenuOpen]);
+
+    // Calcula dónde debe aparecer el menú de documentos, en
+    // coordenadas de ventana (no del documento) — se usa
+    // "position: fixed" en vez de "absolute" porque el menú se
+    // renderiza mediante un portal directamente en <body>, fuera
+    // del contenedor .chat. Hace falta un portal porque .chat
+    // tiene overflow:hidden (necesario para sus esquinas
+    // redondeadas) — cualquier elemento absoluto anidado dentro
+    // se recorta contra ese límite en cuanto no cabe entero,
+    // aunque tenga z-index alto. Sacarlo del árbol con un portal
+    // es la forma correcta de evitarlo, en vez de quitar el
+    // overflow:hidden (que rompería otras cosas).
+    useEffect(() => {
+
+        if (!isManualMenuOpen || !manualButtonRef.current) {
+
+            setManualMenuPosition(null);
+
+            return;
+
+        }
+
+        function updatePosition() {
+
+            const button = manualButtonRef.current;
+
+            if (!button) {
+
+                return;
+
+            }
+
+            const rect =
+                button.getBoundingClientRect();
+
+            setManualMenuPosition({
+
+                top: rect.bottom + 8,
+
+                right: window.innerWidth - rect.right
+
+            });
+
+        }
+
+        updatePosition();
+
+        // Si la ventana cambia de tamaño o hay scroll mientras
+        // está abierto, la posición calculada queda obsoleta —
+        // más simple y predecible cerrarlo que intentar
+        // reposicionarlo en cada evento.
+        function closeOnViewportChange() {
+
+            setIsManualMenuOpen(false);
+
+        }
+
+        window.addEventListener("resize", closeOnViewportChange);
+
+        window.addEventListener("scroll", closeOnViewportChange, true);
+
+        return () => {
+
+            window.removeEventListener("resize", closeOnViewportChange);
+
+            window.removeEventListener("scroll", closeOnViewportChange, true);
+
+        };
 
     }, [isManualMenuOpen]);
 
@@ -361,6 +458,8 @@ function Chat({
 
                                     <button
 
+                                        ref={manualButtonRef}
+
                                         className="manual-button"
 
                                         onClick={
@@ -409,13 +508,25 @@ function Chat({
 
                                     {
 
-                                        isManualMenuOpen && (
+                                        isManualMenuOpen &&
+
+                                        manualMenuPosition &&
+
+                                        createPortal(
 
                                             <div
 
                                                 className="manual-menu-list"
 
                                                 role="menu"
+
+                                                style={{
+
+                                                    top: manualMenuPosition.top,
+
+                                                    right: manualMenuPosition.right
+
+                                                }}
 
                                             >
 
@@ -457,7 +568,9 @@ function Chat({
 
                                                 }
 
-                                            </div>
+                                            </div>,
+
+                                            document.body
 
                                         )
 

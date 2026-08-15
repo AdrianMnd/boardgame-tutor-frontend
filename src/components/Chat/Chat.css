@@ -253,17 +253,30 @@
 
 .manual-menu-list {
 
-    position: absolute;
+    /*
+     * "fixed", no "absolute" — el menú se renderiza mediante un
+     * portal directamente en <body>, fuera de .manual-menu y de
+     * .chat (que tiene overflow:hidden por sus esquinas
+     * redondeadas, y recortaría el menú si siguiera anidado
+     * dentro). "top"/"right" ya no son valores CSS fijos, se
+     * calculan por JavaScript según la posición real del botón
+     * en cada apertura (ver Chat.tsx) y se aplican como estilo
+     * en línea.
+     */
+    position: fixed;
 
-    top: calc(100% + 8px);
-
-    right: 0;
-
-    z-index: 20;
+    z-index: 200;
 
     min-width: 220px;
 
-    max-height: 320px;
+    /*
+     * No un valor fijo — se adapta al alto real de la ventana.
+     * Con un valor fijo (320px), si la ventana es más baja de lo
+     * normal (ej. con las herramientas de desarrollador
+     * abiertas), el desplegable se sale por debajo del borde
+     * visible en vez de recortarse a sí mismo.
+     */
+    max-height: min(320px, calc(100vh - 140px));
 
     overflow-y: auto;
 

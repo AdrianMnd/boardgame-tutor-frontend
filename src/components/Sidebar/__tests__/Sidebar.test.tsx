@@ -100,6 +100,18 @@ function renderSidebar(
 
         onToggleFavorite: vi.fn(),
 
+        categories: [],
+
+        onCreateCategory: vi.fn(() => "new-category-id"),
+
+        onRenameCategory: vi.fn(),
+
+        onDeleteCategory: vi.fn(),
+
+        onToggleGameInCategory: vi.fn(),
+
+        isGameInCategory: () => false,
+
         ...overrides
 
     };
