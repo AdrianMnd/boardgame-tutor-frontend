@@ -118,19 +118,18 @@ function CategoryPicker({
 
         updatePosition();
 
-        function close() {
-
-            setIsOpen(false);
-
-        }
-
-        window.addEventListener("resize", close);
-        window.addEventListener("scroll", close, true);
+        // Antes se cerraba el menú al detectar "resize" o
+        // "scroll" (para evitar que quedara mal colocado si la
+        // página cambiaba de tamaño). En móvil, abrir el
+        // teclado para escribir en el campo de texto dispara
+        // ambos eventos — cerrando el menú antes de que el
+        // usuario pudiera escribir nada. En su lugar, solo se
+        // recalcula la posición, sin cerrar.
+        window.addEventListener("resize", updatePosition);
 
         return () => {
 
-            window.removeEventListener("resize", close);
-            window.removeEventListener("scroll", close, true);
+            window.removeEventListener("resize", updatePosition);
 
         };
 

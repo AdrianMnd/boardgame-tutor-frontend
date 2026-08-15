@@ -374,25 +374,18 @@ function Chat({
 
         updatePosition();
 
-        // Si la ventana cambia de tamaño o hay scroll mientras
-        // está abierto, la posición calculada queda obsoleta —
-        // más simple y predecible cerrarlo que intentar
-        // reposicionarlo en cada evento.
-        function closeOnViewportChange() {
-
-            setIsManualMenuOpen(false);
-
-        }
-
-        window.addEventListener("resize", closeOnViewportChange);
-
-        window.addEventListener("scroll", closeOnViewportChange, true);
+        // Antes se cerraba el menú al detectar "resize" o
+        // "scroll" (para evitar que quedara mal colocado). En
+        // móvil esos eventos también los dispara el navegador al
+        // mostrar/ocultar su propia barra de direcciones al
+        // hacer scroll — cerrando el menú de forma molesta e
+        // inesperada. En su lugar, solo se recalcula la
+        // posición, sin cerrar.
+        window.addEventListener("resize", updatePosition);
 
         return () => {
 
-            window.removeEventListener("resize", closeOnViewportChange);
-
-            window.removeEventListener("scroll", closeOnViewportChange, true);
+            window.removeEventListener("resize", updatePosition);
 
         };
 
@@ -460,7 +453,7 @@ function Chat({
 
                                         ref={manualButtonRef}
 
-                                        className="manual-button"
+                                        className="manual-button manual-button-multi"
 
                                         onClick={
 
