@@ -605,7 +605,7 @@ function Sidebar({
 
                                 >
 
-                                    <Icon icon={X} size={11} />
+                                    <Icon icon={X} size={12} />
 
                                 </button>
 

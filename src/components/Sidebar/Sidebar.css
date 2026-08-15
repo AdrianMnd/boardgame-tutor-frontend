@@ -141,7 +141,7 @@
 
     gap: 6px;
 
-    padding: 0 20px 14px;
+    padding: 16px 20px 14px;
 
 }
 
@@ -201,7 +201,7 @@
 
 .sidebar-tab-wrapper .sidebar-tab {
 
-    padding-right: 24px;
+    padding-right: 32px;
 
 }
 
@@ -221,25 +221,34 @@
 
     justify-content: center;
 
-    width: 16px;
+    width: 18px;
 
-    height: 16px;
+    height: 18px;
 
     border-radius: 999px;
 
-    background: rgba(0,0,0,.2);
+    /*
+     * Visible desde el principio (no solo al pasar el ratón) —
+     * un botón que aparece de la nada es fácil de no descubrir
+     * nunca. Empieza sutil y se refuerza con la interacción.
+     */
+    background: rgba(255,255,255,.12);
 
     color: inherit;
 
-    opacity: 0;
+    opacity: .8;
 
-    transition: opacity .15s;
+    transition:
+        opacity .15s,
+        background .15s;
 
 }
 
 .sidebar-tab-wrapper:hover .sidebar-tab-delete {
 
-    opacity: .7;
+    opacity: 1;
+
+    background: rgba(255,255,255,.2);
 
 }
 
@@ -247,7 +256,7 @@
 
     opacity: 1 !important;
 
-    background: rgba(220,38,38,.85);
+    background: rgba(220,38,38,.85) !important;
 
 }
 

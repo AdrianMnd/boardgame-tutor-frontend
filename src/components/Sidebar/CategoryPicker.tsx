@@ -10,7 +10,7 @@ import { createPortal } from "react-dom";
 
 import Icon from "../UI/Icon";
 
-import { Check, FolderPlus, Plus } from "lucide-react";
+import { Check, FolderPlus, Plus, X } from "lucide-react";
 
 import type { Category } from "../../hooks/useCategories";
 
@@ -306,11 +306,35 @@ function CategoryPicker({
 
                     >
 
-                        <p className="category-picker-title">
+                        <div className="category-picker-header">
 
-                            Añadir "{game.name}" a...
+                            <p className="category-picker-title">
 
-                        </p>
+                                Añadir "{game.name}" a...
+
+                            </p>
+
+                            <button
+
+                                type="button"
+
+                                className="category-picker-close"
+
+                                aria-label="Cerrar"
+
+                                onClick={
+
+                                    () => setIsOpen(false)
+
+                                }
+
+                            >
+
+                                <Icon icon={X} size={14} />
+
+                            </button>
+
+                        </div>
 
                         {
 
