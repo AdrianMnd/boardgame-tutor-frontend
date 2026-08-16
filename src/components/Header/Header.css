@@ -179,13 +179,13 @@
 
 }
 
-.header-status {
+.header-login-button {
 
     display: flex;
 
     align-items: center;
 
-    gap: 10px;
+    gap: 8px;
 
     height: 42px;
 
@@ -208,6 +208,202 @@
 
     border: 1px solid rgba(99,102,241,.24);
 
+    transition: background .15s;
+
+}
+
+.header-login-button:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(99,102,241,.24),
+            rgba(99,102,241,.34)
+        );
+
+}
+
+.profile-button-wrapper {
+
+    position: relative;
+
+    display: inline-flex;
+
+}
+
+.profile-button {
+
+    display: flex;
+
+    cursor: pointer;
+
+}
+
+.profile-avatar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            var(--color-primary-hover)
+        );
+
+    color: white;
+
+    font-size: .85rem;
+
+    font-weight: 800;
+
+    letter-spacing: .02em;
+
+    border: 1px solid rgba(99,102,241,.4);
+
+    transition:
+        transform .15s,
+        box-shadow .15s;
+
+}
+
+.profile-button:hover .profile-avatar {
+
+    box-shadow:
+        0 0 0 3px var(--color-primary-shadow);
+
+}
+
+.profile-avatar.large {
+
+    width: 46px;
+
+    height: 46px;
+
+    font-size: .95rem;
+
+    flex-shrink: 0;
+
+}
+
+/*
+ * "fixed", no "absolute" — se renderiza mediante un portal en
+ * <body>, igual que el desplegable de documentos y el selector
+ * de categorías, para escapar de cualquier contenedor con
+ * overflow:hidden que lo recortaría.
+ */
+.profile-menu {
+
+    position: fixed;
+
+    z-index: 300;
+
+    width: 260px;
+
+    padding: 8px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 16px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow:
+        0 20px 44px rgba(0,0,0,.4);
+
+    animation: fadeIn .15s ease;
+
+}
+
+.profile-menu-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 10px 14px;
+
+    border-bottom: 1px solid var(--color-border);
+
+    margin-bottom: 8px;
+
+}
+
+.profile-menu-name {
+
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: .92rem;
+
+    font-weight: 700;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+.profile-menu-email {
+
+    margin: 2px 0 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: .78rem;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+.profile-menu-logout {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    background: none;
+
+    color: var(--color-danger);
+
+    font-size: .87rem;
+
+    font-weight: 600;
+
+    transition: background .15s;
+
+}
+
+.profile-menu-logout:hover {
+
+    background: var(--color-danger-soft);
+
 }
 
 @media (max-width: 900px) {
@@ -226,13 +422,13 @@
 
     }
 
-    .header-status span {
+    .header-login-button span {
 
         display: none;
 
     }
 
-    .header-status {
+    .header-login-button {
 
         width: 42px;
 

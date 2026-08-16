@@ -11,13 +11,16 @@ import Chat from "./components/Chat/Chat";
 import Workspace from "./components/Layout/Workspace";
 import SplashScreen from "./components/UI/SplashScreen";
 import WelcomePage from "./components/Welcome/WelcomePage";
+import AuthModal from "./components/Auth/AuthModal";
 
 import { gamesService } from "./services/games.service";
 
 import { useFavorites } from "./hooks/useFavorites";
 import { useCategories } from "./hooks/useCategories";
+import { useAuth } from "./hooks/useAuth";
 
 import type { Game } from "./types/Game";
+import type { User } from "./types/User";
 
 // react-pdf + pdfjs-dist pesan bastante (~300KB adicionales) y
 // solo se necesitan cuando alguien abre un manual — cargarlo de
@@ -41,13 +44,32 @@ function App() {
     const [isSidebarOpen, setIsSidebarOpen] =
         useState(false);
 
+    const [isAuthModalOpen, setIsAuthModalOpen] =
+        useState(false);
+
+    const {
+
+        user,
+
+        isLoading: isAuthLoading,
+
+        login,
+
+        register,
+
+        logout
+
+    } = useAuth();
+
     const {
 
         isFavorite,
 
-        toggleFavorite
+        toggleFavorite,
 
-    } = useFavorites();
+        migrateLocalFavorites
+
+    } = useFavorites(user);
 
     const {
 
@@ -61,9 +83,39 @@ function App() {
 
         toggleGameInCategory,
 
-        isGameInCategory
+        isGameInCategory,
 
-    } = useCategories();
+        migrateLocalCategories
+
+    } = useCategories(user);
+
+    async function handleAuthenticated(
+
+        _authenticatedUser: User,
+
+        mode: "login" | "register"
+
+    ) {
+
+        setIsAuthModalOpen(false);
+
+        // Solo se migran los datos locales justo tras un
+        // registro nuevo — nunca en un login normal, para no
+        // mezclar los datos de "invitado" de este navegador con
+        // los que ya tuviera una cuenta existente.
+        if (mode === "register") {
+
+            await Promise.all([
+
+                migrateLocalFavorites(),
+
+                migrateLocalCategories()
+
+            ]);
+
+        }
+
+    }
 
     const {
 
@@ -162,6 +214,36 @@ function App() {
                     () => setSelectedGameId(null)
 
                 }
+
+                user={user}
+
+                isAuthLoading={isAuthLoading}
+
+                onLoginClick={
+
+                    () => setIsAuthModalOpen(true)
+
+                }
+
+                onLogout={logout}
+
+            />
+
+            <AuthModal
+
+                isOpen={isAuthModalOpen}
+
+                onClose={
+
+                    () => setIsAuthModalOpen(false)
+
+                }
+
+                onAuthenticated={handleAuthenticated}
+
+                login={login}
+
+                register={register}
 
             />
 

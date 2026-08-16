@@ -36,6 +36,24 @@ if (
 
 export class ApiClient {
 
+    private token: string | null = null;
+
+    /**
+     * Se llama desde useAuth al iniciar/cerrar sesión — a
+     * partir de ahí, todas las peticiones (favoritos,
+     * categorías, /me...) llevan el token automáticamente, sin
+     * tener que pasarlo a mano en cada llamada.
+     */
+    setToken(
+
+        token: string | null
+
+    ): void {
+
+        this.token = token;
+
+    }
+
     async get<T>(
 
         endpoint: string
@@ -116,6 +134,36 @@ export class ApiClient {
 
     }
 
+    async patch<T>(
+
+        endpoint: string,
+
+        body: unknown
+
+    ): Promise<T> {
+
+        return this.request<T>(
+
+            endpoint,
+
+            {
+
+                method: "PATCH",
+
+                body:
+
+                    JSON.stringify(
+
+                        body
+
+                    )
+
+            }
+
+        );
+
+    }
+
     async delete<T>(
 
         endpoint: string
@@ -160,6 +208,16 @@ export class ApiClient {
 
                         "application/json",
 
+                    ...(
+
+                        this.token
+
+                            ? { "Authorization": `Bearer ${this.token}` }
+
+                            : {}
+
+                    ),
+
                     ...(init.headers ?? {})
 
                 }
@@ -176,17 +234,25 @@ export class ApiClient {
 
         );
 
+    // Se lee siempre como texto primero — un 204 (o cualquier
+    // respuesta sin cuerpo) puede llegar con
+    // "Content-Type: application/json" puesto igualmente, y
+    // llamar a response.json() directamente sobre un cuerpo
+    // vacío lanza "Unexpected end of JSON input".
+    const rawText =
+        await response.text();
+
     const body: unknown =
 
-        contentType?.includes(
+        rawText.length === 0
 
-            "application/json"
+            ? undefined
 
-        )
+            : contentType?.includes("application/json")
 
-            ? await response.json()
+                ? JSON.parse(rawText)
 
-            : await response.text();
+                : rawText;
 
     if (
 

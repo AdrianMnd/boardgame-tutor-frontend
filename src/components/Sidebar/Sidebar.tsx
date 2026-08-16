@@ -1,6 +1,6 @@
 import "./Sidebar.css";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import Icon from "../UI/Icon";
 
@@ -40,7 +40,7 @@ interface Props {
 
     categories: Category[];
 
-    onCreateCategory: (name: string) => string;
+    onCreateCategory: (name: string) => Promise<string>;
 
     onRenameCategory: (categoryId: string, name: string) => void;
 
@@ -177,7 +177,56 @@ function Sidebar({
     const [activeTab, setActiveTab] =
         useState<ActiveTab>("all");
 
-    // Si la categoría activa se borra, no te quedas viendo una
+    // El id del juego cuyo CategoryPicker está abierto ahora
+    // mismo (null si ninguno) — vive aquí, no dentro de cada
+    // CategoryPicker, precisamente para que abrir uno cierre
+    // automáticamente cualquier otro que estuviera abierto.
+    const [openCategoryPickerGameId, setOpenCategoryPickerGameId] =
+        useState<string | null>(null);
+
+    // Referencia estable — se pasa como prop a cada
+    // CategoryPicker, así el efecto que escucha "clic fuera" /
+    // Escape dentro de CategoryPicker puede depender de esta
+    // función sin recrear sus listeners en cada render de
+    // Sidebar (una función nueva en cada render forzaría eso).
+    const handleCategoryPickerOpenChange = useCallback(
+
+        (
+
+            gameId: string,
+
+            open: boolean
+
+        ) => {
+
+            setOpenCategoryPickerGameId(
+
+                open ? gameId : null
+
+            );
+
+        },
+
+        []
+
+    );
+
+    // Si cambia la lista de juegos visibles (buscar, cambiar de
+    // pestaña...) y el que tenía el selector abierto deja de
+    // estar en pantalla, se cierra en vez de quedarse "flotando"
+    // sin la tarjeta a la que pertenecía.
+    if (
+
+        openCategoryPickerGameId !== null &&
+        !games.some(game => game.id === openCategoryPickerGameId)
+
+    ) {
+
+        setOpenCategoryPickerGameId(null);
+
+    }
+
+    // Si cambia la categoría activa, no te quedas viendo una
     // pestaña fantasma — vuelve a "Todos". Se ajusta durante el
     // render (patrón recomendado por React para esto, ver
     // https://react.dev/learn/you-might-not-need-an-effect) en
@@ -222,7 +271,7 @@ function Sidebar({
 
     }
 
-    function handleCreateCategory() {
+    async function handleCreateCategory() {
 
         const name = newCategoryName.trim();
 
@@ -234,10 +283,11 @@ function Sidebar({
 
         }
 
-        const id = onCreateCategory(name);
-
         setNewCategoryName("");
         setIsCreatingCategory(false);
+
+        const id = await onCreateCategory(name);
+
         setActiveTab(id);
 
     }
@@ -836,6 +886,10 @@ function Sidebar({
                                         onToggleGameInCategory={onToggleGameInCategory}
 
                                         onCreateCategory={onCreateCategory}
+
+                                        isOpen={openCategoryPickerGameId === game.id}
+
+                                        onOpenChange={handleCategoryPickerOpenChange}
 
                                     />
 

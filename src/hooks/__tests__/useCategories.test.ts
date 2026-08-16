@@ -21,19 +21,19 @@ describe("useCategories", () => {
 
     it("empieza sin categorías si no hay nada guardado", () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         expect(result.current.categories).toEqual([]);
 
     });
 
-    it("crea una categoría nueva, vacía", () => {
+    it("crea una categoría nueva, vacía", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
-        act(() => {
+        await act(async () => {
 
-            result.current.createCategory("Juegos de cartas");
+            await result.current.createCategory("Juegos de cartas");
 
         });
 
@@ -43,15 +43,15 @@ describe("useCategories", () => {
 
     });
 
-    it("createCategory devuelve el id de la categoría creada, para poder usarlo enseguida", () => {
+    it("createCategory devuelve el id de la categoría creada, para poder usarlo enseguida", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let categoryId = "";
 
-        act(() => {
+        await act(async () => {
 
-            categoryId = result.current.createCategory("Cooperativos");
+            categoryId = await result.current.createCategory("Cooperativos");
 
         });
 
@@ -60,15 +60,15 @@ describe("useCategories", () => {
 
     });
 
-    it("añade un juego a una categoría", () => {
+    it("añade un juego a una categoría", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let categoryId = "";
 
-        act(() => {
+        await act(async () => {
 
-            categoryId = result.current.createCategory("Cartas");
+            categoryId = await result.current.createCategory("Cartas");
 
         });
 
@@ -88,15 +88,15 @@ describe("useCategories", () => {
 
     });
 
-    it("quita un juego de una categoría al alternarlo de nuevo", () => {
+    it("quita un juego de una categoría al alternarlo de nuevo", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let categoryId = "";
 
-        act(() => {
+        await act(async () => {
 
-            categoryId = result.current.createCategory("Cartas");
+            categoryId = await result.current.createCategory("Cartas");
 
         });
 
@@ -120,17 +120,17 @@ describe("useCategories", () => {
 
     });
 
-    it("un mismo juego puede pertenecer a varias categorías a la vez", () => {
+    it("un mismo juego puede pertenecer a varias categorías a la vez", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let cartasId = "";
         let cooperativosId = "";
 
-        act(() => {
+        await act(async () => {
 
-            cartasId = result.current.createCategory("Cartas");
-            cooperativosId = result.current.createCategory("Cooperativos");
+            cartasId = await result.current.createCategory("Cartas");
+            cooperativosId = await result.current.createCategory("Cooperativos");
 
         });
 
@@ -146,17 +146,17 @@ describe("useCategories", () => {
 
     });
 
-    it("cambiar un juego en una categoría no afecta a las demás", () => {
+    it("cambiar un juego en una categoría no afecta a las demás", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let cartasId = "";
         let cooperativosId = "";
 
-        act(() => {
+        await act(async () => {
 
-            cartasId = result.current.createCategory("Cartas");
-            cooperativosId = result.current.createCategory("Cooperativos");
+            cartasId = await result.current.createCategory("Cartas");
+            cooperativosId = await result.current.createCategory("Cooperativos");
 
         });
 
@@ -172,15 +172,15 @@ describe("useCategories", () => {
 
     });
 
-    it("renombra una categoría sin tocar sus juegos", () => {
+    it("renombra una categoría sin tocar sus juegos", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let categoryId = "";
 
-        act(() => {
+        await act(async () => {
 
-            categoryId = result.current.createCategory("Cartas");
+            categoryId = await result.current.createCategory("Cartas");
 
         });
 
@@ -204,15 +204,15 @@ describe("useCategories", () => {
 
     });
 
-    it("elimina una categoría", () => {
+    it("elimina una categoría", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         let categoryId = "";
 
-        act(() => {
+        await act(async () => {
 
-            categoryId = result.current.createCategory("Cartas");
+            categoryId = await result.current.createCategory("Cartas");
 
         });
 
@@ -226,13 +226,13 @@ describe("useCategories", () => {
 
     });
 
-    it("persiste las categorías en localStorage", () => {
+    it("persiste las categorías en localStorage", async () => {
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
-        act(() => {
+        await act(async () => {
 
-            result.current.createCategory("Cartas");
+            await result.current.createCategory("Cartas");
 
         });
 
@@ -258,7 +258,7 @@ describe("useCategories", () => {
 
         );
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         expect(result.current.categories).toHaveLength(1);
         expect(result.current.isGameInCategory("cat-1", "arkhamlcg")).toBe(true);
@@ -275,7 +275,7 @@ describe("useCategories", () => {
 
         );
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         expect(result.current.categories).toEqual([]);
 
@@ -297,7 +297,7 @@ describe("useCategories", () => {
 
         );
 
-        const { result } = renderHook(() => useCategories());
+        const { result } = renderHook(() => useCategories(null));
 
         expect(result.current.categories).toHaveLength(1);
         expect(result.current.categories[0].name).toBe("Válida");
