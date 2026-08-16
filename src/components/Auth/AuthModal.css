@@ -32,7 +32,15 @@
 
     max-width: 400px;
 
-    padding: 32px;
+    /*
+     * Más relleno arriba que a los lados/abajo a propósito — el
+     * botón de cerrar necesita su propio hueco por encima de las
+     * pestañas. Con el mismo relleno en las 4 direcciones (como
+     * estaba antes), las pestañas empezaban justo donde el botón
+     * también ocupaba espacio, y se solapaban de verdad, no solo
+     * visualmente.
+     */
+    padding: 60px 32px 32px;
 
     border: 1px solid var(--color-border-strong);
 
@@ -49,9 +57,9 @@
 
     position: absolute;
 
-    top: 20px;
+    top: 16px;
 
-    right: 20px;
+    right: 16px;
 
     display: flex;
 
