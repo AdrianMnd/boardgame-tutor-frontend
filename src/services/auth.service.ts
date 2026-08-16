@@ -60,6 +60,58 @@ export class AuthService {
 
     }
 
+    async updateDisplayName(
+
+        displayName: string
+
+    ): Promise<User> {
+
+        return apiClient.patch<User>(
+
+            "/api/auth/me",
+
+            { displayName }
+
+        );
+
+    }
+
+    async updateEmail(
+
+        email: string,
+
+        currentPassword: string
+
+    ): Promise<User> {
+
+        return apiClient.patch<User>(
+
+            "/api/auth/me/email",
+
+            { email, currentPassword }
+
+        );
+
+    }
+
+    async updatePassword(
+
+        currentPassword: string,
+
+        newPassword: string
+
+    ): Promise<void> {
+
+        await apiClient.patch<void>(
+
+            "/api/auth/me/password",
+
+            { currentPassword, newPassword }
+
+        );
+
+    }
+
 }
 
 export const authService =

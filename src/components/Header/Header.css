@@ -374,6 +374,40 @@
 
 }
 
+.profile-menu-edit {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    padding: 10px;
+
+    margin-bottom: 4px;
+
+    border-radius: 10px;
+
+    background: none;
+
+    color: var(--color-text);
+
+    font-size: .87rem;
+
+    font-weight: 600;
+
+    transition: background .15s;
+
+}
+
+.profile-menu-edit:hover {
+
+    background: var(--color-surface-tertiary);
+
+}
+
 .profile-menu-logout {
 
     display: flex;

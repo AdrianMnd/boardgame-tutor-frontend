@@ -13,7 +13,8 @@ import Icon from "../UI/Icon";
 import {
     Menu,
     LogIn,
-    LogOut
+    LogOut,
+    Settings
 } from "lucide-react";
 
 import logo from "../../assets/logo.svg";
@@ -33,6 +34,8 @@ interface Props {
     onLoginClick: () => void;
 
     onLogout: () => void;
+
+    onEditProfileClick: () => void;
 
 }
 
@@ -68,7 +71,9 @@ function Header({
 
     onLoginClick,
 
-    onLogout
+    onLogout,
+
+    onEditProfileClick
 
 }: Props) {
 
@@ -365,6 +370,30 @@ function Header({
                                                     </div>
 
                                                 </div>
+
+                                                <button
+
+                                                    type="button"
+
+                                                    role="menuitem"
+
+                                                    className="profile-menu-edit"
+
+                                                    onClick={() => {
+
+                                                        setIsMenuOpen(false);
+
+                                                        onEditProfileClick();
+
+                                                    }}
+
+                                                >
+
+                                                    <Icon icon={Settings} size={15} />
+
+                                                    Editar perfil
+
+                                                </button>
 
                                                 <button
 

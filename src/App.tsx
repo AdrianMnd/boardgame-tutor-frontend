@@ -12,6 +12,7 @@ import Workspace from "./components/Layout/Workspace";
 import SplashScreen from "./components/UI/SplashScreen";
 import WelcomePage from "./components/Welcome/WelcomePage";
 import AuthModal from "./components/Auth/AuthModal";
+import EditProfileModal from "./components/Auth/EditProfileModal";
 
 import { gamesService } from "./services/games.service";
 
@@ -47,6 +48,9 @@ function App() {
     const [isAuthModalOpen, setIsAuthModalOpen] =
         useState(false);
 
+    const [isEditProfileModalOpen, setIsEditProfileModalOpen] =
+        useState(false);
+
     const {
 
         user,
@@ -57,7 +61,13 @@ function App() {
 
         register,
 
-        logout
+        logout,
+
+        updateDisplayName,
+
+        updateEmail,
+
+        updatePassword
 
     } = useAuth();
 
@@ -227,7 +237,41 @@ function App() {
 
                 onLogout={logout}
 
+                onEditProfileClick={
+
+                    () => setIsEditProfileModalOpen(true)
+
+                }
+
             />
+
+            {
+
+                user && (
+
+                    <EditProfileModal
+
+                        isOpen={isEditProfileModalOpen}
+
+                        onClose={
+
+                            () => setIsEditProfileModalOpen(false)
+
+                        }
+
+                        user={user}
+
+                        updateDisplayName={updateDisplayName}
+
+                        updateEmail={updateEmail}
+
+                        updatePassword={updatePassword}
+
+                    />
+
+                )
+
+            }
 
             <AuthModal
 
