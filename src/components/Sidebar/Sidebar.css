@@ -488,8 +488,16 @@
 
 .game-card-title h3 {
 
-    overflow-wrap: break-word;
-
+    /*
+     * Sin overflow-wrap:break-word — aunque solo rompe una
+     * palabra "como último recurso" (cuando no cabe en su
+     * propia línea), con lo estrecho que es el sidebar eso
+     * bastaba para partir nombres normales como "Mansiones" a
+     * mitad. .game-card-title ya tiene flex:1 y min-width:0,
+     * así que el contenedor ya se encoge bien sin necesitar
+     * esto — el texto sigue ajustándose por espacios, solo que
+     * nunca a mitad de palabra.
+     */
     line-height: 1.3;
 
 }
