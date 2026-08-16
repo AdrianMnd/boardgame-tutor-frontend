@@ -1,6 +1,7 @@
 import "./CategoryPicker.css";
 
 import {
+    useCallback,
     useEffect,
     useRef,
     useState
@@ -44,6 +45,24 @@ interface Props {
 
     onCreateCategory: (name: string) => Promise<string>;
 
+    // Controlado desde el padre (Sidebar) — así solo puede haber
+    // un selector abierto a la vez entre todas las tarjetas de
+    // juego, en vez de que cada uno lleve su propio estado
+    // independiente y se vayan acumulando abiertos.
+    isOpen: boolean;
+
+    // Recibe (gameId, open) en vez de solo (open) — así Sidebar
+    // puede pasar SIEMPRE la misma función (estable, con
+    // useCallback) a todas las tarjetas por igual, sin crear una
+    // función nueva por cada juego en cada render.
+    onOpenChange: (
+
+        gameId: string,
+
+        isOpen: boolean
+
+    ) => void;
+
 }
 
 /**
@@ -64,13 +83,27 @@ function CategoryPicker({
 
     onToggleGameInCategory,
 
-    onCreateCategory
+    onCreateCategory,
+
+    isOpen,
+
+    onOpenChange
 
 }: Props) {
 
-    const [isOpen, setIsOpen] = useState(false);
-
     const [newCategoryName, setNewCategoryName] = useState("");
+
+    // Estable mientras game.id y onOpenChange (ya estable desde
+    // Sidebar) no cambien — así los efectos de abajo pueden
+    // depender de esto sin recrear sus listeners en cada render.
+    const setOpen = useCallback(
+
+        (open: boolean) => onOpenChange(game.id, open),
+
+        [game.id, onOpenChange]
+
+    );
+
 
     const buttonRef =
         useRef<HTMLSpanElement>(null);
@@ -158,7 +191,7 @@ function CategoryPicker({
 
             ) {
 
-                setIsOpen(false);
+                setOpen(false);
 
             }
 
@@ -172,7 +205,7 @@ function CategoryPicker({
 
             if (event.key === "Escape") {
 
-                setIsOpen(false);
+                setOpen(false);
 
             }
 
@@ -201,7 +234,7 @@ function CategoryPicker({
 
         };
 
-    }, [isOpen]);
+    }, [isOpen, setOpen]);
 
     async function handleCreateAndAssign() {
 
@@ -245,7 +278,7 @@ function CategoryPicker({
 
                     event.stopPropagation();
 
-                    setIsOpen(open => !open);
+                    setOpen(!isOpen);
 
                 }}
 
@@ -257,7 +290,7 @@ function CategoryPicker({
 
                         event.stopPropagation();
 
-                        setIsOpen(open => !open);
+                        setOpen(!isOpen);
 
                     }
 
@@ -323,7 +356,7 @@ function CategoryPicker({
 
                                 onClick={
 
-                                    () => setIsOpen(false)
+                                    () => setOpen(false)
 
                                 }
 

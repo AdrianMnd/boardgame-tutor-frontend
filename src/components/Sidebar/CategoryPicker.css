@@ -14,13 +14,21 @@
 
     justify-content: center;
 
-    width: 28px;
+    /*
+     * Mismo tamaño que .favorite-button (32px) — con tamaños
+     * distintos, aunque estén centrados cada uno por separado,
+     * se ven desalineados entre sí al estar uno junto al otro
+     * en la misma fila.
+     */
+    width: 32px;
 
-    height: 28px;
+    height: 32px;
+
+    flex-shrink: 0;
 
     padding: 0;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
     background: none;
 
