@@ -42,7 +42,7 @@ interface Props {
 
     ) => void;
 
-    onCreateCategory: (name: string) => string;
+    onCreateCategory: (name: string) => Promise<string>;
 
 }
 
@@ -203,7 +203,7 @@ function CategoryPicker({
 
     }, [isOpen]);
 
-    function handleCreateAndAssign() {
+    async function handleCreateAndAssign() {
 
         const name = newCategoryName.trim();
 
@@ -213,11 +213,11 @@ function CategoryPicker({
 
         }
 
-        const newId = onCreateCategory(name);
+        setNewCategoryName("");
+
+        const newId = await onCreateCategory(name);
 
         onToggleGameInCategory(newId, game.id);
-
-        setNewCategoryName("");
 
     }
 

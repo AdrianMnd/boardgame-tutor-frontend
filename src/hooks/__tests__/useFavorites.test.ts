@@ -21,7 +21,7 @@ describe("useFavorites", () => {
 
     it("empieza sin favoritos si no hay nada guardado", () => {
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         expect(result.current.favorites.size).toBe(0);
         expect(result.current.isFavorite("catan")).toBe(false);
@@ -30,7 +30,7 @@ describe("useFavorites", () => {
 
     it("marca un juego como favorito al alternarlo", () => {
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         act(() => {
 
@@ -45,7 +45,7 @@ describe("useFavorites", () => {
 
     it("quita un favorito al alternarlo de nuevo", () => {
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         act(() => {
 
@@ -67,7 +67,7 @@ describe("useFavorites", () => {
 
     it("permite varios favoritos independientes a la vez", () => {
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         act(() => {
 
@@ -85,7 +85,7 @@ describe("useFavorites", () => {
 
     it("persiste los favoritos en localStorage", () => {
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         act(() => {
 
@@ -114,7 +114,7 @@ describe("useFavorites", () => {
 
         );
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         expect(result.current.isFavorite("catan")).toBe(true);
         expect(result.current.isFavorite("nemesis")).toBe(true);
@@ -132,7 +132,7 @@ describe("useFavorites", () => {
 
         );
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         // En vez de lanzar una excepción, debe arrancar sin
         // favoritos, como si no hubiera nada guardado.
@@ -150,7 +150,7 @@ describe("useFavorites", () => {
 
         );
 
-        const { result } = renderHook(() => useFavorites());
+        const { result } = renderHook(() => useFavorites(null));
 
         expect(result.current.favorites.size).toBe(0);
 

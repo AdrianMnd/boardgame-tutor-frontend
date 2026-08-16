@@ -40,7 +40,7 @@ interface Props {
 
     categories: Category[];
 
-    onCreateCategory: (name: string) => string;
+    onCreateCategory: (name: string) => Promise<string>;
 
     onRenameCategory: (categoryId: string, name: string) => void;
 
@@ -222,7 +222,7 @@ function Sidebar({
 
     }
 
-    function handleCreateCategory() {
+    async function handleCreateCategory() {
 
         const name = newCategoryName.trim();
 
@@ -234,10 +234,11 @@ function Sidebar({
 
         }
 
-        const id = onCreateCategory(name);
-
         setNewCategoryName("");
         setIsCreatingCategory(false);
+
+        const id = await onCreateCategory(name);
+
         setActiveTab(id);
 
     }

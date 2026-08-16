@@ -4,6 +4,10 @@ import {
     useState
 } from "react";
 
+import { categoriesService } from "../services/categories.service";
+
+import type { User } from "../types/User";
+
 const STORAGE_KEY = "boardgame-tutor-categories";
 
 export interface Category {
@@ -16,7 +20,7 @@ export interface Category {
 
 }
 
-function readCategories(): Category[] {
+function readLocalCategories(): Category[] {
 
     try {
 
@@ -37,9 +41,6 @@ function readCategories(): Category[] {
 
         }
 
-        // Filtra cualquier entrada que no tenga la forma
-        // esperada, en vez de romper toda la lista por un solo
-        // registro corrupto.
         return parsed.filter(
 
             (entry): entry is Category =>
@@ -55,20 +56,14 @@ function readCategories(): Category[] {
     }
     catch {
 
-        // localStorage no disponible, o contenido corrupto: se
-        // empieza sin categorías en vez de romper la app.
         return [];
 
     }
 
 }
 
-function createCategoryId(): string {
+function createLocalCategoryId(): string {
 
-    // crypto.randomUUID existe en todos los navegadores
-    // modernos servidos por HTTPS (o localhost) — pero por si
-    // acaso algún entorno no lo tuviera disponible, se cae a
-    // una alternativa simple basada en tiempo + aleatorio.
     if (
 
         typeof crypto !== "undefined" &&
@@ -85,22 +80,102 @@ function createCategoryId(): string {
 }
 
 /**
- * Categorías personalizadas del usuario (ej. "Juegos de
- * cartas") con los juegos asignados a cada una — persistidas en
- * localStorage, igual que useFavorites. Un mismo juego puede
- * pertenecer a varias categorías a la vez.
+ * Categorías personalizadas del usuario. Sin sesión, viven en
+ * localStorage; con sesión, en el servidor — mismo patrón dual
+ * que useFavorites.
+ *
+ * `createCategory` es asíncrono (a diferencia de la versión
+ * puramente local de antes) porque, con sesión iniciada, el id
+ * lo genera el servidor — no se puede saber de antemano.
  */
-export function useCategories() {
+export function useCategories(
+
+    user: User | null
+
+) {
 
     const [categories, setCategories] =
 
         useState<Category[]>(
 
-            () => readCategories()
+            () =>
+
+                user
+
+                    ? []
+
+                    : readLocalCategories()
 
         );
 
+    // Mismo patrón que en useFavorites — ver los comentarios
+    // allí para el porqué de separar la rama local (síncrona,
+    // ajustada en el render) de la rama de la API (async, en un
+    // efecto de verdad), y de derivar isLoading en vez de
+    // guardarlo como su propio estado.
+    const [loadedFor, setLoadedFor] =
+        useState<string | null>(user?.id ?? null);
+
+    const isLoading =
+        Boolean(user) && loadedFor !== (user?.id ?? null);
+
+    if (!user && loadedFor !== null) {
+
+        setLoadedFor(null);
+
+        setCategories(readLocalCategories());
+
+    }
+
     useEffect(() => {
+
+        if (!user || loadedFor === user.id) {
+
+            return;
+
+        }
+
+        let cancelled = false;
+
+        categoriesService.list()
+
+            .then(apiCategories => {
+
+                if (!cancelled) {
+
+                    setCategories(apiCategories);
+
+                    setLoadedFor(user.id);
+
+                }
+
+            })
+
+            .catch(() => {
+
+                if (!cancelled) {
+
+                    setLoadedFor(user.id);
+
+                }
+
+            });
+
+        return () => {
+
+            cancelled = true;
+
+        };
+
+    }, [user, loadedFor]);
+
+    useEffect(() => {
+
+        if (user) {
+
+            return;
+
+        }
 
         try {
 
@@ -115,18 +190,32 @@ export function useCategories() {
         }
         catch {
 
-            // Almacenamiento lleno o no disponible: se ignora,
-            // las categorías simplemente no persistirán esta vez.
+            // Almacenamiento lleno o no disponible: se ignora.
 
         }
 
-    }, [categories]);
+    }, [categories, user]);
 
     const createCategory = useCallback(
 
-        (name: string): string => {
+        async (
 
-            const id = createCategoryId();
+            name: string
+
+        ): Promise<string> => {
+
+            if (user) {
+
+                const created =
+                    await categoriesService.create(name);
+
+                setCategories(previous => [...previous, created]);
+
+                return created.id;
+
+            }
+
+            const id = createLocalCategoryId();
 
             setCategories(previous => [
 
@@ -140,7 +229,7 @@ export function useCategories() {
 
         },
 
-        []
+        [user]
 
     );
 
@@ -153,6 +242,8 @@ export function useCategories() {
             name: string
 
         ) => {
+
+            const previousCategories = categories;
 
             setCategories(previous =>
 
@@ -170,15 +261,33 @@ export function useCategories() {
 
             );
 
+            if (!user) {
+
+                return;
+
+            }
+
+            categoriesService
+
+                .rename(categoryId, name)
+
+                .catch(() => {
+
+                    setCategories(previousCategories);
+
+                });
+
         },
 
-        []
+        [categories, user]
 
     );
 
     const deleteCategory = useCallback(
 
         (categoryId: string) => {
+
+            const previousCategories = categories;
 
             setCategories(previous =>
 
@@ -190,9 +299,25 @@ export function useCategories() {
 
             );
 
+            if (!user) {
+
+                return;
+
+            }
+
+            categoriesService
+
+                .delete(categoryId)
+
+                .catch(() => {
+
+                    setCategories(previousCategories);
+
+                });
+
         },
 
-        []
+        [categories, user]
 
     );
 
@@ -206,34 +331,33 @@ export function useCategories() {
 
         ) => {
 
+            const category =
+                categories.find(c => c.id === categoryId);
+
+            const wasIn =
+                category?.gameIds.includes(gameId) ?? false;
+
             setCategories(previous =>
 
-                previous.map(category => {
+                previous.map(entry => {
 
-                    if (category.id !== categoryId) {
+                    if (entry.id !== categoryId) {
 
-                        return category;
+                        return entry;
 
                     }
 
-                    const alreadyIn =
-                        category.gameIds.includes(gameId);
-
                     return {
 
-                        ...category,
+                        ...entry,
 
                         gameIds:
 
-                            alreadyIn
+                            wasIn
 
-                                ? category.gameIds.filter(
+                                ? entry.gameIds.filter(id => id !== gameId)
 
-                                    id => id !== gameId
-
-                                )
-
-                                : [...category.gameIds, gameId]
+                                : [...entry.gameIds, gameId]
 
                     };
 
@@ -241,9 +365,55 @@ export function useCategories() {
 
             );
 
+            if (!user) {
+
+                return;
+
+            }
+
+            const request =
+
+                wasIn
+
+                    ? categoriesService.removeGame(categoryId, gameId)
+
+                    : categoriesService.addGame(categoryId, gameId);
+
+            request.catch(() => {
+
+                setCategories(previous =>
+
+                    previous.map(entry => {
+
+                        if (entry.id !== categoryId) {
+
+                            return entry;
+
+                        }
+
+                        return {
+
+                            ...entry,
+
+                            gameIds:
+
+                                wasIn
+
+                                    ? [...entry.gameIds, gameId]
+
+                                    : entry.gameIds.filter(id => id !== gameId)
+
+                        };
+
+                    })
+
+                );
+
+            });
+
         },
 
-        []
+        [categories, user]
 
     );
 
@@ -275,6 +445,62 @@ export function useCategories() {
 
     );
 
+    const migrateLocalCategories = useCallback(
+
+        async (): Promise<void> => {
+
+            const local = readLocalCategories();
+
+            if (local.length === 0) {
+
+                return;
+
+            }
+
+            const migrated: Category[] = [];
+
+            for (const category of local) {
+
+                const created =
+
+                    await categoriesService.create(
+
+                        category.name
+
+                    );
+
+                for (const gameId of category.gameIds) {
+
+                    await categoriesService.addGame(
+
+                        created.id,
+
+                        gameId
+
+                    );
+
+                }
+
+                migrated.push({
+
+                    ...created,
+
+                    gameIds: category.gameIds
+
+                });
+
+            }
+
+            localStorage.removeItem(STORAGE_KEY);
+
+            setCategories(migrated);
+
+        },
+
+        []
+
+    );
+
     return {
 
         categories,
@@ -287,7 +513,11 @@ export function useCategories() {
 
         toggleGameInCategory,
 
-        isGameInCategory
+        isGameInCategory,
+
+        isLoading,
+
+        migrateLocalCategories
 
     };
 

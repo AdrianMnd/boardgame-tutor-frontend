@@ -102,7 +102,7 @@ function renderSidebar(
 
         categories: [],
 
-        onCreateCategory: vi.fn(() => "new-category-id"),
+        onCreateCategory: vi.fn(() => Promise.resolve("new-category-id")),
 
         onRenameCategory: vi.fn(),
 
