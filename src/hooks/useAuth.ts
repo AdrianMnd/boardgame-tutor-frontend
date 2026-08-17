@@ -129,6 +129,74 @@ export function useAuth() {
 
     }, []);
 
+    const updateDisplayName = useCallback(
+
+        async (
+
+            displayName: string
+
+        ): Promise<User> => {
+
+            const updated =
+                await authService.updateDisplayName(displayName);
+
+            setUser(updated);
+
+            return updated;
+
+        },
+
+        []
+
+    );
+
+    const updateEmail = useCallback(
+
+        async (
+
+            email: string,
+
+            currentPassword: string
+
+        ): Promise<User> => {
+
+            const updated =
+                await authService.updateEmail(email, currentPassword);
+
+            setUser(updated);
+
+            return updated;
+
+        },
+
+        []
+
+    );
+
+    const updatePassword = useCallback(
+
+        async (
+
+            currentPassword: string,
+
+            newPassword: string
+
+        ): Promise<void> => {
+
+            await authService.updatePassword(
+
+                currentPassword,
+
+                newPassword
+
+            );
+
+        },
+
+        []
+
+    );
+
     return {
 
         user,
@@ -139,7 +207,13 @@ export function useAuth() {
 
         register,
 
-        logout
+        logout,
+
+        updateDisplayName,
+
+        updateEmail,
+
+        updatePassword
 
     };
 

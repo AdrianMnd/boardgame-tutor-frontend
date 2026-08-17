@@ -1,0 +1,23 @@
+.edit-profile-modal {
+
+    /*
+     * Tres secciones, más alto que el modal de login/registro —
+     * con overflow-y:auto se puede hacer scroll dentro del
+     * propio modal si no cabe entero en pantallas bajas (sobre
+     * todo en móvil), en vez de desbordar la ventana.
+     */
+    max-height: min(680px, calc(100vh - 48px));
+
+    overflow-y: auto;
+
+}
+
+.edit-profile-divider {
+
+    margin: 28px 0;
+
+    border: none;
+
+    border-top: 1px solid var(--color-border);
+
+}

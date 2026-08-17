@@ -12,12 +12,15 @@ import Workspace from "./components/Layout/Workspace";
 import SplashScreen from "./components/UI/SplashScreen";
 import WelcomePage from "./components/Welcome/WelcomePage";
 import AuthModal from "./components/Auth/AuthModal";
+import EditProfileModal from "./components/Auth/EditProfileModal";
+import ThemeChoiceModal from "./components/Theme/ThemeChoiceModal";
 
 import { gamesService } from "./services/games.service";
 
 import { useFavorites } from "./hooks/useFavorites";
 import { useCategories } from "./hooks/useCategories";
 import { useAuth } from "./hooks/useAuth";
+import { useTheme } from "./hooks/useTheme";
 
 import type { Game } from "./types/Game";
 import type { User } from "./types/User";
@@ -47,6 +50,9 @@ function App() {
     const [isAuthModalOpen, setIsAuthModalOpen] =
         useState(false);
 
+    const [isEditProfileModalOpen, setIsEditProfileModalOpen] =
+        useState(false);
+
     const {
 
         user,
@@ -57,9 +63,25 @@ function App() {
 
         register,
 
-        logout
+        logout,
+
+        updateDisplayName,
+
+        updateEmail,
+
+        updatePassword
 
     } = useAuth();
+
+    const {
+
+        theme,
+
+        hasChosenTheme,
+
+        setTheme
+
+    } = useTheme();
 
     const {
 
@@ -227,7 +249,53 @@ function App() {
 
                 onLogout={logout}
 
+                onEditProfileClick={
+
+                    () => setIsEditProfileModalOpen(true)
+
+                }
+
+                theme={theme}
+
+                onThemeChange={setTheme}
+
             />
+
+            <ThemeChoiceModal
+
+                isOpen={!hasChosenTheme}
+
+                onChoose={setTheme}
+
+            />
+
+            {
+
+                user && (
+
+                    <EditProfileModal
+
+                        isOpen={isEditProfileModalOpen}
+
+                        onClose={
+
+                            () => setIsEditProfileModalOpen(false)
+
+                        }
+
+                        user={user}
+
+                        updateDisplayName={updateDisplayName}
+
+                        updateEmail={updateEmail}
+
+                        updatePassword={updatePassword}
+
+                    />
+
+                )
+
+            }
 
             <AuthModal
 

@@ -4,7 +4,7 @@
 
     display: grid;
 
-    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-columns: 360px minmax(0, 1fr);
 
     gap: 28px;
 
@@ -24,7 +24,7 @@
 .workspace.with-pdf {
 
     grid-template-columns:
-        320px
+        360px
         minmax(0, 1fr)
         420px;
 

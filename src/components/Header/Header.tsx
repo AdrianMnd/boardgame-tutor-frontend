@@ -1,24 +1,24 @@
 import "./Header.css";
 
-import {
-    useEffect,
-    useRef,
-    useState
-} from "react";
-
 import { createPortal } from "react-dom";
 
 import Icon from "../UI/Icon";
+import ThemeToggle from "../Theme/ThemeToggle";
 
 import {
     Menu,
     LogIn,
-    LogOut
+    LogOut,
+    Settings,
+    SlidersHorizontal
 } from "lucide-react";
 
 import logo from "../../assets/logo.svg";
 
+import { usePositionedMenu } from "../../hooks/usePositionedMenu";
+
 import type { User } from "../../types/User";
+import type { Theme } from "../../hooks/useTheme";
 
 interface Props {
 
@@ -33,6 +33,12 @@ interface Props {
     onLoginClick: () => void;
 
     onLogout: () => void;
+
+    onEditProfileClick: () => void;
+
+    theme: Theme;
+
+    onThemeChange: (theme: Theme) => void;
 
 }
 
@@ -68,117 +74,55 @@ function Header({
 
     onLoginClick,
 
-    onLogout
+    onLogout,
+
+    onEditProfileClick,
+
+    theme,
+
+    onThemeChange
 
 }: Props) {
 
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const {
 
-    const buttonRef = useRef<HTMLSpanElement>(null);
+        isOpen: isProfileMenuOpen,
 
-    const [position, setPosition] =
+        toggle: toggleProfileMenu,
 
-        useState<{ top: number; right: number } | null>(
+        close: closeProfileMenu,
 
-            null
+        buttonRef: profileButtonRef,
 
-        );
+        position: profileMenuPosition
 
-    useEffect(() => {
+    } = usePositionedMenu(
 
-        if (!isMenuOpen || !buttonRef.current) {
+        ".profile-button",
 
-            setPosition(null);
+        ".profile-menu"
 
-            return;
+    );
 
-        }
+    const {
 
-        function updatePosition() {
+        isOpen: isSettingsMenuOpen,
 
-            const button = buttonRef.current;
+        toggle: toggleSettingsMenu,
 
-            if (!button) {
+        close: closeSettingsMenu,
 
-                return;
+        buttonRef: settingsButtonRef,
 
-            }
+        position: settingsMenuPosition
 
-            const rect = button.getBoundingClientRect();
+    } = usePositionedMenu(
 
-            setPosition({
+        ".header-settings-button",
 
-                top: rect.bottom + 8,
+        ".header-settings-menu"
 
-                right: window.innerWidth - rect.right
-
-            });
-
-        }
-
-        updatePosition();
-
-        window.addEventListener("resize", updatePosition);
-
-        return () =>
-            window.removeEventListener("resize", updatePosition);
-
-    }, [isMenuOpen]);
-
-    useEffect(() => {
-
-        if (!isMenuOpen) {
-
-            return;
-
-        }
-
-        function handleClickOutside(
-
-            event: MouseEvent
-
-        ) {
-
-            const target = event.target as HTMLElement;
-
-            if (
-
-                !target.closest(".profile-button") &&
-                !target.closest(".profile-menu")
-
-            ) {
-
-                setIsMenuOpen(false);
-
-            }
-
-        }
-
-        function handleEscape(
-
-            event: KeyboardEvent
-
-        ) {
-
-            if (event.key === "Escape") {
-
-                setIsMenuOpen(false);
-
-            }
-
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleEscape);
-
-        return () => {
-
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleEscape);
-
-        };
-
-    }, [isMenuOpen]);
+    );
 
     return (
 
@@ -265,7 +209,7 @@ function Header({
 
                                     <span
 
-                                        ref={buttonRef}
+                                        ref={profileButtonRef}
 
                                         role="button"
 
@@ -275,7 +219,7 @@ function Header({
 
                                         aria-haspopup="true"
 
-                                        aria-expanded={isMenuOpen}
+                                        aria-expanded={isProfileMenuOpen}
 
                                         aria-label={
 
@@ -283,11 +227,7 @@ function Header({
 
                                         }
 
-                                        onClick={
-
-                                            () => setIsMenuOpen(open => !open)
-
-                                        }
+                                        onClick={toggleProfileMenu}
 
                                         onKeyDown={event => {
 
@@ -300,7 +240,7 @@ function Header({
 
                                                 event.preventDefault();
 
-                                                setIsMenuOpen(open => !open);
+                                                toggleProfileMenu();
 
                                             }
 
@@ -318,9 +258,9 @@ function Header({
 
                                     {
 
-                                        isMenuOpen &&
+                                        isProfileMenuOpen &&
 
-                                        position &&
+                                        profileMenuPosition &&
 
                                         createPortal(
 
@@ -332,9 +272,9 @@ function Header({
 
                                                 style={{
 
-                                                    top: position.top,
+                                                    top: profileMenuPosition.top,
 
-                                                    right: position.right
+                                                    right: profileMenuPosition.right
 
                                                 }}
 
@@ -366,6 +306,44 @@ function Header({
 
                                                 </div>
 
+                                                <p className="profile-menu-section-label">
+
+                                                    Tema
+
+                                                </p>
+
+                                                <ThemeToggle
+
+                                                    theme={theme}
+
+                                                    onChange={onThemeChange}
+
+                                                />
+
+                                                <button
+
+                                                    type="button"
+
+                                                    role="menuitem"
+
+                                                    className="profile-menu-edit"
+
+                                                    onClick={() => {
+
+                                                        closeProfileMenu();
+
+                                                        onEditProfileClick();
+
+                                                    }}
+
+                                                >
+
+                                                    <Icon icon={Settings} size={15} />
+
+                                                    Editar perfil
+
+                                                </button>
+
                                                 <button
 
                                                     type="button"
@@ -376,7 +354,7 @@ function Header({
 
                                                     onClick={() => {
 
-                                                        setIsMenuOpen(false);
+                                                        closeProfileMenu();
 
                                                         onLogout();
 
@@ -404,19 +382,124 @@ function Header({
 
                             : (
 
-                                <button
+                                <>
 
-                                    className="header-login-button"
+                                    <span className="header-settings-wrapper">
 
-                                    onClick={onLoginClick}
+                                        <span
 
-                                >
+                                            ref={settingsButtonRef}
 
-                                    <Icon icon={LogIn} size={16} />
+                                            role="button"
 
-                                    <span>Iniciar sesión</span>
+                                            tabIndex={0}
 
-                                </button>
+                                            className="header-settings-button"
+
+                                            aria-haspopup="true"
+
+                                            aria-expanded={isSettingsMenuOpen}
+
+                                            aria-label="Ajustes"
+
+                                            onClick={toggleSettingsMenu}
+
+                                            onKeyDown={event => {
+
+                                                if (
+
+                                                    event.key === "Enter" ||
+                                                    event.key === " "
+
+                                                ) {
+
+                                                    event.preventDefault();
+
+                                                    toggleSettingsMenu();
+
+                                                }
+
+                                            }}
+
+                                        >
+
+                                            <Icon icon={SlidersHorizontal} size={17} />
+
+                                        </span>
+
+                                        {
+
+                                            isSettingsMenuOpen &&
+
+                                            settingsMenuPosition &&
+
+                                            createPortal(
+
+                                                <div
+
+                                                    className="header-settings-menu"
+
+                                                    role="menu"
+
+                                                    style={{
+
+                                                        top: settingsMenuPosition.top,
+
+                                                        right: settingsMenuPosition.right
+
+                                                    }}
+
+                                                >
+
+                                                    <p className="profile-menu-section-label">
+
+                                                        Tema
+
+                                                    </p>
+
+                                                    <ThemeToggle
+
+                                                        theme={theme}
+
+                                                        onChange={
+
+                                                            nextTheme => {
+
+                                                                onThemeChange(nextTheme);
+
+                                                                closeSettingsMenu();
+
+                                                            }
+
+                                                        }
+
+                                                    />
+
+                                                </div>,
+
+                                                document.body
+
+                                            )
+
+                                        }
+
+                                    </span>
+
+                                    <button
+
+                                        className="header-login-button"
+
+                                        onClick={onLoginClick}
+
+                                    >
+
+                                        <Icon icon={LogIn} size={16} />
+
+                                        <span>Iniciar sesión</span>
+
+                                    </button>
+
+                                </>
 
                             )
 
