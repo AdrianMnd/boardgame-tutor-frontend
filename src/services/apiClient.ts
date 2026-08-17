@@ -104,6 +104,41 @@ export class ApiClient {
 
     }
 
+    /**
+     * Igual que post, pero para peticiones con archivos — el
+     * cuerpo va como FormData en vez de JSON. Es importante NO
+     * fijar el Content-Type a mano aquí: el navegador necesita
+     * calcular él mismo el "boundary" del multipart/form-data,
+     * y si se lo pisamos con "application/json" (como hace el
+     * resto de métodos), el servidor no podría interpretar los
+     * archivos.
+     */
+    async postFormData<T>(
+
+        endpoint: string,
+
+        formData: FormData
+
+    ): Promise<T> {
+
+        return this.request<T>(
+
+            endpoint,
+
+            {
+
+                method: "POST",
+
+                body: formData
+
+            },
+
+            { skipJsonContentType: true }
+
+        );
+
+    }
+
     async put<T>(
 
         endpoint: string,
@@ -188,7 +223,9 @@ export class ApiClient {
 
     endpoint: string,
 
-    init: RequestInit
+    init: RequestInit,
+
+    options: { skipJsonContentType?: boolean } = {}
 
 ): Promise<T> {
 
@@ -204,9 +241,15 @@ export class ApiClient {
 
                 headers: {
 
-                    "Content-Type":
+                    ...(
 
-                        "application/json",
+                        options.skipJsonContentType
+
+                            ? {}
+
+                            : { "Content-Type": "application/json" }
+
+                    ),
 
                     ...(
 

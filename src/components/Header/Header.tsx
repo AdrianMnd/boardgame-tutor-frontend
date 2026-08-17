@@ -10,7 +10,8 @@ import {
     LogIn,
     LogOut,
     Settings,
-    SlidersHorizontal
+    SlidersHorizontal,
+    Gamepad2
 } from "lucide-react";
 
 import logo from "../../assets/logo.svg";
@@ -35,6 +36,8 @@ interface Props {
     onLogout: () => void;
 
     onEditProfileClick: () => void;
+
+    onGameRequestClick: () => void;
 
     theme: Theme;
 
@@ -77,6 +80,8 @@ function Header({
     onLogout,
 
     onEditProfileClick,
+
+    onGameRequestClick,
 
     theme,
 
@@ -121,6 +126,26 @@ function Header({
         ".header-settings-button",
 
         ".header-settings-menu"
+
+    );
+
+    const {
+
+        isOpen: isGameRequestHintOpen,
+
+        toggle: toggleGameRequestHint,
+
+        close: closeGameRequestHint,
+
+        buttonRef: gameRequestButtonRef,
+
+        position: gameRequestHintPosition
+
+    } = usePositionedMenu(
+
+        ".header-game-request-button",
+
+        ".header-game-request-hint"
 
     );
 
@@ -194,6 +219,142 @@ function Header({
             </div>
 
             <div className="header-right">
+
+                <span className="header-game-request-wrapper">
+
+                    <span
+
+                        ref={
+
+                            user
+
+                                ? null
+
+                                : gameRequestButtonRef
+
+                        }
+
+                        role="button"
+
+                        tabIndex={0}
+
+                        className="header-game-request-button"
+
+                        aria-haspopup={user ? undefined : "true"}
+
+                        aria-expanded={
+
+                            user ? undefined : isGameRequestHintOpen
+
+                        }
+
+                        onClick={
+
+                            user
+
+                                ? onGameRequestClick
+
+                                : toggleGameRequestHint
+
+                        }
+
+                        onKeyDown={event => {
+
+                            if (
+
+                                event.key === "Enter" ||
+                                event.key === " "
+
+                            ) {
+
+                                event.preventDefault();
+
+                                if (user) {
+
+                                    onGameRequestClick();
+
+                                }
+                                else {
+
+                                    toggleGameRequestHint();
+
+                                }
+
+                            }
+
+                        }}
+
+                    >
+
+                        <Icon icon={Gamepad2} size={16} />
+
+                        <span>Solicitar juego</span>
+
+                    </span>
+
+                    {
+
+                        !user &&
+
+                        isGameRequestHintOpen &&
+
+                        gameRequestHintPosition &&
+
+                        createPortal(
+
+                            <div
+
+                                className="header-game-request-hint"
+
+                                role="menu"
+
+                                style={{
+
+                                    top: gameRequestHintPosition.top,
+
+                                    right: gameRequestHintPosition.right
+
+                                }}
+
+                            >
+
+                                <p>
+
+                                    Inicia sesión para poder solicitar un
+
+                                    juego nuevo para el catálogo.
+
+                                </p>
+
+                                <button
+
+                                    type="button"
+
+                                    onClick={() => {
+
+                                        closeGameRequestHint();
+
+                                        onLoginClick();
+
+                                    }}
+
+                                >
+
+                                    <Icon icon={LogIn} size={14} />
+
+                                    Iniciar sesión
+
+                                </button>
+
+                            </div>,
+
+                            document.body
+
+                        )
+
+                    }
+
+                </span>
 
                 {
 
