@@ -601,7 +601,15 @@ function Sidebar({
 
                                                 aria-selected={activeTab === category.id}
 
-                                                className="sidebar-tab"
+                                                className={
+
+                                                    activeTab === category.id
+
+                                                        ? "sidebar-tab active"
+
+                                                        : "sidebar-tab"
+
+                                                }
 
                                                 onClick={
 

@@ -180,31 +180,41 @@
 
 [data-theme="light"] {
 
-    --color-background: #f4f5f8;
+    /*
+     * Antes --color-background (#f4f5f8) y --color-surface
+     * (#ffffff) eran casi idénticos en luminosidad — por eso las
+     * tarjetas no se distinguían del fondo. Ahora el fondo es
+     * notablemente más oscuro que las superficies, con un tono
+     * lavanda suave (no gris puro) que hace juego con el
+     * índigo de marca — y las superficies dejan de ser blanco
+     * puro, para que no canse tanto la vista con mucha pantalla
+     * cubierta.
+     */
+    --color-background: #e7e9f2;
 
-    --color-surface: #ffffff;
+    --color-surface: #fbfbfe;
 
-    --color-surface-secondary: #f1f2f6;
+    --color-surface-secondary: #f1f2f8;
 
-    --color-surface-tertiary: #e6e8ee;
+    --color-surface-tertiary: #e5e7f0;
 
-    --color-border: #e1e3e9;
+    --color-border: #dcdfe9;
 
-    --color-border-light: #edeef2;
+    --color-border-light: #e8eaf1;
 
-    --color-border-strong: #c7cad3;
+    --color-border-strong: #b9bccc;
 
-    --color-glass: rgba(255,255,255,.82);
+    --color-glass: rgba(251,251,254,.85);
 
-    --color-glass-strong: rgba(255,255,255,.94);
+    --color-glass-strong: rgba(251,251,254,.95);
 
-    --color-topbar-gradient-1: rgba(255,255,255,.75);
+    --color-topbar-gradient-1: rgba(251,251,254,.8);
 
-    --color-topbar-gradient-2: rgba(241,242,246,.6);
+    --color-topbar-gradient-2: rgba(238,240,247,.65);
 
-    --color-inputbar-gradient-1: rgba(248,249,251,.75);
+    --color-inputbar-gradient-1: rgba(238,240,247,.8);
 
-    --color-inputbar-gradient-2: rgba(255,255,255,.9);
+    --color-inputbar-gradient-2: rgba(251,251,254,.92);
 
     --color-primary: #6366f1;
 
@@ -236,25 +246,25 @@
 
     --color-text-inverse: #0e1015;
 
-    --gradient-bg-1: #ffffff;
+    --gradient-bg-1: #eef0f7;
 
-    --gradient-bg-2: #f7f8fa;
+    --gradient-bg-2: #e6e9f2;
 
-    --gradient-bg-3: #eef0f4;
+    --gradient-bg-3: #dfe2ed;
 
     --color-scrollbar-thumb-hover: #a8acb8;
 
     --shadow-xs:
-        0 1px 2px rgba(0,0,0,.06);
+        0 1px 2px rgba(30,32,60,.07);
 
     --shadow-sm:
-        0 6px 16px rgba(0,0,0,.08);
+        0 6px 16px rgba(30,32,60,.09);
 
     --shadow-md:
-        0 14px 36px rgba(0,0,0,.10);
+        0 14px 36px rgba(30,32,60,.11);
 
     --shadow-lg:
-        0 24px 56px rgba(0,0,0,.12);
+        0 24px 56px rgba(30,32,60,.13);
 
     --shadow-primary:
         0 16px 36px rgba(99,102,241,.20);

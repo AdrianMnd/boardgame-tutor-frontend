@@ -446,6 +446,23 @@
 
 }
 
+/*
+ * En reposo, la tarjeta es transparente y solo se distingue al
+ * pasar el ratón o seleccionarla (ver más abajo) — en oscuro
+ * esto funciona bien, pero en claro dejaba la lista sin ninguna
+ * separación visual entre juegos. Aquí, específicamente en
+ * claro, se le da un fondo y borde visibles también en reposo.
+ */
+[data-theme="light"] .game-card {
+
+    background: var(--color-surface);
+
+    border-color: var(--color-border);
+
+    box-shadow: var(--shadow-xs);
+
+}
+
 .game-card:hover {
 
     transform: translateY(-2px);
