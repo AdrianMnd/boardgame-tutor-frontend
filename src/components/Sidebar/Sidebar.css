@@ -4,9 +4,17 @@
 
     flex-direction: column;
 
-    min-width: 320px;
-
-    max-width: 320px;
+    /*
+     * Sin min-width/max-width aquí — el ancho lo decide la
+     * columna de la rejilla en .workspace (Workspace.css), no
+     * el propio sidebar. Tenerlo en los dos sitios a la vez fue
+     * justo lo que causó el bug: si cambian por separado, el
+     * sidebar puede acabar "pidiendo" más ancho del que su
+     * columna le da, desbordándose sobre el chat. Con
+     * width:100% simplemente ocupa lo que la rejilla le
+     * asigne, sea lo que sea.
+     */
+    width: 100%;
 
     min-height: 0;
 
