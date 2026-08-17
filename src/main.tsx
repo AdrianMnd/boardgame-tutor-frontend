@@ -8,10 +8,6 @@ import {
 
 import App from "./App";
 
-import {
-    ConversationProvider
-} from "./contexts/ConversationContext";
-
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 
 import "./styles/global.css";
@@ -43,11 +39,7 @@ createRoot(
                 client={queryClient}
             >
 
-                <ConversationProvider>
-
-                    <App />
-
-                </ConversationProvider>
+                <App />
 
             </QueryClientProvider>
 

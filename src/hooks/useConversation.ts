@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import {
     useConversationContext
 } from "../contexts/ConversationContext";
@@ -27,9 +29,23 @@ export function useConversation(
 
         updateMessage,
 
-        clearConversation
+        persistMessage,
+
+        clearConversation,
+
+        ensureLoaded
 
     } = useConversationContext();
+
+    useEffect(() => {
+
+        if (gameId) {
+
+            ensureLoaded(gameId);
+
+        }
+
+    }, [gameId, ensureLoaded]);
 
     const messages =
 
@@ -78,6 +94,8 @@ export function useConversation(
             }
 
         );
+
+        persistMessage(gameId, "user", content);
 
     }
 
@@ -193,6 +211,40 @@ export function useConversation(
 
     }
 
+    function finalizeAssistantMessage(
+
+        message: Message
+
+    ) {
+
+        if (!gameId) {
+
+            return;
+
+        }
+
+        updateMessage(
+
+            gameId,
+
+            message
+
+        );
+
+        persistMessage(
+
+            gameId,
+
+            "assistant",
+
+            message.content,
+
+            message.sources
+
+        );
+
+    }
+
     function startNewConversation() {
 
         if (!gameId) {
@@ -220,6 +272,8 @@ export function useConversation(
         addLoadingMessage,
 
         updateAssistantMessage,
+
+        finalizeAssistantMessage,
 
         startNewConversation
 

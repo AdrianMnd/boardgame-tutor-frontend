@@ -15,6 +15,8 @@ import AuthModal from "./components/Auth/AuthModal";
 import EditProfileModal from "./components/Auth/EditProfileModal";
 import ThemeChoiceModal from "./components/Theme/ThemeChoiceModal";
 
+import { ConversationProvider } from "./contexts/ConversationContext";
+
 import { gamesService } from "./services/games.service";
 
 import { useFavorites } from "./hooks/useFavorites";
@@ -220,6 +222,8 @@ function App() {
     }
 
     return (
+
+        <ConversationProvider user={user}>
 
         <Layout>
 
@@ -465,6 +469,8 @@ function App() {
             }
 
         </Layout>
+
+        </ConversationProvider>
 
     );
 
