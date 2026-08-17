@@ -22,9 +22,9 @@ body {
     background:
         radial-gradient(
             circle at top,
-            #171b26 0%,
-            #12151d 45%,
-            #0e1015 100%
+            var(--gradient-bg-1) 0%,
+            var(--gradient-bg-2) 45%,
+            var(--gradient-bg-3) 100%
         );
 
     color: var(--color-text);
@@ -84,7 +84,7 @@ textarea {
 
     scrollbar-width: thin;
 
-    scrollbar-color: #3a4150 transparent;
+    scrollbar-color: var(--color-border-strong) transparent;
 
 }
 
@@ -106,13 +106,13 @@ textarea {
 
     border-radius: 999px;
 
-    background: #3a4150;
+    background: var(--color-border-strong);
 
 }
 
 *::-webkit-scrollbar-thumb:hover {
 
-    background: #4a5164;
+    background: var(--color-scrollbar-thumb-hover);
 
 }
 

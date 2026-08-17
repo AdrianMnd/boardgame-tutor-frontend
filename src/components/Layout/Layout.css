@@ -35,9 +35,9 @@
         ),
         linear-gradient(
             180deg,
-            #14171f 0%,
-            #10131a 45%,
-            #0e1015 100%
+            var(--gradient-bg-1) 0%,
+            var(--gradient-bg-2) 45%,
+            var(--gradient-bg-3) 100%
         );
 
 }

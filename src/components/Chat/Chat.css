@@ -46,8 +46,8 @@
     background:
         linear-gradient(
             180deg,
-            rgba(30,34,43,.7),
-            rgba(24,27,34,.5)
+            var(--color-topbar-gradient-1),
+            var(--color-topbar-gradient-2)
         );
 
     flex-shrink: 0;
@@ -346,9 +346,9 @@
     background:
         radial-gradient(
             circle at top,
-            #171b26 0%,
-            #14171f 45%,
-            #12141b 100%
+            var(--gradient-bg-1) 0%,
+            var(--gradient-bg-2) 45%,
+            var(--gradient-bg-3) 100%
         );
 
 }
@@ -485,8 +485,8 @@
     background:
         linear-gradient(
             180deg,
-            rgba(20,23,30,.7),
-            rgba(24,27,34,.85)
+            var(--color-inputbar-gradient-1),
+            var(--color-inputbar-gradient-2)
         );
 
     flex-shrink: 0;

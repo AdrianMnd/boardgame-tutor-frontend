@@ -179,6 +179,78 @@
 
 }
 
+.header-settings-wrapper {
+
+    position: relative;
+
+    display: inline-flex;
+
+}
+
+.header-settings-button {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface-secondary);
+
+    border: 1px solid var(--color-border-strong);
+
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+
+    transition:
+        background .15s,
+        color .15s;
+
+}
+
+.header-settings-button:hover {
+
+    background: var(--color-surface-tertiary);
+
+    color: var(--color-text);
+
+}
+
+/*
+ * "fixed", no "absolute" — mismo motivo que .profile-menu: se
+ * renderiza mediante un portal en <body>, para no depender de
+ * ningún contenedor ancestro.
+ */
+.header-settings-menu {
+
+    position: fixed;
+
+    z-index: 300;
+
+    width: 220px;
+
+    padding: 12px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 16px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow:
+        0 20px 44px rgba(0,0,0,.4);
+
+    animation: fadeIn .15s ease;
+
+}
+
 .header-login-button {
 
     display: flex;
@@ -337,6 +409,28 @@
     border-bottom: 1px solid var(--color-border);
 
     margin-bottom: 8px;
+
+}
+
+.profile-menu-section-label {
+
+    margin: 0 0 6px 4px;
+
+    color: var(--color-text-light);
+
+    font-size: .74rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .04em;
+
+}
+
+.profile-menu-header + .profile-menu-section-label {
+
+    margin-top: 0;
 
 }
 
