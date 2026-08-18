@@ -80,6 +80,10 @@ npx playwright install chromium   # primera vez, instala el navegador
 npm run test:e2e
 ```
 
+Se ejecutan también en cada push/PR, como parte del workflow de
+CI (`e2e` en `.github/workflows/ci.yml`) — con acceso normal a
+internet, no necesitan ningún ajuste especial.
+
 
 ## Estructura
 

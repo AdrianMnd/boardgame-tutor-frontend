@@ -36,3 +36,43 @@ jobs:
 
       - name: Compilar
         run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Solo Chromium (no Firefox/WebKit, que no se usan aquí) —
+      # con dependencias de sistema, ya que el runner de GitHub
+      # Actions es una imagen limpia sin ellas preinstaladas.
+      - name: Instalar el navegador de Playwright
+        run: npx playwright install --with-deps chromium
+
+      # No hace falta arrancar nada a mano — el propio
+      # playwright.config.ts levanta el backend simulado y la
+      # app (build + preview) automáticamente antes de los
+      # tests, y los para al terminar.
+      - name: Tests end-to-end
+        run: npm run test:e2e
+
+      # Si algo falla, el informe HTML con capturas y trazas
+      # queda descargable desde la propia ejecución en GitHub —
+      # sin necesidad de reproducirlo en local a ciegas.
+      - name: Subir el informe de Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
