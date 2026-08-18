@@ -269,6 +269,8 @@ function App() {
 
                 }
 
+                games={games}
+
                 theme={theme}
 
                 onThemeChange={setTheme}

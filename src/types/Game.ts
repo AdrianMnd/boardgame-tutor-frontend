@@ -14,6 +14,12 @@ export interface Game {
 
     year: number;
 
+    // El backend siempre lo manda (ver GameMapper), aquí opcional
+    // por el mismo motivo que documents más abajo: degradar con
+    // normalidad si algún backend desplegado antiguo no lo
+    // incluyera todavía.
+    createdAt?: string;
+
     coverUrl?: string;
 
     // Opcional a propósito, aunque el backend actual siempre lo

@@ -1,5 +1,7 @@
 import "./Header.css";
 
+import { useState } from "react";
+
 import { createPortal } from "react-dom";
 
 import Icon from "../UI/Icon";
@@ -11,14 +13,17 @@ import {
     LogOut,
     Settings,
     SlidersHorizontal,
-    Gamepad2
+    Gamepad2,
+    Bell
 } from "lucide-react";
 
 import logo from "../../assets/logo.svg";
 
 import { usePositionedMenu } from "../../hooks/usePositionedMenu";
+import { useNewGames } from "../../hooks/useNewGames";
 
 import type { User } from "../../types/User";
+import type { Game } from "../../types/Game";
 import type { Theme } from "../../hooks/useTheme";
 
 interface Props {
@@ -38,6 +43,8 @@ interface Props {
     onEditProfileClick: () => void;
 
     onGameRequestClick: () => void;
+
+    games: Game[];
 
     theme: Theme;
 
@@ -82,6 +89,8 @@ function Header({
     onEditProfileClick,
 
     onGameRequestClick,
+
+    games,
 
     theme,
 
@@ -146,6 +155,36 @@ function Header({
         ".header-game-request-button",
 
         ".header-game-request-hint"
+
+    );
+
+    const { newGames, markAllAsSeen } = useNewGames(games);
+
+    // Foto fija de la lista, tomada justo al abrir el panel —
+    // necesaria porque markAllAsSeen() se llama en el MISMO
+    // clic que abre el panel: si el panel leyera newGames en
+    // vivo, para cuando se pintara ya estaría vacío (recién
+    // marcado como visto), y nunca llegaría a mostrar lo que
+    // motivó la insignia en primer lugar.
+    const [newGamesSnapshot, setNewGamesSnapshot] =
+
+        useState<Game[]>([]);
+
+    const {
+
+        isOpen: isNewGamesPanelOpen,
+
+        toggle: toggleNewGamesPanel,
+
+        buttonRef: newGamesButtonRef,
+
+        position: newGamesPanelPosition
+
+    } = usePositionedMenu(
+
+        ".header-new-games-button",
+
+        ".header-new-games-panel"
 
     );
 
@@ -345,6 +384,213 @@ function Header({
                                     Iniciar sesión
 
                                 </button>
+
+                            </div>,
+
+                            document.body
+
+                        )
+
+                    }
+
+                </span>
+
+                <span className="header-new-games-wrapper">
+
+                    <span
+
+                        ref={newGamesButtonRef}
+
+                        role="button"
+
+                        tabIndex={0}
+
+                        className="header-new-games-button"
+
+                        aria-haspopup="true"
+
+                        aria-expanded={isNewGamesPanelOpen}
+
+                        aria-label={
+
+                            newGames.length > 0
+
+                                ? `Novedades — ${newGames.length} juegos nuevos`
+
+                                : "Novedades"
+
+                        }
+
+                        onClick={() => {
+
+                            if (!isNewGamesPanelOpen) {
+
+                                setNewGamesSnapshot(newGames);
+
+                            }
+
+                            toggleNewGamesPanel();
+
+                            markAllAsSeen();
+
+                        }}
+
+                        onKeyDown={event => {
+
+                            if (
+
+                                event.key === "Enter" ||
+                                event.key === " "
+
+                            ) {
+
+                                event.preventDefault();
+
+                                if (!isNewGamesPanelOpen) {
+
+                                    setNewGamesSnapshot(newGames);
+
+                                }
+
+                                toggleNewGamesPanel();
+
+                                markAllAsSeen();
+
+                            }
+
+                        }}
+
+                    >
+
+                        <Icon icon={Bell} size={17} />
+
+                        {
+
+                            newGames.length > 0 && (
+
+                                <span className="header-new-games-badge">
+
+                                    {
+
+                                        newGames.length > 9
+
+                                            ? "9+"
+
+                                            : newGames.length
+
+                                    }
+
+                                </span>
+
+                            )
+
+                        }
+
+                    </span>
+
+                    {
+
+                        isNewGamesPanelOpen &&
+
+                        newGamesPanelPosition &&
+
+                        createPortal(
+
+                            <div
+
+                                className="header-new-games-panel"
+
+                                role="menu"
+
+                                style={{
+
+                                    top: newGamesPanelPosition.top,
+
+                                    right: newGamesPanelPosition.right
+
+                                }}
+
+                            >
+
+                                <p className="header-new-games-title">
+
+                                    Novedades
+
+                                </p>
+
+                                {
+
+                                    newGamesSnapshot.length === 0
+
+                                        ? (
+
+                                            <p className="header-new-games-empty">
+
+                                                No hay juegos nuevos desde tu
+
+                                                última visita.
+
+                                            </p>
+
+                                        )
+
+                                        : (
+
+                                            <ul className="header-new-games-list">
+
+                                                {
+
+                                                    newGamesSnapshot.map(
+
+                                                        game => (
+
+                                                            <li key={game.id}>
+
+                                                                <span className="header-new-games-name">
+
+                                                                    {game.name}
+
+                                                                </span>
+
+                                                                <span className="header-new-games-date">
+
+                                                                    {
+
+                                                                        game.createdAt
+
+                                                                            ? new Date(
+
+                                                                                game.createdAt
+
+                                                                            ).toLocaleDateString("es-ES", {
+
+                                                                                day: "numeric",
+
+                                                                                month: "short",
+
+                                                                                year: "numeric"
+
+                                                                            })
+
+                                                                            : ""
+
+                                                                    }
+
+                                                                </span>
+
+                                                            </li>
+
+                                                        )
+
+                                                    )
+
+                                                }
+
+                                            </ul>
+
+                                        )
+
+                                }
 
                             </div>,
 
