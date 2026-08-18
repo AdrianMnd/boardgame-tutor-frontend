@@ -57,7 +57,7 @@ export default defineConfig({
 
             command: "node e2e/mock-server/server.cjs",
 
-            port: 4001,
+            url: "http://127.0.0.1:4001/api/games",
 
             reuseExistingServer: false,
 
@@ -67,10 +67,31 @@ export default defineConfig({
 
         {
 
+            // Sin "VITE_API_URL=... comando" en el propio texto
+            // del comando — esa sintaxis es de bash/Unix y no
+            // funciona en cmd.exe de Windows. El campo `env` de
+            // Playwright hace lo mismo pero de forma
+            // multiplataforma.
+            //
+            // "--host 127.0.0.1" es igual de importante: sin él,
+            // `vite preview` escucha en lo que el sistema
+            // resuelva para "localhost" — que en algunos Windows
+            // es la interfaz IPv6 (::1), distinta de 127.0.0.1
+            // (IPv4). Playwright conecta explícitamente a
+            // 127.0.0.1 (ver baseURL/url abajo), así que el
+            // servidor tiene que escuchar ahí de forma
+            // explícita, no dar por hecho que "localhost" es lo
+            // mismo.
             command:
-                "VITE_API_URL=http://127.0.0.1:4001 npm run build && VITE_API_URL=http://127.0.0.1:4001 npm run preview -- --port 4173",
+                "npm run build && npm run preview -- --port 4173 --host 127.0.0.1",
 
-            port: 4173,
+            env: {
+
+                VITE_API_URL: "http://127.0.0.1:4001"
+
+            },
+
+            url: "http://127.0.0.1:4173",
 
             reuseExistingServer: false,
 

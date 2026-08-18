@@ -27,9 +27,20 @@ test.beforeEach(async ({ page }) => {
 
 test("marcar un juego como favorito lo añade a la pestaña Favoritos", async ({ page }) => {
 
-    await page.locator(".game-card", { hasText: "Catan" })
+    const favoriteButton =
 
-        .locator(".favorite-button").click();
+        page.locator(".game-card", { hasText: "Catan" })
+
+            .locator(".favorite-button");
+
+    await favoriteButton.click();
+
+    // Espera a que React confirme el cambio (clase "active" en
+    // el propio botón) antes de cambiar de pestaña — sin esto,
+    // cambiar de pestaña justo después del clic es una carrera:
+    // a veces gana el re-render, a veces gana el cambio de
+    // pestaña, y el test se vuelve intermitente.
+    await expect(favoriteButton).toHaveClass(/active/);
 
     await page.locator(".sidebar-tab", { hasText: "Favoritos" }).click();
 
@@ -62,9 +73,18 @@ test("crear una categoría personalizada y asignarle un juego la filtra correcta
 
         .locator(".category-picker-button").click();
 
-    await page.locator(".category-picker-menu")
+    const categoryOption =
 
-        .locator(".category-picker-item", { hasText: "Mis favoritos de mesa" }).click();
+        page.locator(".category-picker-menu")
+
+            .locator(".category-picker-item", { hasText: "Mis favoritos de mesa" });
+
+    await categoryOption.click();
+
+    // Igual que con el botón de favorito: espera a que React
+    // confirme la asignación (aria-checked="true") antes de
+    // cerrar el menú y cambiar de pestaña.
+    await expect(categoryOption).toHaveAttribute("aria-checked", "true");
 
     await page.keyboard.press("Escape");
 
