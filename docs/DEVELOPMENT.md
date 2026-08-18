@@ -1,126 +1,47 @@
 # Desarrollo
 
-## Flujo recomendado
+## Puesta en marcha
 
-Mantener dos entornos conceptuales:
-
-```text
-Desarrollo
-├── frontend → Vite
-└── backend  → Express
-
-Producción
-├── frontend → build estático
-└── backend  → Node/Express
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
-La configuración local recibida apunta a:
+Arranca en `http://localhost:5173` (puerto por defecto de Vite). Necesitas el [backend](https://github.com/AdrianMnd/boardgame-tutor-backend) corriendo en paralelo (`npm run dev`, por defecto en `http://localhost:3000`) con `VITE_API_URL` en tu `.env.local` apuntando a esa URL.
 
-```text
-Frontend API → http://localhost:3000
-Backend      → puerto 3000
+## Tras modificar código
+
+```bash
+npm run build   # tsc -b + vite build — falla si hay errores de tipos
+npm run lint     # ESLint
+npm run test     # tests unitarios (Vitest + Testing Library)
 ```
 
-## Cambios en frontend
+`npm run build` es el que se ejecuta en CI — cualquier error de tipos que no se detecte aquí en local se detectará ahí.
 
-Después de modificar React:
+## Tests end-to-end (Playwright)
+
+```bash
+npx playwright install chromium   # primera vez
+npm run test:e2e
+```
+
+No necesitan ningún backend real corriendo — `playwright.config.ts` arranca automáticamente un backend simulado en memoria (`e2e/mock-server/server.cjs`) y la propia app apuntando a él. Corren en serie, no en paralelo, a propósito: el backend simulado guarda su estado en memoria compartido entre todos los tests del proceso.
+
+`npm run test:e2e:ui` abre el modo interactivo de Playwright — útil para depurar un test que falla, viendo paso a paso qué hace el navegador.
+
+## Antes de dar por buena una entrega
 
 ```bash
 npm run build
-```
-
-y opcionalmente:
-
-```bash
 npm run lint
+npm run test
+npm run test:e2e
 ```
 
-## Cambios en backend
+Las cuatro se ejecutan también automáticamente en CI (GitHub Actions) en cada `push`/PR a `dev` o `master`.
 
-Después de modificar TypeScript:
+## Estructura del proyecto
 
-```bash
-npm run build
-npm test
-```
-
-## Añadir un juego
-
-1. Crear `games/<id>/`.
-2. Añadir `metadata.json`.
-3. Añadir el PDF en `source/rulebook.pdf`.
-4. Añadir `assets/cover.png`.
-5. Ejecutar:
-
-```bash
-npm run import <id>
-```
-
-## Probar RAG por CLI
-
-```bash
-npm run ask <id> "<pregunta>"
-```
-
-## Probar API
-
-```text
-GET  /
-GET  /api/games
-GET  /api/games/<id>/manual
-POST /api/chat
-```
-
-## Errores habituales
-
-### Juego no encontrado
-
-Comprobar:
-
-```text
-games/<id>/metadata.json
-```
-
-y que el nombre de la carpeta coincida con `metadata.id`.
-
-### Portada no visible
-
-Comprobar:
-
-```text
-games/<id>/assets/cover.png
-```
-
-y la URL devuelta por `/api/games`.
-
-### Embeddings agotados
-
-Comprobar:
-
-- `AI_PROVIDER_ORDER`;
-- API keys disponibles;
-- proveedores que soportan embeddings;
-- `IMPORT_EMBEDDING_CONCURRENCY`;
-- `IMPORT_EMBEDDING_REQUEST_DELAY`;
-- checkpoint existente.
-
-### Respuestas pobres del RAG
-
-Comprobar:
-
-- que exista `generated/knowledge.json`;
-- que el embedding del índice sea compatible con el embedding de la consulta;
-- número de chunks recuperados;
-- score de similitud;
-- reranker/compressor;
-- contenido del reglamento extraído.
-
-## No cambiar arquitectura sin comprobar
-
-La aplicación depende actualmente del filesystem de `games/`. Cualquier migración a almacenamiento externo debe contemplar simultáneamente:
-
-- repositorio de juegos;
-- PDFs;
-- portadas;
-- conocimiento generado;
-- checkpoints.
+Ver la sección "Estructura" del [README](../README.md) para el mapa de carpetas. Para el porqué de las decisiones de diseño (streaming, visor de PDF, persistencia dual local/cuenta, carga diferida...), ver [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md).
