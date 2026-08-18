@@ -27,3 +27,9 @@ public/pdfjs-wasm/
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright (tests E2E)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

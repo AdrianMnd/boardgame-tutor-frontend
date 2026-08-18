@@ -17,7 +17,13 @@ export default defineConfig({
 
             "**/node_modules/**",
 
-            "**/dist/**"
+            "**/dist/**",
+
+            // Los tests E2E de Playwright viven aquí, con su
+            // propia extensión .spec.ts — usan una API distinta
+            // (la de Playwright, no la de Vitest) y se ejecutan
+            // por separado con `npm run test:e2e`.
+            "**/e2e/**"
 
         ]
 

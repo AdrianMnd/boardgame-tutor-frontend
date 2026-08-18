@@ -7,7 +7,6 @@ import "./App.css";
 import Layout from "./components/Layout/Layout";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
-import Chat from "./components/Chat/Chat";
 import Workspace from "./components/Layout/Workspace";
 import SplashScreen from "./components/UI/SplashScreen";
 import WelcomePage from "./components/Welcome/WelcomePage";
@@ -36,6 +35,17 @@ import type { User } from "./types/User";
 const PdfViewer = lazy(
 
     () => import("./components/PdfViewer/PdfViewer")
+
+);
+
+// react-markdown + remark-gfm (y sus dependencias de parseo,
+// micromark/mdast) solo hacen falta para pintar las respuestas
+// del chat — no en la pantalla de bienvenida, que es lo primero
+// que ve cualquiera antes incluso de elegir un juego. Cargarlo
+// de forma diferida evita ese peso en la carga inicial.
+const Chat = lazy(
+
+    () => import("./components/Chat/Chat")
 
 );
 
@@ -403,23 +413,47 @@ function App() {
 
                         ? (
 
-                            <Chat
+                            <Suspense
 
-                                game={selectedGame}
+                                fallback={
 
-                                onOpenManual={
+                                    <div
 
-                                    openManual
+                                        className="chat-loading-overlay"
+
+                                        role="status"
+
+                                        aria-live="polite"
+
+                                    >
+
+                                        Cargando…
+
+                                    </div>
 
                                 }
 
-                                onOpenSidebar={
+                            >
 
-                                    () => setIsSidebarOpen(true)
+                                <Chat
 
-                                }
+                                    game={selectedGame}
 
-                            />
+                                    onOpenManual={
+
+                                        openManual
+
+                                    }
+
+                                    onOpenSidebar={
+
+                                        () => setIsSidebarOpen(true)
+
+                                    }
+
+                                />
+
+                            </Suspense>
 
                         )
                         : (
