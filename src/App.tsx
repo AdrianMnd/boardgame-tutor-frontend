@@ -13,7 +13,10 @@ import SplashScreen from "./components/UI/SplashScreen";
 import WelcomePage from "./components/Welcome/WelcomePage";
 import AuthModal from "./components/Auth/AuthModal";
 import EditProfileModal from "./components/Auth/EditProfileModal";
+import GameRequestModal from "./components/GameRequest/GameRequestModal";
 import ThemeChoiceModal from "./components/Theme/ThemeChoiceModal";
+
+import { ConversationProvider } from "./contexts/ConversationContext";
 
 import { gamesService } from "./services/games.service";
 
@@ -51,6 +54,9 @@ function App() {
         useState(false);
 
     const [isEditProfileModalOpen, setIsEditProfileModalOpen] =
+        useState(false);
+
+    const [isGameRequestModalOpen, setIsGameRequestModalOpen] =
         useState(false);
 
     const {
@@ -221,6 +227,8 @@ function App() {
 
     return (
 
+        <ConversationProvider user={user}>
+
         <Layout>
 
             <Header
@@ -254,6 +262,14 @@ function App() {
                     () => setIsEditProfileModalOpen(true)
 
                 }
+
+                onGameRequestClick={
+
+                    () => setIsGameRequestModalOpen(true)
+
+                }
+
+                games={games}
 
                 theme={theme}
 
@@ -290,6 +306,26 @@ function App() {
                         updateEmail={updateEmail}
 
                         updatePassword={updatePassword}
+
+                    />
+
+                )
+
+            }
+
+            {
+
+                user && (
+
+                    <GameRequestModal
+
+                        isOpen={isGameRequestModalOpen}
+
+                        onClose={
+
+                            () => setIsGameRequestModalOpen(false)
+
+                        }
 
                     />
 
@@ -465,6 +501,8 @@ function App() {
             }
 
         </Layout>
+
+        </ConversationProvider>
 
     );
 

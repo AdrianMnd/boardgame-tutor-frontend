@@ -253,6 +253,328 @@
 
 }
 
+.header-game-request-wrapper {
+
+    position: relative;
+
+    display: inline-flex;
+
+}
+
+.header-game-request-button {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    height: 42px;
+
+    padding: 0 16px;
+
+    border-radius: 999px;
+
+    border: 1px solid var(--color-border-strong);
+
+    background: var(--color-surface-secondary);
+
+    color: var(--color-text-secondary);
+
+    font-size: .85rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background .15s,
+        color .15s;
+
+}
+
+.header-game-request-button:hover {
+
+    background: var(--color-surface-tertiary);
+
+    color: var(--color-text);
+
+}
+
+.header-game-request-hint {
+
+    position: fixed;
+
+    z-index: 300;
+
+    width: 260px;
+
+    padding: 16px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 16px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow:
+        0 20px 44px rgba(0,0,0,.4);
+
+    animation: fadeIn .15s ease;
+
+}
+
+.header-game-request-hint p {
+
+    margin: 0 0 12px;
+
+    color: var(--color-text-secondary);
+
+    font-size: .85rem;
+
+    line-height: 1.5;
+
+}
+
+.header-game-request-hint button {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+
+    height: 38px;
+
+    border-radius: 10px;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    font-size: .85rem;
+
+    font-weight: 700;
+
+    transition: background .15s;
+
+}
+
+.header-game-request-hint button:hover {
+
+    background: var(--color-primary-hover);
+
+}
+
+.header-new-games-wrapper {
+
+    position: relative;
+
+    display: inline-flex;
+
+}
+
+.header-new-games-button {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 999px;
+
+    background: var(--color-surface-secondary);
+
+    border: 1px solid var(--color-border-strong);
+
+    color: var(--color-text-secondary);
+
+    cursor: pointer;
+
+    transition:
+        background .15s,
+        color .15s;
+
+}
+
+.header-new-games-button:hover {
+
+    background: var(--color-surface-tertiary);
+
+    color: var(--color-text);
+
+}
+
+.header-new-games-badge {
+
+    position: absolute;
+
+    top: -4px;
+
+    right: -4px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 18px;
+
+    height: 18px;
+
+    padding: 0 4px;
+
+    border-radius: 999px;
+
+    border: 2px solid var(--color-background);
+
+    background: var(--color-danger);
+
+    color: white;
+
+    font-size: .65rem;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+}
+
+.header-new-games-panel {
+
+    position: fixed;
+
+    z-index: 300;
+
+    width: 280px;
+
+    max-height: 360px;
+
+    overflow-y: auto;
+
+    padding: 14px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 16px;
+
+    background: var(--color-surface-secondary);
+
+    box-shadow:
+        0 20px 44px rgba(0,0,0,.4);
+
+    animation: fadeIn .15s ease;
+
+}
+
+.header-new-games-title {
+
+    margin: 0 0 10px;
+
+    color: var(--color-text-light);
+
+    font-size: .74rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .04em;
+
+}
+
+.header-new-games-empty {
+
+    margin: 0;
+
+    padding: 8px 4px;
+
+    color: var(--color-text-secondary);
+
+    font-size: .85rem;
+
+    line-height: 1.5;
+
+}
+
+.header-new-games-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.header-new-games-list li {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 8px 10px;
+
+    border-radius: 9px;
+
+    transition: background .15s;
+
+}
+
+.header-new-games-list li:hover {
+
+    background: var(--color-surface-tertiary);
+
+}
+
+.header-new-games-name {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    color: var(--color-text);
+
+    font-size: .85rem;
+
+    font-weight: 600;
+
+}
+
+.header-new-games-date {
+
+    flex-shrink: 0;
+
+    color: var(--color-text-light);
+
+    font-size: .76rem;
+
+}
+
 .header-login-button {
 
     display: flex;
@@ -559,6 +881,22 @@
     }
 
     .header-login-button {
+
+        width: 42px;
+
+        justify-content: center;
+
+        padding: 0;
+
+    }
+
+    .header-game-request-button span {
+
+        display: none;
+
+    }
+
+    .header-game-request-button {
 
         width: 42px;
 

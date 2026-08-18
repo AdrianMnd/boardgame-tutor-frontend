@@ -48,6 +48,8 @@ export function useChat(
 
         updateAssistantMessage,
 
+        finalizeAssistantMessage,
+
         startNewConversation
 
     } = useConversation(
@@ -177,13 +179,32 @@ export function useChat(
                 // El stream terminó sin ningún fragmento de
                 // texto (raro, pero por seguridad no se deja
                 // el mensaje colgado en "Pensando...").
-                updateAssistantMessage({
+                finalizeAssistantMessage({
 
                     ...loadingMessage,
 
                     content:
 
                         "No he podido generar una respuesta.",
+
+                    sources,
+
+                    isLoading: false
+
+                });
+
+            }
+            else {
+
+                // El streaming terminó con contenido real — esta
+                // es la versión definitiva de la respuesta, así
+                // que aquí (y solo aquí, no en cada fragmento
+                // intermedio de onChunk) se guarda de verdad.
+                finalizeAssistantMessage({
+
+                    ...loadingMessage,
+
+                    content,
 
                     sources,
 
@@ -206,7 +227,7 @@ export function useChat(
 
             ) {
 
-                updateAssistantMessage({
+                finalizeAssistantMessage({
 
                     ...loadingMessage,
 
@@ -248,7 +269,7 @@ export function useChat(
 
             setErrorMessage(message);
 
-            updateAssistantMessage({
+            finalizeAssistantMessage({
 
                 ...loadingMessage,
 

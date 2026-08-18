@@ -1,5 +1,6 @@
 import {
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useState
@@ -9,6 +10,8 @@ import type {
     ReactNode
 } from "react";
 
+import { conversationsService } from "../services/conversations.service";
+
 import type {
     Message
 } from "../types/Message";
@@ -16,6 +19,10 @@ import type {
 import type {
     Conversation
 } from "../types/Conversation";
+
+import type {
+    User
+} from "../types/User";
 
 interface ConversationContextType {
 
@@ -43,7 +50,25 @@ interface ConversationContextType {
 
     ) => void;
 
+    persistMessage: (
+
+        gameId: string,
+
+        role: "user" | "assistant",
+
+        content: string,
+
+        sources?: unknown
+
+    ) => void;
+
     clearConversation: (
+
+        gameId: string
+
+    ) => void;
+
+    ensureLoaded: (
 
         gameId: string
 
@@ -99,58 +124,87 @@ function reviveConversations(
 
 }
 
+function readLocalConversations(): Conversation[] {
 
-export function ConversationProvider({
+    try {
 
-    children
+        const stored =
 
-}: {
+            localStorage.getItem(
 
-    children: ReactNode;
-
-}) {
-
-    const [
-
-        conversations,
-
-        setConversations
-
-    ] = useState<Conversation[]>(() => {
-
-        try {
-
-            const stored =
-
-                localStorage.getItem(
-
-                    STORAGE_KEY
-
-                );
-
-            if (!stored) {
-
-                return [];
-
-            }
-
-            return reviveConversations(
-
-                JSON.parse(stored)
+                STORAGE_KEY
 
             );
 
-        }
-
-        catch {
+        if (!stored) {
 
             return [];
 
         }
 
-    });
+        return reviveConversations(
+
+            JSON.parse(stored)
+
+        );
+
+    }
+
+    catch {
+
+        return [];
+
+    }
+
+}
+
+export function ConversationProvider({
+
+    children,
+
+    user
+
+}: {
+
+    children: ReactNode;
+
+    user: User | null;
+
+}) {
+
+    const [
+        conversations,
+        setConversations
+    ] = useState<Conversation[]>(
+
+        () =>
+
+            user
+
+                ? []
+
+                : readLocalConversations()
+
+    );
+
+    const [loadedGameIds, setLoadedGameIds] =
+        useState<Set<string>>(new Set());
+
+    if (!user && loadedGameIds.size > 0) {
+
+        setLoadedGameIds(new Set());
+
+        setConversations(readLocalConversations());
+
+    }
 
     useEffect(() => {
+
+        if (user) {
+
+            return;
+
+        }
 
         try {
 
@@ -169,16 +223,18 @@ export function ConversationProvider({
         }
         catch {
 
-            // localStorage lleno, deshabilitado (Safari en modo
-            // privado) o no disponible: se ignora — la
-            // conversación se sigue viendo en esta sesión,
-            // simplemente no persiste para la próxima.
+            // localStorage lleno, deshabilitado o no disponible:
+            // se ignora — la conversación se sigue viendo en
+            // esta sesión, simplemente no persiste para la
+            // próxima.
 
         }
 
     }, [
 
-        conversations
+        conversations,
+
+        user
 
     ]);
 
@@ -193,7 +249,6 @@ export function ConversationProvider({
             conversations.find(
 
                 item =>
-
                     item.gameId === gameId
 
             );
@@ -222,7 +277,6 @@ export function ConversationProvider({
                 previous.find(
 
                     item =>
-
                         item.gameId === gameId
 
                 );
@@ -315,6 +369,38 @@ export function ConversationProvider({
 
     }
 
+    const persistMessage = useCallback(
+
+        (
+
+            gameId: string,
+
+            role: "user" | "assistant",
+
+            content: string,
+
+            sources?: unknown
+
+        ) => {
+
+            if (!user) {
+
+                return;
+
+            }
+
+            conversationsService
+
+                .addMessage(gameId, role, content, sources)
+
+                .catch(() => {});
+
+        },
+
+        [user]
+
+    );
+
     function clearConversation(
 
         gameId: string
@@ -326,14 +412,97 @@ export function ConversationProvider({
             previous.filter(
 
                 conversation =>
-
                     conversation.gameId !== gameId
 
             )
 
         );
 
+        if (user) {
+
+            conversationsService
+
+                .clear(gameId)
+
+                .catch(() => {});
+
+        }
+
     }
+
+    const ensureLoaded = useCallback(
+
+        (gameId: string) => {
+
+            if (!user || loadedGameIds.has(gameId)) {
+
+                return;
+
+            }
+
+            setLoadedGameIds(previous => {
+
+                const next = new Set(previous);
+
+                next.add(gameId);
+
+                return next;
+
+            });
+
+            conversationsService
+
+                .list(gameId)
+
+                .then(apiMessages => {
+
+                    const messages: Message[] =
+
+                        apiMessages.map(message => ({
+
+                            id: message.id,
+
+                            role: message.role,
+
+                            content: message.content,
+
+                            sources:
+
+                                message.sources as Message["sources"],
+
+                            createdAt: new Date(message.createdAt)
+
+                        }));
+
+                    setConversations(previous => {
+
+                        const withoutThisGame =
+
+                            previous.filter(
+
+                                item => item.gameId !== gameId
+
+                            );
+
+                        return [
+
+                            ...withoutThisGame,
+
+                            { gameId, messages }
+
+                        ];
+
+                    });
+
+                })
+
+                .catch(() => {});
+
+        },
+
+        [user, loadedGameIds]
+
+    );
 
     return (
 
@@ -349,7 +518,11 @@ export function ConversationProvider({
 
                 updateMessage,
 
-                clearConversation
+                persistMessage,
+
+                clearConversation,
+
+                ensureLoaded
 
             }}
 
