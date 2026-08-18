@@ -66,8 +66,16 @@ test("crear una categoría personalizada y asignarle un juego la filtra correcta
 
     // Al crear la categoría, la app cambia automáticamente a esa
     // pestaña (que empieza vacía) — hay que volver a "Todos"
-    // para poder ver las tarjetas de juego y asignarle una.
-    await page.locator(".sidebar-tab", { hasText: "Todos" }).click();
+    // para poder ver las tarjetas de juego y asignarle una. Se
+    // espera a que la propia pestaña "Todos" confirme el cambio
+    // (clase "active") antes de seguir — mismo motivo que en el
+    // resto de esperas de este archivo: sin esto, interactuar
+    // con las tarjetas justo después del clic es una carrera.
+    const allTab = page.locator(".sidebar-tab", { hasText: "Todos" });
+
+    await allTab.click();
+
+    await expect(allTab).toHaveClass(/active/);
 
     await page.locator(".game-card", { hasText: "Wingspan" })
 
@@ -104,7 +112,11 @@ test("solo puede haber un selector de categoría abierto a la vez", async ({ pag
 
     await page.keyboard.press("Enter");
 
-    await page.locator(".sidebar-tab", { hasText: "Todos" }).click();
+    const allTab = page.locator(".sidebar-tab", { hasText: "Todos" });
+
+    await allTab.click();
+
+    await expect(allTab).toHaveClass(/active/);
 
     const cards = page.locator(".game-card");
 

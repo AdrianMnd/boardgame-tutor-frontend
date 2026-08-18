@@ -4,9 +4,6 @@ import { useState } from "react";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
-
-import "highlight.js/styles/github-dark.css";
 
 import Avatar from "../UI/Avatar";
 import Icon from "../UI/Icon";
@@ -227,12 +224,6 @@ function Message({
                                 remarkPlugins={[
 
                                     remarkGfm
-
-                                ]}
-
-                                rehypePlugins={[
-
-                                    rehypeHighlight
 
                                 ]}
 
