@@ -54,13 +54,32 @@ Necesitas el [backend](https://github.com/AdrianMnd/boardgame-tutor-backend) cor
 ## Scripts
 
 ```bash
-npm run dev         # servidor de desarrollo
-npm run build       # compilar para producción
-npm run lint        # ESLint
-npm run test        # tests (Vitest + Testing Library)
-npm run test:watch  # tests en modo watch
-npm run preview     # servir la build de producción en local
+npm run dev          # servidor de desarrollo
+npm run build        # compilar para producción
+npm run lint         # ESLint
+npm run test         # tests unitarios (Vitest + Testing Library)
+npm run test:watch   # tests unitarios en modo watch
+npm run test:e2e     # tests end-to-end (Playwright)
+npm run test:e2e:ui  # tests E2E en modo interactivo (útil para depurar)
+npm run preview      # servir la build de producción en local
 ```
+
+### Tests end-to-end (Playwright)
+
+Los tests de `e2e/` no tocan ningún servicio externo — arrancan
+automáticamente un backend simulado en memoria
+(`e2e/mock-server/server.cjs`) y la propia app apuntando a él, así
+que se pueden ejecutar sin credenciales de Postgres, B2, Gemini
+ni Resend. Corren en serie (no en paralelo) a propósito: el
+backend simulado guarda su estado en memoria compartido, y con
+varios tests a la vez podrían pisarse entre sí de formas difíciles
+de reproducir.
+
+```bash
+npx playwright install chromium   # primera vez, instala el navegador
+npm run test:e2e
+```
+
 
 ## Estructura
 
