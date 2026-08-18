@@ -1,166 +1,40 @@
 # Troubleshooting
 
-## El frontend no carga juegos
+## No aparecen juegos
 
-Comprobar:
+Comprobar `VITE_API_URL` (en `.env.local` o, en producción, en el panel de Vercel — recuerda que un cambio ahí exige volver a desplegar). Abrir esa URL + `/api/games` directamente en el navegador: si responde con la lista de juegos, el problema está en el frontend (revisar la consola); si no responde, el problema está en el backend — ver su [`docs/TROUBLESHOOTING.md`](https://github.com/AdrianMnd/boardgame-tutor-backend/blob/master/docs/TROUBLESHOOTING.md).
 
-```text
-VITE_API_URL
-```
+## Error de CORS en la consola del navegador
 
-y:
+El origen del frontend no está permitido en el backend. En local, revisar que el backend tenga `FRONTEND_URL` apuntando a tu `http://localhost:5173`. En producción, si cambió la URL del frontend, hay que actualizar la lista de orígenes permitidos en el backend.
 
-```text
-GET /api/games
-```
+## El visor de PDF no abre, o se queda en blanco
 
-Si la API responde correctamente, revisar la consola del navegador.
+Casi siempre es una discrepancia de versión entre `pdfjs-dist` y el *worker* que usa `react-pdf` internamente (ver [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md)). Revisar que ambas versiones coincidan en `package.json`, y que `public/pdfjs-wasm/` se haya copiado correctamente (`scripts/copy-pdfjs-wasm.cjs`, se ejecuta automáticamente antes de `dev`/`build`).
 
-## Las portadas no aparecen
+## El dictado por voz no aparece
 
-Comprobar primero:
+Es intencionado en navegadores sin soporte para la Web Speech API (Firefox, entre otros) — el botón se oculta en vez de mostrarse roto.
 
-```text
-GET /api/games
-```
+## Los favoritos/categorías/conversaciones no se guardan entre visitas
 
-La respuesta debe incluir:
+- **Sin sesión iniciada**: viven en `localStorage`. Si el navegador está en modo privado, o `localStorage` está deshabilitado/lleno, no persistirán entre sesiones.
+- **Con sesión iniciada**: deberían sincronizarse con la cuenta. Si no lo hacen, revisar la consola por errores de red hacia el backend, y confirmar que el token de sesión no ha caducado (`GET /api/auth/me` debería responder `200`, no `401`).
 
-```text
-coverUrl
-```
+## El aviso de "juegos nuevos" muestra un número que no esperaba
 
-Después abrir directamente la URL de `coverUrl`.
+Se compara contra la última vez que se vio el catálogo **en este dispositivo concreto** (`localStorage`, no sincronizado con la cuenta). Si nunca se ha usado la aplicación en este navegador, la primera visita no debería mostrar ningún juego como "nuevo".
 
-La URL debe apuntar al backend, no al servidor de Vite.
+## Los tests E2E fallan solo en mi máquina, no en CI (o viceversa)
 
-## El manual no abre
+- **`ERR_CONNECTION_REFUSED` hacia `127.0.0.1`**: en Windows, `vite preview` sin `--host` explícito puede escuchar en una interfaz de red distinta a la que usa Playwright — la configuración actual ya fuerza `--host 127.0.0.1` para evitar esto.
+- **Un test falla de forma intermitente, no siempre**: comprobar si hace una aserción justo después de un clic sin esperar confirmación de que React ya procesó ese cambio (ver los comentarios en `e2e/*.spec.ts` — este patrón ya causó varios falsos negativos durante el desarrollo).
 
-Probar:
-
-```text
-GET /api/games/<id>/manual
-```
-
-Comprobar que exista:
-
-```text
-games/<id>/source/rulebook.pdf
-```
-
-## El chat falla
-
-Comprobar:
-
-1. `gameId` válido.
-2. `generated/knowledge.json`.
-3. proveedor de embeddings disponible.
-4. proveedor de chat disponible.
-5. API key válida.
-6. modelo configurado.
-7. logs del backend.
-
-## Error 429 de IA
-
-El sistema tiene fallback entre proveedores para errores reintentables.
-
-Comprobar:
-
-```env
-AI_PROVIDER_ORDER=
-```
-
-y que existan proveedores alternativos con API keys.
-
-Para embeddings, recordar que OpenRouter no implementa embeddings en la versión actual.
-
-## Embeddings incompatibles
-
-`SimilarityCalculator` exige que los vectores tengan la misma dimensión.
-
-Si se cambia de modelo de embeddings y se mezclan vectores de distintas dimensiones, la recuperación semántica fallará.
-
-La solución es regenerar el conocimiento del juego con un modelo compatible.
-
-## Importación interrumpida
-
-Buscar:
-
-```text
-games/<id>/generated/embeddings-checkpoint.json
-```
-
-Volver a ejecutar:
+## Verificación completa antes de dar por buena una entrega
 
 ```bash
-npm run import <id>
-```
-
-El caso de uso intenta reanudar los chunks ya procesados.
-
-## El juego no existe
-
-Comprobar:
-
-```text
-games/<id>/metadata.json
-```
-
-y:
-
-```json
-"id": "<id>"
-```
-
-El ID de metadata debe coincidir con el directorio.
-
-## El PDF tiene un nombre diferente
-
-La implementación actual construye siempre:
-
-```text
-source/rulebook.pdf
-```
-
-Renombrar el archivo o adaptar `FileGameRepository`.
-
-## CORS
-
-El backend actual usa CORS abierto:
-
-```ts
-app.use(cors());
-```
-
-Si se restringe en producción, comprobar que el dominio real del frontend esté permitido.
-
-## Build del backend
-
-El script actual:
-
-```bash
-npm run build
-```
-
-solo ejecuta:
-
-```text
-tsc --noEmit
-```
-
-Es una comprobación de tipos, no una compilación a `dist`.
-
-## Verificación
-
-Antes de publicar una versión:
-
-```bash
-# frontend
 npm run build
 npm run lint
-
-# backend
-npm run build
-npm test
+npm run test
+npm run test:e2e
 ```
-
