@@ -37,6 +37,16 @@
 
     gap: 18px;
 
+    /*
+     * Sin esto, un elemento flex nunca se encoge por debajo de
+     * su ancho de contenido (min-width:auto es el valor por
+     * defecto) — con un título largo, esto empujaba los botones
+     * de la derecha (incluido "Iniciar sesión") fuera de la
+     * pantalla en móvil, en vez de dejar que el título se
+     * recortara.
+     */
+    min-width: 0;
+
 }
 
 .header-brand {
@@ -48,6 +58,8 @@
     gap: 18px;
 
     text-align: left;
+
+    min-width: 0;
 
     background: none;
 
@@ -145,6 +157,8 @@
 
     justify-content: center;
 
+    min-width: 0;
+
 }
 
 .header-title h1 {
@@ -156,6 +170,12 @@
     font-weight: 800;
 
     letter-spacing: -.02em;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 
     color: var(--color-text);
 
@@ -955,6 +975,31 @@
     .header-title h1 {
 
         font-size: .95rem;
+
+        /*
+         * Con el ancho tan justo en este punto, evita que el
+         * título se recorte por debajo de un tamaño legible
+         * (antes llegaba a quedarse en una sola letra) — mejor
+         * que los botones de la derecha se aprieten un poco más.
+         */
+        min-width: 74px;
+
+    }
+
+    .header-right {
+
+        gap: 6px;
+
+    }
+
+    .header-game-request-button,
+    .header-new-games-button,
+    .header-settings-button,
+    .header-login-button {
+
+        width: 36px;
+
+        height: 36px;
 
     }
 

@@ -12,7 +12,17 @@
 
     align-items: center;
 
-    justify-content: center;
+    /*
+     * "safe center" en vez de "center" — con pocos favoritos el
+     * efecto es idéntico (centrado normal), pero si el contenido
+     * llega a desbordar el alto disponible (con varios juegos en
+     * favoritos, en pantallas bajas), evita el problema clásico
+     * de que la parte de arriba quede inaccesible: con "center"
+     * a secas, el scroll puede arrancar ya "centrado" en vez de
+     * mostrar el principio, dejando el logo fuera de la vista sin
+     * ninguna forma evidente de llegar a él.
+     */
+    justify-content: safe center;
 
     overflow: auto;
 

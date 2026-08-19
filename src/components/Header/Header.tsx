@@ -1,6 +1,6 @@
 import "./Header.css";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { createPortal } from "react-dom";
 
@@ -160,12 +160,18 @@ function Header({
 
     const { newGames, markAllAsSeen } = useNewGames(games);
 
-    // Foto fija de la lista, tomada justo al abrir el panel —
-    // necesaria porque markAllAsSeen() se llama en el MISMO
-    // clic que abre el panel: si el panel leyera newGames en
-    // vivo, para cuando se pintara ya estaría vacío (recién
-    // marcado como visto), y nunca llegaría a mostrar lo que
-    // motivó la insignia en primer lugar.
+    // Foto fija de la lista, capturada solo la PRIMERA vez que
+    // se abre el panel en esta sesión (no en cada apertura): si
+    // se recapturara cada vez, la segunda apertura leería
+    // newGames ya vacío (recién marcado como visto la primera
+    // vez) y el aviso "desaparecería para siempre" en cuanto se
+    // cerrara el panel una vez — justo el comportamiento confuso
+    // que se quería evitar. Con esto, sigue disponible el resto
+    // de la sesión, aunque la insignia numérica ya no vuelva a
+    // aparecer una vez vista (eso sigue leyendo newGames en
+    // vivo, así que se apaga en cuanto se marca como visto).
+    const hasCapturedThisSession = useRef(false);
+
     const [newGamesSnapshot, setNewGamesSnapshot] =
 
         useState<Game[]>([]);
@@ -423,15 +429,17 @@ function Header({
 
                         onClick={() => {
 
-                            if (!isNewGamesPanelOpen) {
+                            if (!hasCapturedThisSession.current) {
 
                                 setNewGamesSnapshot(newGames);
+
+                                markAllAsSeen();
+
+                                hasCapturedThisSession.current = true;
 
                             }
 
                             toggleNewGamesPanel();
-
-                            markAllAsSeen();
 
                         }}
 
@@ -446,15 +454,17 @@ function Header({
 
                                 event.preventDefault();
 
-                                if (!isNewGamesPanelOpen) {
+                                if (!hasCapturedThisSession.current) {
 
                                     setNewGamesSnapshot(newGames);
+
+                                    markAllAsSeen();
+
+                                    hasCapturedThisSession.current = true;
 
                                 }
 
                                 toggleNewGamesPanel();
-
-                                markAllAsSeen();
 
                             }
 
