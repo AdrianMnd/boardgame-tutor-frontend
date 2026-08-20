@@ -55,6 +55,11 @@ function AdminPanelModal({
     const [error, setError] = useState<string | null>(null);
     const [markingId, setMarkingId] = useState<string | null>(null);
 
+    const [resetEmail, setResetEmail] = useState("");
+    const [resetResult, setResetResult] = useState<string | null>(null);
+    const [resetError, setResetError] = useState<string | null>(null);
+    const [isResetting, setIsResetting] = useState(false);
+
     // Detecta la transición cerrado→abierto DURANTE el render
     // (no dentro de un efecto) para disparar una carga nueva
     // cada vez que se abre — el modal sigue montado entre
@@ -107,6 +112,48 @@ function AdminPanelModal({
     if (!isOpen) {
 
         return null;
+
+    }
+
+    async function handleResetPassword(
+
+        event: React.FormEvent
+
+    ) {
+
+        event.preventDefault();
+
+        setIsResetting(true);
+
+        setResetError(null);
+
+        setResetResult(null);
+
+        try {
+
+            const temporaryPassword =
+
+                await adminService.resetUserPassword(resetEmail.trim());
+
+            setResetResult(temporaryPassword);
+
+            setResetEmail("");
+
+        }
+        catch {
+
+            setResetError(
+
+                "No se ha podido restablecer — comprueba que el email es correcto."
+
+            );
+
+        }
+        finally {
+
+            setIsResetting(false);
+
+        }
 
     }
 
@@ -225,6 +272,106 @@ function AdminPanelModal({
                     }
 
                 </p>
+
+                <form
+
+                    className="admin-reset-password-form"
+
+                    onSubmit={handleResetPassword}
+
+                >
+
+                    <label htmlFor="admin-reset-email">
+
+                        Restablecer contraseña de una cuenta
+
+                    </label>
+
+                    <div className="admin-reset-password-row">
+
+                        <input
+
+                            id="admin-reset-email"
+
+                            type="email"
+
+                            placeholder="email@ejemplo.com"
+
+                            required
+
+                            value={resetEmail}
+
+                            onChange={
+
+                                event => setResetEmail(event.target.value)
+
+                            }
+
+                        />
+
+                        <button
+
+                            type="submit"
+
+                            disabled={isResetting}
+
+                        >
+
+                            {
+
+                                isResetting
+
+                                    ? "Un momento…"
+
+                                    : "Restablecer"
+
+                            }
+
+                        </button>
+
+                    </div>
+
+                    {
+
+                        resetError && (
+
+                            <p className="auth-error" role="alert">
+
+                                {resetError}
+
+                            </p>
+
+                        )
+
+                    }
+
+                    {
+
+                        resetResult && (
+
+                            <p
+
+                                className="admin-reset-password-result"
+
+                                role="status"
+
+                            >
+
+                                Contraseña temporal generada:{" "}
+
+                                <code>{resetResult}</code>
+
+                                {" "}— comunícasela por tu correo personal,
+
+                                no por aquí.
+
+                            </p>
+
+                        )
+
+                    }
+
+                </form>
 
                 {
 

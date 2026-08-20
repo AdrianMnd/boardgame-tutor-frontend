@@ -48,6 +48,26 @@ export class AdminService {
 
     }
 
+    async resetUserPassword(
+
+        email: string
+
+    ): Promise<string> {
+
+        const result =
+
+            await apiClient.post<{ temporaryPassword: string }>(
+
+                "/api/admin/users/reset-password",
+
+                { email }
+
+            );
+
+        return result.temporaryPassword;
+
+    }
+
 }
 
 export const adminService =

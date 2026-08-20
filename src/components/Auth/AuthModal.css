@@ -228,6 +228,26 @@
 
 }
 
+.auth-forgot-password-hint {
+
+    margin: 4px 0 0;
+
+    color: var(--color-text-light);
+
+    font-size: .8rem;
+
+    text-align: center;
+
+}
+
+.auth-forgot-password-hint a {
+
+    color: var(--color-primary-text);
+
+    font-weight: 600;
+
+}
+
 .auth-error {
 
     margin: 0;
