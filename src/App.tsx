@@ -24,6 +24,7 @@ import { useFavorites } from "./hooks/useFavorites";
 import { useCategories } from "./hooks/useCategories";
 import { useAuth } from "./hooks/useAuth";
 import { useTheme } from "./hooks/useTheme";
+import { useBackButtonExitWarning } from "./hooks/useBackButtonExitWarning";
 
 import type { Game } from "./types/Game";
 import type { User } from "./types/User";
@@ -102,6 +103,9 @@ function App() {
         setTheme
 
     } = useTheme();
+
+    const { showExitWarning } =
+        useBackButtonExitWarning();
 
     const {
 
@@ -565,6 +569,26 @@ function App() {
             }
 
         </Layout>
+
+        {
+
+            showExitWarning && (
+
+                <div
+
+                    className="exit-warning-toast"
+
+                    role="status"
+
+                >
+
+                    Vuelve a pulsar atrás para salir
+
+                </div>
+
+            )
+
+        }
 
         </ConversationProvider>
 

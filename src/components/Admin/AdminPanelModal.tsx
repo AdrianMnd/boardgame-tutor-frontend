@@ -11,7 +11,8 @@ import {
     FileText,
     Check,
     ThumbsUp,
-    ThumbsDown
+    ThumbsDown,
+    Image as ImageIcon
 } from "lucide-react";
 
 import { adminService } from "../../services/admin.service";
@@ -496,6 +497,32 @@ function AdminPanelModal({
                                             <Icon icon={ExternalLink} size={14} />
 
                                             Ver en BoardGameGeek
+
+                                        </a>
+
+                                    )
+
+                                }
+
+                                {
+
+                                    request.coverLink && (
+
+                                        <a
+
+                                            className="admin-request-link"
+
+                                            href={request.coverLink}
+
+                                            target="_blank"
+
+                                            rel="noopener noreferrer"
+
+                                        >
+
+                                            <Icon icon={ImageIcon} size={14} />
+
+                                            Ver portada
 
                                         </a>
 

@@ -88,6 +88,22 @@
 
 }
 
+.game-request-cover-selected {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 10px;
+
+    border-radius: 9px;
+
+    background: var(--color-surface);
+
+}
+
 .game-request-file-name {
 
     flex: 1;

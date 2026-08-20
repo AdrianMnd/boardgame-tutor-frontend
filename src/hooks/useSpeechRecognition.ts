@@ -80,6 +80,15 @@ interface UseSpeechRecognitionOptions {
 
     onResult: (transcript: string) => void;
 
+    /**
+     * Se llama cuando la grabación termina de verdad — al
+     * pulsar el botón para parar, o cuando el navegador decide
+     * cortar tras un silencio prolongado. No se llama en cada
+     * pausa breve dentro de una misma grabación (para eso está
+     * onResult, que sí se llama varias veces).
+     */
+    onEnd?: () => void;
+
     lang?: string;
 
 }
@@ -94,6 +103,8 @@ interface UseSpeechRecognitionOptions {
 export function useSpeechRecognition({
 
     onResult,
+
+    onEnd,
 
     lang = "es-ES"
 
@@ -113,18 +124,27 @@ export function useSpeechRecognition({
     const recognitionRef =
         useRef<SpeechRecognitionLike | null>(null);
 
-    // Se guarda en un ref para no tener que recrear el
-    // reconocedor cada vez que cambie la referencia de la
-    // función (ej. porque el componente que lo usa se
-    // re-renderiza).
+    // Se guardan en refs para no tener que recrear el
+    // reconocedor cada vez que cambien las funciones (ej.
+    // porque el componente que lo usa se re-renderiza con una
+    // pregunta distinta).
     const onResultRef =
         useRef(onResult);
+
+    const onEndRef =
+        useRef(onEnd);
 
     useEffect(() => {
 
         onResultRef.current = onResult;
 
     }, [onResult]);
+
+    useEffect(() => {
+
+        onEndRef.current = onEnd;
+
+    }, [onEnd]);
 
     useEffect(() => {
 
@@ -142,7 +162,15 @@ export function useSpeechRecognition({
 
         recognition.lang = lang;
 
-        recognition.continuous = false;
+        // true: la grabación no se corta sola tras una pausa
+        // breve (que era el problema real) — sigue escuchando
+        // hasta que se pulse el botón de parar, o hasta que el
+        // propio navegador decida cortar tras un silencio
+        // largo. Con esto, onresult puede llegar varias veces a
+        // lo largo de una misma grabación, según se van
+        // finalizando frases — por eso ya se acumulaba el
+        // resultado en Chat.tsx en vez de sustituirlo.
+        recognition.continuous = true;
 
         recognition.interimResults = false;
 
@@ -191,6 +219,8 @@ export function useSpeechRecognition({
         recognition.onend = () => {
 
             setIsListening(false);
+
+            onEndRef.current?.();
 
         };
 
