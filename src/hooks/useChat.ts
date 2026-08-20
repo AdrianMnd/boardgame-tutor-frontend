@@ -88,6 +88,33 @@ export function useChat(
 
             question.trim();
 
+        // Se construye ANTES de añadir la pregunta actual a la
+        // conversación — es el historial previo, no incluye la
+        // propia pregunta que se está mandando ahora (esa va
+        // aparte, en su propio campo). Se descartan los mensajes
+        // sin contenido real (la burbuja de "Pensando...") y
+        // cualquier error o cancelación sin texto útil.
+        const history =
+
+            messages
+
+                .filter(
+
+                    message =>
+
+                        !message.isLoading &&
+                        message.content.trim().length > 0
+
+                )
+
+                .map(message => ({
+
+                    role: message.role,
+
+                    content: message.content
+
+                }));
+
         addUserMessage(
 
             currentQuestion
@@ -131,6 +158,8 @@ export function useChat(
                     question:
 
                         currentQuestion,
+
+                    history,
 
                     signal:
 
