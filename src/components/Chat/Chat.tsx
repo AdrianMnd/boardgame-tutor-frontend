@@ -45,6 +45,31 @@ function Chat({
 
 }: Props) {
 
+    // Solo vive en memoria de este componente — no se guarda en
+    // ningún sitio a propósito. Se resetea al recargar la página
+    // (estado nuevo de React) y también al cambiar de juego (el
+    // rango válido de jugadores es distinto en cada uno, así que
+    // no tendría sentido arrastrarlo). NO se resetea al pulsar
+    // "Nueva conversación" ni entre preguntas del mismo juego —
+    // un grupo puede cambiar de número de jugadores sin querer
+    // empezar una conversación nueva, y este selector siempre
+    // visible permite corregirlo al momento.
+    const [playerCount, setPlayerCount] =
+
+        useState<number | null>(null);
+
+    const [lastGameId, setLastGameId] =
+
+        useState<string | undefined>(game?.id);
+
+    if (game?.id !== lastGameId) {
+
+        setLastGameId(game?.id);
+
+        setPlayerCount(null);
+
+    }
+
     const {
 
         messages,
@@ -65,7 +90,7 @@ function Chat({
 
         cancelGeneration
 
-    } = useChat(game);
+    } = useChat(game, playerCount);
 
     // Aviso para lectores de pantalla cuando llega una respuesta
     // nueva — el texto en sí va apareciendo progresivamente
@@ -794,6 +819,75 @@ function Chat({
                     ref={messagesEndRef}
 
                 />
+
+            </div>
+
+            <div className="chat-player-count">
+
+                <label htmlFor="chat-player-count-select">
+
+                    Jugando con
+
+                </label>
+
+                <select
+
+                    id="chat-player-count-select"
+
+                    value={playerCount ?? ""}
+
+                    onChange={event => {
+
+                        const value = event.target.value;
+
+                        setPlayerCount(
+
+                            value === "" ? null : Number(value)
+
+                        );
+
+                    }}
+
+                >
+
+                    <option value="">
+
+                        (sin especificar)
+
+                    </option>
+
+                    {
+
+                        game &&
+
+                        Array.from(
+
+                            {
+
+                                length:
+                                    game.maxPlayers - game.minPlayers + 1
+
+                            },
+
+                            (_, index) => game.minPlayers + index
+
+                        ).map(
+
+                            count => (
+
+                                <option key={count} value={count}>
+
+                                    {count} jugadores
+
+                                </option>
+
+                            )
+
+                        )
+
+                    }
+
+                </select>
 
             </div>
 

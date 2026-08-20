@@ -470,6 +470,48 @@
 
 /* ========================================= */
 
+.chat-player-count {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 26px;
+
+    border-top: 1px solid var(--color-border-light);
+
+    font-size: .8rem;
+
+}
+
+.chat-player-count label {
+
+    color: var(--color-text-light);
+
+    font-weight: 600;
+
+}
+
+.chat-player-count select {
+
+    padding: 4px 8px;
+
+    border-radius: 8px;
+
+    border: 1px solid var(--color-border-strong);
+
+    background: var(--color-surface);
+
+    color: var(--color-text);
+
+    font-size: .8rem;
+
+    cursor: pointer;
+
+}
+
 .chat-input {
 
     display: flex;

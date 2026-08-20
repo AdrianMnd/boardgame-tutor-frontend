@@ -11,7 +11,8 @@ import { ApiError }
     from "../services/apiError";
 
 export function useChat(
-    game: Game | null
+    game: Game | null,
+    playerCount: number | null = null
 ) {
 
     const [
@@ -160,6 +161,10 @@ export function useChat(
                         currentQuestion,
 
                     history,
+
+                    playerCount:
+
+                        playerCount ?? undefined,
 
                     signal:
 

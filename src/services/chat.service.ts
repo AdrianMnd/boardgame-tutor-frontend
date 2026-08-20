@@ -28,6 +28,13 @@ export interface AskQuestionRequest {
 
     }[];
 
+    /**
+     * Con cuántos jugadores se está jugando esta partida
+     * concreta — opcional del todo, solo vive en memoria del
+     * componente Chat mientras la pestaña sigue abierta.
+     */
+    playerCount?: number;
+
     signal?: AbortSignal;
 
 }
@@ -116,7 +123,9 @@ export class ChatService {
 
                         question: request.question,
 
-                        history: request.history
+                        history: request.history,
+
+                        playerCount: request.playerCount
 
                     }),
 
