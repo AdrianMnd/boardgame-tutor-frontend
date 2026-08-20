@@ -292,106 +292,6 @@ function AdminPanelModal({
 
                 </p>
 
-                <form
-
-                    className="admin-reset-password-form"
-
-                    onSubmit={handleResetPassword}
-
-                >
-
-                    <label htmlFor="admin-reset-email">
-
-                        Restablecer contraseña de una cuenta
-
-                    </label>
-
-                    <div className="admin-reset-password-row">
-
-                        <input
-
-                            id="admin-reset-email"
-
-                            type="email"
-
-                            placeholder="email@ejemplo.com"
-
-                            required
-
-                            value={resetEmail}
-
-                            onChange={
-
-                                event => setResetEmail(event.target.value)
-
-                            }
-
-                        />
-
-                        <button
-
-                            type="submit"
-
-                            disabled={isResetting}
-
-                        >
-
-                            {
-
-                                isResetting
-
-                                    ? "Un momento…"
-
-                                    : "Restablecer"
-
-                            }
-
-                        </button>
-
-                    </div>
-
-                    {
-
-                        resetError && (
-
-                            <p className="auth-error" role="alert">
-
-                                {resetError}
-
-                            </p>
-
-                        )
-
-                    }
-
-                    {
-
-                        resetResult && (
-
-                            <p
-
-                                className="admin-reset-password-result"
-
-                                role="status"
-
-                            >
-
-                                Contraseña temporal generada:{" "}
-
-                                <code>{resetResult}</code>
-
-                                {" "}— comunícasela por tu correo personal,
-
-                                no por aquí.
-
-                            </p>
-
-                        )
-
-                    }
-
-                </form>
-
                 {
 
                     isLoading && (
@@ -741,6 +641,107 @@ function AdminPanelModal({
                     )
 
                 }
+
+
+                <form
+
+                    className="admin-reset-password-form"
+
+                    onSubmit={handleResetPassword}
+
+                >
+
+                    <label htmlFor="admin-reset-email">
+
+                        Restablecer contraseña de una cuenta
+
+                    </label>
+
+                    <div className="admin-reset-password-row">
+
+                        <input
+
+                            id="admin-reset-email"
+
+                            type="email"
+
+                            placeholder="email@ejemplo.com"
+
+                            required
+
+                            value={resetEmail}
+
+                            onChange={
+
+                                event => setResetEmail(event.target.value)
+
+                            }
+
+                        />
+
+                        <button
+
+                            type="submit"
+
+                            disabled={isResetting}
+
+                        >
+
+                            {
+
+                                isResetting
+
+                                    ? "Un momento…"
+
+                                    : "Restablecer"
+
+                            }
+
+                        </button>
+
+                    </div>
+
+                    {
+
+                        resetError && (
+
+                            <p className="auth-error" role="alert">
+
+                                {resetError}
+
+                            </p>
+
+                        )
+
+                    }
+
+                    {
+
+                        resetResult && (
+
+                            <p
+
+                                className="admin-reset-password-result"
+
+                                role="status"
+
+                            >
+
+                                Contraseña temporal generada:{" "}
+
+                                <code>{resetResult}</code>
+
+                                {" "}— comunícasela por tu correo personal,
+
+                                no por aquí.
+
+                            </p>
+
+                        )
+
+                    }
+
+                </form>
 
             </div>
 
