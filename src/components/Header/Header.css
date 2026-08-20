@@ -812,7 +812,8 @@
 
 }
 
-.profile-menu-edit {
+.profile-menu-edit,
+.profile-menu-admin {
 
     display: flex;
 
@@ -840,7 +841,8 @@
 
 }
 
-.profile-menu-edit:hover {
+.profile-menu-edit:hover,
+.profile-menu-admin:hover {
 
     background: var(--color-surface-tertiary);
 

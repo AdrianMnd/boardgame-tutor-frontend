@@ -13,6 +13,7 @@ import WelcomePage from "./components/Welcome/WelcomePage";
 import AuthModal from "./components/Auth/AuthModal";
 import EditProfileModal from "./components/Auth/EditProfileModal";
 import GameRequestModal from "./components/GameRequest/GameRequestModal";
+import AdminPanelModal from "./components/Admin/AdminPanelModal";
 import ThemeChoiceModal from "./components/Theme/ThemeChoiceModal";
 
 import { ConversationProvider } from "./contexts/ConversationContext";
@@ -67,6 +68,9 @@ function App() {
         useState(false);
 
     const [isGameRequestModalOpen, setIsGameRequestModalOpen] =
+        useState(false);
+
+    const [isAdminPanelOpen, setIsAdminPanelOpen] =
         useState(false);
 
     const {
@@ -279,6 +283,12 @@ function App() {
 
                 }
 
+                onAdminPanelClick={
+
+                    () => setIsAdminPanelOpen(true)
+
+                }
+
                 games={games}
 
                 theme={theme}
@@ -334,6 +344,26 @@ function App() {
                         onClose={
 
                             () => setIsGameRequestModalOpen(false)
+
+                        }
+
+                    />
+
+                )
+
+            }
+
+            {
+
+                user?.isAdmin && (
+
+                    <AdminPanelModal
+
+                        isOpen={isAdminPanelOpen}
+
+                        onClose={
+
+                            () => setIsAdminPanelOpen(false)
 
                         }
 
