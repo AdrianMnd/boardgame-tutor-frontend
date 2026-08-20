@@ -20,6 +20,40 @@ export interface GameRequestListItem {
 
 }
 
+export interface RatingSummaryByGame {
+
+    gameId: string;
+
+    gameName: string;
+
+    up: number;
+
+    down: number;
+
+}
+
+export interface RecentNegativeRating {
+
+    gameId: string;
+
+    gameName: string;
+
+    question: string;
+
+    answer: string;
+
+    createdAt: string;
+
+}
+
+export interface RatingsSummary {
+
+    byGame: RatingSummaryByGame[];
+
+    recentNegative: RecentNegativeRating[];
+
+}
+
 export class AdminService {
 
     async listGameRequests(): Promise<GameRequestListItem[]> {
@@ -65,6 +99,16 @@ export class AdminService {
             );
 
         return result.temporaryPassword;
+
+    }
+
+    async getRatingsSummary(): Promise<RatingsSummary> {
+
+        return apiClient.get<RatingsSummary>(
+
+            "/api/admin/ratings/summary"
+
+        );
 
     }
 

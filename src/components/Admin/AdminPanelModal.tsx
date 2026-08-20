@@ -9,12 +9,17 @@ import {
     X,
     ExternalLink,
     FileText,
-    Check
+    Check,
+    ThumbsUp,
+    ThumbsDown
 } from "lucide-react";
 
 import { adminService } from "../../services/admin.service";
 
-import type { GameRequestListItem } from "../../services/admin.service";
+import type {
+    GameRequestListItem,
+    RatingsSummary
+} from "../../services/admin.service";
 
 interface Props {
 
@@ -51,6 +56,7 @@ function AdminPanelModal({
 }: Props) {
 
     const [requests, setRequests] = useState<GameRequestListItem[]>([]);
+    const [ratingsSummary, setRatingsSummary] = useState<RatingsSummary | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [markingId, setMarkingId] = useState<string | null>(null);
@@ -106,6 +112,18 @@ function AdminPanelModal({
             })
 
             .finally(() => setIsLoading(false));
+
+        adminService.getRatingsSummary()
+
+            .then(setRatingsSummary)
+
+            .catch(() => {
+
+                // El resumen de valoraciones es un extra — si
+                // falla, el resto del panel (solicitudes,
+                // restablecer contraseña) sigue siendo
+                // perfectamente utilizable sin él.
+            });
 
     }, [isOpen, isLoading]);
 
@@ -588,6 +606,114 @@ function AdminPanelModal({
                     }
 
                 </ul>
+
+                {
+
+                    ratingsSummary && ratingsSummary.byGame.length > 0 && (
+
+                        <div className="admin-ratings-section">
+
+                            <h3>Valoraciones de respuestas</h3>
+
+                            <ul className="admin-ratings-by-game">
+
+                                {
+
+                                    ratingsSummary.byGame.map(item => (
+
+                                        <li key={item.gameId}>
+
+                                            <span className="admin-ratings-game-name">
+
+                                                {item.gameName}
+
+                                            </span>
+
+                                            <span className="admin-ratings-counts">
+
+                                                <span className="admin-ratings-up">
+
+                                                    <Icon icon={ThumbsUp} size={13} />
+
+                                                    {item.up}
+
+                                                </span>
+
+                                                <span className="admin-ratings-down">
+
+                                                    <Icon icon={ThumbsDown} size={13} />
+
+                                                    {item.down}
+
+                                                </span>
+
+                                            </span>
+
+                                        </li>
+
+                                    ))
+
+                                }
+
+                            </ul>
+
+                            {
+
+                                ratingsSummary.recentNegative.length > 0 && (
+
+                                    <>
+
+                                        <h4>Últimas respuestas peor valoradas</h4>
+
+                                        <ul className="admin-ratings-negative">
+
+                                            {
+
+                                                ratingsSummary.recentNegative.map(
+
+                                                    (item, index) => (
+
+                                                        <li key={index}>
+
+                                                            <span className="admin-ratings-game-name">
+
+                                                                {item.gameName}
+
+                                                            </span>
+
+                                                            <p className="admin-ratings-question">
+
+                                                                {item.question}
+
+                                                            </p>
+
+                                                            <p className="admin-ratings-answer">
+
+                                                                {item.answer}
+
+                                                            </p>
+
+                                                        </li>
+
+                                                    )
+
+                                                )
+
+                                            }
+
+                                        </ul>
+
+                                    </>
+
+                                )
+
+                            }
+
+                        </div>
+
+                    )
+
+                }
 
             </div>
 

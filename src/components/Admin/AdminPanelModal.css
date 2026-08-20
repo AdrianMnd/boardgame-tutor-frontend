@@ -305,3 +305,161 @@
     cursor: default;
 
 }
+
+.admin-ratings-section {
+
+    margin-top: 24px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--color-border-light);
+
+}
+
+.admin-ratings-section h3 {
+
+    margin: 0 0 10px;
+
+    color: var(--color-text);
+
+    font-size: .95rem;
+
+}
+
+.admin-ratings-section h4 {
+
+    margin: 18px 0 8px;
+
+    color: var(--color-text-secondary);
+
+    font-size: .82rem;
+
+    font-weight: 700;
+
+}
+
+.admin-ratings-by-game {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin: 0 0 4px;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.admin-ratings-by-game li {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    background: var(--color-surface);
+
+    font-size: .83rem;
+
+}
+
+.admin-ratings-game-name {
+
+    color: var(--color-text);
+
+    font-weight: 600;
+
+}
+
+.admin-ratings-counts {
+
+    display: flex;
+
+    gap: 12px;
+
+}
+
+.admin-ratings-up,
+.admin-ratings-down {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    font-weight: 700;
+
+}
+
+.admin-ratings-up {
+
+    color: var(--color-success, #4ade80);
+
+}
+
+.admin-ratings-down {
+
+    color: #f87171;
+
+}
+
+.admin-ratings-negative {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.admin-ratings-negative li {
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+}
+
+.admin-ratings-question {
+
+    margin: 4px 0 2px;
+
+    color: var(--color-text);
+
+    font-size: .82rem;
+
+    font-weight: 600;
+
+}
+
+.admin-ratings-answer {
+
+    margin: 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: .78rem;
+
+    line-height: 1.4;
+}
