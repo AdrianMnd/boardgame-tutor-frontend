@@ -9,10 +9,14 @@ import Avatar from "../UI/Avatar";
 import Icon from "../UI/Icon";
 import Sources from "./Sources";
 
+import { ratingService } from "../../services/rating.service";
+
 import {
     Clock3,
     Copy,
-    Check
+    Check,
+    ThumbsUp,
+    ThumbsDown
 } from "lucide-react";
 
 import type {
@@ -22,6 +26,16 @@ import type {
 interface Props {
 
     message: MessageType;
+
+    /**
+     * Opcionales — solo hacen falta para poder valorar la
+     * respuesta (👍/👎). Sin ellos (por ejemplo, si algún día se
+     * usa este componente en otro contexto), los botones de
+     * valoración simplemente no se muestran.
+     */
+    gameId?: string;
+
+    question?: string;
 
     onOpenSource?: (
 
@@ -79,9 +93,43 @@ function Message({
 
     message,
 
+    gameId,
+
+    question,
+
     onOpenSource
 
 }: Props) {
+
+    const [rated, setRated] =
+        useState<"up" | "down" | null>(null);
+
+    function rate(
+
+        value: "up" | "down"
+
+    ) {
+
+        if (!gameId || !question || rated) {
+
+            return;
+
+        }
+
+        // Actualización optimista — se ve el cambio al instante,
+        // sin esperar a la petición. Es una señal de feedback de
+        // bajo riesgo, no algo crítico: si la petición fallara
+        // en segundo plano, no merece la pena complicar la
+        // interfaz para reflejarlo ni pedir que se reintente.
+        setRated(value);
+
+        ratingService
+
+            .rate(gameId, question, message.content, value)
+
+            .catch(() => {});
+
+    }
 
     const [
 
@@ -302,6 +350,92 @@ function Message({
                                         }
 
                                     </button>
+
+                                    {
+
+                                        gameId && question && (
+
+                                            <div
+
+                                                className="message-rating"
+
+                                                role="group"
+
+                                                aria-label="Valorar esta respuesta"
+
+                                            >
+
+                                                <button
+
+                                                    className={
+
+                                                        rated === "up"
+
+                                                            ? "message-rating-button active"
+
+                                                            : "message-rating-button"
+
+                                                    }
+
+                                                    onClick={() => rate("up")}
+
+                                                    disabled={rated !== null}
+
+                                                    aria-label="Respuesta útil"
+
+                                                    aria-pressed={rated === "up"}
+
+                                                >
+
+                                                    <Icon icon={ThumbsUp} size={15} />
+
+                                                </button>
+
+                                                <button
+
+                                                    className={
+
+                                                        rated === "down"
+
+                                                            ? "message-rating-button active"
+
+                                                            : "message-rating-button"
+
+                                                    }
+
+                                                    onClick={() => rate("down")}
+
+                                                    disabled={rated !== null}
+
+                                                    aria-label="Respuesta no útil"
+
+                                                    aria-pressed={rated === "down"}
+
+                                                >
+
+                                                    <Icon icon={ThumbsDown} size={15} />
+
+                                                </button>
+
+                                                {
+
+                                                    rated && (
+
+                                                        <span className="message-rating-thanks">
+
+                                                            ¡Gracias!
+
+                                                        </span>
+
+                                                    )
+
+                                                }
+
+                                            </div>
+
+                                        )
+
+                                    }
 
                                 </footer>
 

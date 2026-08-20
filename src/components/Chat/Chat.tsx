@@ -817,13 +817,24 @@ function Chat({
 
                     messages.map(
 
-                        message => (
+                        (message, index) => (
 
                             <MessageComponent
 
                                 key={message.id}
 
                                 message={message}
+
+                                gameId={game?.id}
+
+                                question={
+
+                                    message.role === "assistant"
+                                        ? messages[index - 1]?.content
+                                        : undefined
+
+                                }
+
 
                                 onOpenSource={
 
