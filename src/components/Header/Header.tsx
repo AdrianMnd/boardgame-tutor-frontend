@@ -14,7 +14,8 @@ import {
     Settings,
     SlidersHorizontal,
     Gamepad2,
-    Bell
+    Bell,
+    ShieldCheck
 } from "lucide-react";
 
 import logo from "../../assets/logo.svg";
@@ -41,6 +42,8 @@ interface Props {
     onLogout: () => void;
 
     onEditProfileClick: () => void;
+
+    onAdminPanelClick: () => void;
 
     onGameRequestClick: () => void;
 
@@ -87,6 +90,8 @@ function Header({
     onLogout,
 
     onEditProfileClick,
+
+    onAdminPanelClick,
 
     onGameRequestClick,
 
@@ -760,6 +765,38 @@ function Header({
                                                     Editar perfil
 
                                                 </button>
+
+                                                {
+
+                                                    user.isAdmin && (
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            role="menuitem"
+
+                                                            className="profile-menu-admin"
+
+                                                            onClick={() => {
+
+                                                                closeProfileMenu();
+
+                                                                onAdminPanelClick();
+
+                                                            }}
+
+                                                        >
+
+                                                            <Icon icon={ShieldCheck} size={15} />
+
+                                                            Panel de administración
+
+                                                        </button>
+
+                                                    )
+
+                                                }
 
                                                 <button
 

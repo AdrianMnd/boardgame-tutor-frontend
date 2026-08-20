@@ -1,0 +1,465 @@
+.admin-panel-modal {
+
+    max-width: 520px;
+
+    max-height: min(680px, calc(100vh - 48px));
+
+    overflow-y: auto;
+
+}
+
+.admin-panel-status {
+
+    margin: 0 0 12px;
+
+    color: var(--color-text-secondary);
+
+    font-size: .9rem;
+
+}
+
+.admin-reset-password-form {
+
+    margin-bottom: 20px;
+
+    padding: 14px 16px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 12px;
+
+    background: var(--color-surface);
+
+}
+
+.admin-reset-password-form label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--color-text);
+
+    font-size: .85rem;
+
+    font-weight: 700;
+
+}
+
+.admin-reset-password-row {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+.admin-reset-password-row input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    border: 1px solid var(--color-border-strong);
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+
+    font-size: .85rem;
+
+}
+
+.admin-reset-password-row button {
+
+    flex-shrink: 0;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    font-size: .82rem;
+
+    font-weight: 700;
+
+}
+
+.admin-reset-password-row button:disabled {
+
+    opacity: .6;
+
+}
+
+.admin-reset-password-result {
+
+    margin: 10px 0 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: .82rem;
+
+    line-height: 1.5;
+
+}
+
+.admin-reset-password-result code {
+
+    padding: 2px 6px;
+
+    border-radius: 5px;
+
+    background: var(--color-surface-tertiary);
+
+    color: var(--color-text);
+
+    font-weight: 700;
+
+}
+
+.admin-request-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.admin-request-item {
+
+    padding: 14px 16px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 12px;
+
+    background: var(--color-surface);
+
+}
+
+.admin-request-item.reviewed {
+
+    opacity: .6;
+
+}
+
+.admin-request-header {
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 4px;
+
+}
+
+.admin-request-game-name {
+
+    color: var(--color-text);
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+}
+
+.admin-request-date {
+
+    flex-shrink: 0;
+
+    color: var(--color-text-light);
+
+    font-size: .78rem;
+
+}
+
+.admin-request-requester {
+
+    margin: 0 0 8px;
+
+    color: var(--color-text-secondary);
+
+    font-size: .85rem;
+
+}
+
+.admin-request-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-right: 14px;
+
+    margin-bottom: 4px;
+
+    color: var(--color-primary-text);
+
+    font-size: .82rem;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+}
+
+.admin-request-link:hover {
+
+    text-decoration: underline;
+
+}
+
+.admin-request-pdfs {
+
+    display: inline;
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.admin-request-pdfs li {
+
+    display: inline;
+
+}
+
+.admin-request-reviewed-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 8px;
+
+    color: var(--color-success, #4ade80);
+
+    font-size: .82rem;
+
+    font-weight: 700;
+
+}
+
+.admin-request-review-button {
+
+    display: block;
+
+    margin-top: 10px;
+
+    padding: 8px 14px;
+
+    border-radius: 9px;
+
+    border: 1px solid var(--color-border-strong);
+
+    background: var(--color-surface-secondary);
+
+    color: var(--color-text);
+
+    font-size: .82rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background .15s;
+
+}
+
+.admin-request-review-button:hover:not(:disabled) {
+
+    background: var(--color-surface-tertiary);
+
+}
+
+.admin-request-review-button:disabled {
+
+    opacity: .6;
+
+    cursor: default;
+
+}
+
+.admin-ratings-section {
+
+    margin-top: 24px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--color-border-light);
+
+}
+
+.admin-ratings-section h3 {
+
+    margin: 0 0 10px;
+
+    color: var(--color-text);
+
+    font-size: .95rem;
+
+}
+
+.admin-ratings-section h4 {
+
+    margin: 18px 0 8px;
+
+    color: var(--color-text-secondary);
+
+    font-size: .82rem;
+
+    font-weight: 700;
+
+}
+
+.admin-ratings-by-game {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin: 0 0 4px;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.admin-ratings-by-game li {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    background: var(--color-surface);
+
+    font-size: .83rem;
+
+}
+
+.admin-ratings-game-name {
+
+    color: var(--color-text);
+
+    font-weight: 600;
+
+}
+
+.admin-ratings-counts {
+
+    display: flex;
+
+    gap: 12px;
+
+}
+
+.admin-ratings-up,
+.admin-ratings-down {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    font-weight: 700;
+
+}
+
+.admin-ratings-up {
+
+    color: var(--color-success, #4ade80);
+
+}
+
+.admin-ratings-down {
+
+    color: #f87171;
+
+}
+
+.admin-ratings-negative {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+.admin-ratings-negative li {
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+}
+
+.admin-ratings-question {
+
+    margin: 4px 0 2px;
+
+    color: var(--color-text);
+
+    font-size: .82rem;
+
+    font-weight: 600;
+
+}
+
+.admin-ratings-answer {
+
+    margin: 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: .78rem;
+
+    line-height: 1.4;
+}

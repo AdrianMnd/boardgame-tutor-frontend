@@ -14,10 +14,11 @@ import type { Game } from "../../types/Game";
 import MessageComponent from "./Message";
 import Icon from "../UI/Icon";
 
-import { BookOpen, ChevronDown, Menu, Plus, Send, Square, Mic, MicOff } from "lucide-react";
+import { BookOpen, ChevronDown, Menu, Plus, Send, Square, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 
 import { useChat } from "../../hooks/useChat";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
+import { useTextToSpeech } from "../../hooks/useTextToSpeech";
 
 interface Props {
 
@@ -45,6 +46,47 @@ function Chat({
 
 }: Props) {
 
+    // Solo vive en memoria de este componente — no se guarda en
+    // ningún sitio a propósito. Se resetea al recargar la página
+    // (estado nuevo de React) y también al cambiar de juego (el
+    // rango válido de jugadores es distinto en cada uno, así que
+    // no tendría sentido arrastrarlo). NO se resetea al pulsar
+    // "Nueva conversación" ni entre preguntas del mismo juego —
+    // un grupo puede cambiar de número de jugadores sin querer
+    // empezar una conversación nueva, y este selector siempre
+    // visible permite corregirlo al momento.
+    const [playerCount, setPlayerCount] =
+
+        useState<number | null>(null);
+
+    const [lastGameId, setLastGameId] =
+
+        useState<string | undefined>(game?.id);
+
+    if (game?.id !== lastGameId) {
+
+        setLastGameId(game?.id);
+
+        setPlayerCount(null);
+
+    }
+
+    const {
+
+        isSupported: isVoiceOutputSupported,
+
+        isEnabled: isVoiceOutputEnabled,
+
+        isSpeaking,
+
+        toggle: toggleVoiceOutput,
+
+        speak,
+
+        stop: stopSpeaking
+
+    } = useTextToSpeech();
+
     const {
 
         messages,
@@ -65,7 +107,23 @@ function Chat({
 
         cancelGeneration
 
-    } = useChat(game);
+    } = useChat(
+
+        game,
+
+        playerCount,
+
+        answer => {
+
+            if (isVoiceOutputEnabled) {
+
+                speak(answer);
+
+            }
+
+        }
+
+    );
 
     // Aviso para lectores de pantalla cuando llega una respuesta
     // nueva — el texto en sí va apareciendo progresivamente
@@ -759,13 +817,24 @@ function Chat({
 
                     messages.map(
 
-                        message => (
+                        (message, index) => (
 
                             <MessageComponent
 
                                 key={message.id}
 
                                 message={message}
+
+                                gameId={game?.id}
+
+                                question={
+
+                                    message.role === "assistant"
+                                        ? messages[index - 1]?.content
+                                        : undefined
+
+                                }
+
 
                                 onOpenSource={
 
@@ -794,6 +863,75 @@ function Chat({
                     ref={messagesEndRef}
 
                 />
+
+            </div>
+
+            <div className="chat-player-count">
+
+                <label htmlFor="chat-player-count-select">
+
+                    Jugando con
+
+                </label>
+
+                <select
+
+                    id="chat-player-count-select"
+
+                    value={playerCount ?? ""}
+
+                    onChange={event => {
+
+                        const value = event.target.value;
+
+                        setPlayerCount(
+
+                            value === "" ? null : Number(value)
+
+                        );
+
+                    }}
+
+                >
+
+                    <option value="">
+
+                        (sin especificar)
+
+                    </option>
+
+                    {
+
+                        game &&
+
+                        Array.from(
+
+                            {
+
+                                length:
+                                    game.maxPlayers - game.minPlayers + 1
+
+                            },
+
+                            (_, index) => game.minPlayers + index
+
+                        ).map(
+
+                            count => (
+
+                                <option key={count} value={count}>
+
+                                    {count} jugadores
+
+                                </option>
+
+                            )
+
+                        )
+
+                    }
+
+                </select>
 
             </div>
 
@@ -880,6 +1018,82 @@ function Chat({
                                         ? MicOff
 
                                         : Mic
+
+                                }
+
+                                size={18}
+
+                            />
+
+                        </button>
+
+                    )
+
+                }
+
+                {
+
+                    isVoiceOutputSupported && (
+
+                        <button
+
+                            className={
+
+                                isVoiceOutputEnabled
+
+                                    ? "chat-voice-output-button enabled"
+
+                                    : "chat-voice-output-button"
+
+                            }
+
+                            onClick={() => {
+
+                                if (isSpeaking) {
+
+                                    stopSpeaking();
+
+                                }
+
+                                toggleVoiceOutput();
+
+                            }}
+
+                            type="button"
+
+                            aria-pressed={isVoiceOutputEnabled}
+
+                            aria-label={
+
+                                isVoiceOutputEnabled
+
+                                    ? "Desactivar lectura en voz alta de las respuestas"
+
+                                    : "Activar lectura en voz alta de las respuestas"
+
+                            }
+
+                            title={
+
+                                isVoiceOutputEnabled
+
+                                    ? "Leer respuestas en voz alta: activado"
+
+                                    : "Leer respuestas en voz alta: desactivado"
+
+                            }
+
+                        >
+
+                            <Icon
+
+                                icon={
+
+                                    isVoiceOutputEnabled
+
+                                        ? Volume2
+
+                                        : VolumeX
 
                                 }
 

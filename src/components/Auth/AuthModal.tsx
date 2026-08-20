@@ -490,6 +490,28 @@ function AuthModal({
 
                     </button>
 
+                    {
+
+                        mode === "login" &&
+
+                        import.meta.env.VITE_SUPPORT_EMAIL && (
+
+                            <p className="auth-forgot-password-hint">
+
+                                ¿Has olvidado tu contraseña? Escríbenos a{" "}
+
+                                <a href={`mailto:${import.meta.env.VITE_SUPPORT_EMAIL}`}>
+
+                                    {import.meta.env.VITE_SUPPORT_EMAIL}
+
+                                </a>
+
+                            </p>
+
+                        )
+
+                    }
+
                 </form>
 
             </div>

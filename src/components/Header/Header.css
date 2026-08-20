@@ -256,7 +256,7 @@
 
     z-index: 300;
 
-    width: 220px;
+    width: min(220px, calc(100vw - 24px));
 
     padding: 12px;
 
@@ -327,7 +327,7 @@
 
     z-index: 300;
 
-    width: 260px;
+    width: min(260px, calc(100vw - 24px));
 
     padding: 16px;
 
@@ -478,7 +478,7 @@
 
     z-index: 300;
 
-    width: 280px;
+    width: min(280px, calc(100vw - 24px));
 
     max-height: 360px;
 
@@ -723,7 +723,7 @@
 
     z-index: 300;
 
-    width: 260px;
+    width: min(260px, calc(100vw - 24px));
 
     padding: 8px;
 
@@ -812,7 +812,8 @@
 
 }
 
-.profile-menu-edit {
+.profile-menu-edit,
+.profile-menu-admin {
 
     display: flex;
 
@@ -840,7 +841,8 @@
 
 }
 
-.profile-menu-edit:hover {
+.profile-menu-edit:hover,
+.profile-menu-admin:hover {
 
     background: var(--color-surface-tertiary);
 
@@ -890,6 +892,19 @@
 
     .header-title p {
 
+        display: none;
+
+    }
+
+    .header-title h1 {
+
+        /*
+         * Con el icono de la marca ya visible, el texto del
+         * título deja de aportar algo que no se sepa ya — y con
+         * los botones nuevos de la cabecera, mantenerlo apretaba
+         * demasiado el espacio disponible (llegaba a recortarse
+         * a "Board..."). Se quita del todo en vez de encogerlo.
+         */
         display: none;
 
     }
@@ -969,20 +984,6 @@
     .header-left {
 
         gap: 10px;
-
-    }
-
-    .header-title h1 {
-
-        font-size: .95rem;
-
-        /*
-         * Con el ancho tan justo en este punto, evita que el
-         * título se recorte por debajo de un tamaño legible
-         * (antes llegaba a quedarse en una sola letra) — mejor
-         * que los botones de la derecha se aprieten un poco más.
-         */
-        min-width: 74px;
 
     }
 

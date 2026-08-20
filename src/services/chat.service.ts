@@ -13,6 +13,28 @@ export interface AskQuestionRequest {
 
     question: string;
 
+    /**
+     * Últimos mensajes de la conversación, para preguntas de
+     * seguimiento ("¿y con 5 jugadores?"). El backend se queda
+     * solo con los últimos turnos, así que no hace falta
+     * recortarlo aquí — se puede mandar la conversación
+     * completa sin preocuparse del tamaño.
+     */
+    history?: {
+
+        role: "user" | "assistant";
+
+        content: string;
+
+    }[];
+
+    /**
+     * Con cuántos jugadores se está jugando esta partida
+     * concreta — opcional del todo, solo vive en memoria del
+     * componente Chat mientras la pestaña sigue abierta.
+     */
+    playerCount?: number;
+
     signal?: AbortSignal;
 
 }
@@ -99,7 +121,11 @@ export class ChatService {
 
                         gameId: request.gameId,
 
-                        question: request.question
+                        question: request.question,
+
+                        history: request.history,
+
+                        playerCount: request.playerCount
 
                     }),
 
