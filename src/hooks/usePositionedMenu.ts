@@ -53,11 +53,33 @@ export function usePositionedMenu(
 
             const rect = button.getBoundingClientRect();
 
+            // El ancho mayor que usa cualquiera de los paneles
+            // que comparten este hook (280px, el de novedades) —
+            // sirve de límite conservador para que ninguno se
+            // salga por la izquierda en pantallas estrechas. En
+            // escritorio, con espacio de sobra, esto no cambia
+            // nada (el cálculo normal ya deja margen suficiente).
+            const MAX_PANEL_WIDTH = 280;
+
+            const SAFETY_MARGIN = 12;
+
+            const naturalRight =
+                window.innerWidth - rect.right;
+
+            const maxSafeRight =
+                Math.max(
+
+                    SAFETY_MARGIN,
+
+                    window.innerWidth - MAX_PANEL_WIDTH - SAFETY_MARGIN
+
+                );
+
             setPosition({
 
                 top: rect.bottom + 8,
 
-                right: window.innerWidth - rect.right
+                right: Math.min(naturalRight, maxSafeRight)
 
             });
 
