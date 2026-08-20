@@ -14,10 +14,11 @@ import type { Game } from "../../types/Game";
 import MessageComponent from "./Message";
 import Icon from "../UI/Icon";
 
-import { BookOpen, ChevronDown, Menu, Plus, Send, Square, Mic, MicOff } from "lucide-react";
+import { BookOpen, ChevronDown, Menu, Plus, Send, Square, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 
 import { useChat } from "../../hooks/useChat";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
+import { useTextToSpeech } from "../../hooks/useTextToSpeech";
 
 interface Props {
 
@@ -72,6 +73,22 @@ function Chat({
 
     const {
 
+        isSupported: isVoiceOutputSupported,
+
+        isEnabled: isVoiceOutputEnabled,
+
+        isSpeaking,
+
+        toggle: toggleVoiceOutput,
+
+        speak,
+
+        stop: stopSpeaking
+
+    } = useTextToSpeech();
+
+    const {
+
         messages,
 
         question,
@@ -90,7 +107,23 @@ function Chat({
 
         cancelGeneration
 
-    } = useChat(game, playerCount);
+    } = useChat(
+
+        game,
+
+        playerCount,
+
+        answer => {
+
+            if (isVoiceOutputEnabled) {
+
+                speak(answer);
+
+            }
+
+        }
+
+    );
 
     // Aviso para lectores de pantalla cuando llega una respuesta
     // nueva — el texto en sí va apareciendo progresivamente
@@ -974,6 +1007,82 @@ function Chat({
                                         ? MicOff
 
                                         : Mic
+
+                                }
+
+                                size={18}
+
+                            />
+
+                        </button>
+
+                    )
+
+                }
+
+                {
+
+                    isVoiceOutputSupported && (
+
+                        <button
+
+                            className={
+
+                                isVoiceOutputEnabled
+
+                                    ? "chat-voice-output-button enabled"
+
+                                    : "chat-voice-output-button"
+
+                            }
+
+                            onClick={() => {
+
+                                if (isSpeaking) {
+
+                                    stopSpeaking();
+
+                                }
+
+                                toggleVoiceOutput();
+
+                            }}
+
+                            type="button"
+
+                            aria-pressed={isVoiceOutputEnabled}
+
+                            aria-label={
+
+                                isVoiceOutputEnabled
+
+                                    ? "Desactivar lectura en voz alta de las respuestas"
+
+                                    : "Activar lectura en voz alta de las respuestas"
+
+                            }
+
+                            title={
+
+                                isVoiceOutputEnabled
+
+                                    ? "Leer respuestas en voz alta: activado"
+
+                                    : "Leer respuestas en voz alta: desactivado"
+
+                            }
+
+                        >
+
+                            <Icon
+
+                                icon={
+
+                                    isVoiceOutputEnabled
+
+                                        ? Volume2
+
+                                        : VolumeX
 
                                 }
 

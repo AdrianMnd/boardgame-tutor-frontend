@@ -12,7 +12,8 @@ import { ApiError }
 
 export function useChat(
     game: Game | null,
-    playerCount: number | null = null
+    playerCount: number | null = null,
+    onAnswerComplete?: (content: string) => void
 ) {
 
     const [
@@ -245,6 +246,12 @@ export function useChat(
                     isLoading: false
 
                 });
+
+                // El texto a voz, si está activado, solo lee la
+                // respuesta cuando termina con éxito de verdad —
+                // ni al cancelar ni en caso de error, donde no
+                // aportaría nada útil.
+                onAnswerComplete?.(content);
 
             }
 
