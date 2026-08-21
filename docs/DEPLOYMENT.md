@@ -18,7 +18,7 @@ VITE_SENTRY_DSN=
 
 ### Monitorización de errores (opcional)
 
-Con `VITE_SENTRY_DSN` configurada (proyecto gratuito de [sentry.io](https://sentry.io)), cualquier error de renderizado capturado por `ErrorBoundary`, además de errores globales no controlados, se reporta a Sentry — sin cambiar nada de lo que ve quien usa la app, solo añade visibilidad de qué está fallando en producción. El backend tiene su propia variable equivalente (`SENTRY_DSN`, ver `docs/CONFIGURATION.md` del backend) — son proyectos de Sentry independientes, uno por repositorio.
+Con `VITE_SENTRY_DSN` configurada (proyecto gratuito de [sentry.io](https://sentry.io)), cualquier error de renderizado capturado por `ErrorBoundary`, además de errores globales no controlados, se reporta a Sentry — sin cambiar nada de lo que ve quien usa la app, solo añade visibilidad de qué está fallando en producción. El backend tiene su propia variable equivalente (`SENTRY_DSN`, ver [`docs/CONFIGURATION.md`](https://github.com/AdrianMnd/boardgame-tutor-backend/blob/master/docs/CONFIGURATION.md) del backend) — son proyectos de Sentry independientes, uno por repositorio.
 
 ## Si cambia la URL de producción del frontend
 

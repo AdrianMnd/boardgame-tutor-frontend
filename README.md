@@ -25,20 +25,21 @@ Repositorio del backend: [boardgame-tutor-backend](https://github.com/AdrianMnd/
 - **Pregunta por voz**: dictado con la Web Speech API nativa del navegador, sin backend ni coste adicional.
 - **Respuestas leídas en voz alta** (opcional, con conmutador propio): mismo principio que el dictado, pero de salida — útil con las manos ocupadas con fichas del juego.
 - **Visor de PDF integrado** (`pdf.js`, no un `<iframe>`): salta a la página exacta usada como fuente de cada respuesta, de forma fiable en cualquier dispositivo — incluidos navegadores móviles.
-- **Cuenta de usuario opcional**: registro, login, edición de perfil. Sin cuenta, la aplicación funciona igual de bien — solo cambia dónde se guardan los datos.
+- **Cuenta de usuario opcional**: registro, login, edición de perfil, y recuperación de contraseña olvidada (solicitud gestionada manualmente por el administrador, sin correo automático). Sin cuenta, la aplicación funciona igual de bien — solo cambia dónde se guardan los datos.
 - **Favoritos y categorías personalizadas**: locales en este dispositivo sin cuenta, sincronizados entre dispositivos con cuenta.
 - **Historial de conversación por juego**, con el mismo comportamiento dual local/cuenta.
 - **Valoración rápida de respuestas** (👍/👎), con o sin cuenta.
 - **Tema claro/oscuro**, elegido explícitamente la primera vez (sin autodetectar el sistema), con paleta completa por variables CSS.
 - **Aviso de juegos nuevos**: indicador en la cabecera con los juegos añadidos al catálogo desde la última visita, persistente durante toda la sesión.
-- **Solicitud de juegos nuevos**: formulario para proponer un juego con enlace a BoardGameGeek y PDF del reglamento (opcional).
-- **Panel de administración**: solo visible para la cuenta configurada como administradora — revisión de solicitudes, restablecimiento de contraseñas y resumen de valoraciones.
+- **Solicitud de juegos nuevos**: formulario para proponer un juego con enlace a BoardGameGeek, PDF del reglamento y portada, ambos opcionales.
+- **Panel de administración**: solo visible para la cuenta configurada como administradora — revisión de solicitudes, solicitudes de restablecer contraseña, restablecimiento manual de contraseñas, resumen de valoraciones, y opción de vaciar solicitudes/valoraciones acumuladas.
+- **Aviso de confirmación al pulsar "atrás"**: evita salir de la app por accidente con un único toque, en navegador y en móvil.
 - **Instalable como PWA**, con caché de portadas y manuales ya consultados para poder reabrirlos sin conexión.
 - **Pantalla de bienvenida**: recibe al usuario con acceso directo a sus favoritos, sin forzar la entrada a un juego concreto.
 - **Totalmente responsive**: panel de juegos como *drawer* deslizante en móvil, diseño adaptado desde 320px hasta escritorio.
 - **Accesible**: navegación por teclado con atrapado de foco en diálogos (WAI-ARIA), avisos `aria-live` para las respuestas del chat, contraste verificado (WCAG AA).
 - **Carga diferida** del visor de PDF y del chat — ninguno de los dos forma parte de la carga inicial de la app.
-- **Recuperación ante errores**: un `ErrorBoundary` evita que un fallo inesperado deje la pantalla en blanco.
+- **Recuperación ante errores**: un `ErrorBoundary` evita que un fallo inesperado deje la pantalla en blanco, con monitorización opcional (Sentry) para saber qué está fallando en producción sin depender de que alguien lo reporte.
 - **Cero usos de `any`** en TypeScript.
 
 ## Tecnologías

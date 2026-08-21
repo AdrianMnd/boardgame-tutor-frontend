@@ -38,6 +38,10 @@ Se compara contra la última vez que se vio el catálogo **en este dispositivo c
 
 Comprobar que el conmutador (icono de altavoz, junto al de dictado) está activado — es opcional y empieza desactivado. Si está activado y sigue sin leer nada, puede que el navegador no soporte `speechSynthesis` (el botón se oculta en ese caso, igual que con el dictado de entrada).
 
+## El dictado por voz se corta solo, o no manda la pregunta automáticamente
+
+Si esto ocurre, comprobar que `useSpeechRecognition` tiene `continuous: true` (no `false`) — con `false` el navegador corta la grabación tras la más mínima pausa al hablar, un problema real reportado en escritorio. El envío automático depende del callback `onEnd` estar conectado a `sendMessage()` en `Chat.tsx`.
+
 ## Verificación completa antes de dar por buena una entrega
 
 ```bash
