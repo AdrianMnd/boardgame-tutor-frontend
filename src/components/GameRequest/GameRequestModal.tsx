@@ -27,6 +27,8 @@ const MAX_FILES = 10;
 
 const MAX_FILE_SIZE_BYTES = 150 * 1024 * 1024;
 
+const MAX_COVER_SIZE_BYTES = 10 * 1024 * 1024;
+
 function formatFileSize(
 
     bytes: number
@@ -70,6 +72,7 @@ function GameRequestModal({
     const [gameName, setGameName] = useState("");
     const [bggUrl, setBggUrl] = useState("");
     const [files, setFiles] = useState<File[]>([]);
+    const [coverImage, setCoverImage] = useState<File | null>(null);
 
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,6 +89,7 @@ function GameRequestModal({
         setGameName("");
         setBggUrl("");
         setFiles([]);
+        setCoverImage(null);
         setError(null);
         setIsSubmitted(false);
 
@@ -162,6 +166,55 @@ function GameRequestModal({
 
     }
 
+    function handleCoverSelected(
+
+        event: React.ChangeEvent<HTMLInputElement>
+
+    ) {
+
+        const selected =
+            event.target.files?.[0];
+
+        event.target.value = "";
+
+        if (!selected) {
+
+            return;
+
+        }
+
+        if (!selected.type.startsWith("image/")) {
+
+            setError("La portada debe ser una imagen.");
+
+            return;
+
+        }
+
+        if (selected.size > MAX_COVER_SIZE_BYTES) {
+
+            setError(
+
+                `La imagen de portada supera el tamaño máximo (10 MB).`
+
+            );
+
+            return;
+
+        }
+
+        setError(null);
+
+        setCoverImage(selected);
+
+    }
+
+    function removeCoverImage() {
+
+        setCoverImage(null);
+
+    }
+
     async function handleSubmit(
 
         event: React.FormEvent
@@ -183,7 +236,9 @@ function GameRequestModal({
                 bggUrl:
                     bggUrl.trim() || undefined,
 
-                files
+                files,
+
+                coverImage: coverImage ?? undefined
 
             });
 
@@ -478,6 +533,83 @@ function GameRequestModal({
                                         )
 
                                     }
+
+                                    <label className="auth-field">
+
+                                        <span>Portada del juego (opcional)</span>
+
+                                        <span className="auth-hint game-request-pdf-hint">
+
+                                            Una imagen de la caja o portada del juego,
+
+                                            si tienes una a mano.
+
+                                        </span>
+
+                                        {
+
+                                            coverImage
+
+                                                ? (
+
+                                                    <div className="game-request-cover-selected">
+
+                                                        <span className="game-request-file-name">
+
+                                                            {coverImage.name}
+
+                                                        </span>
+
+                                                        <span className="game-request-file-size">
+
+                                                            {formatFileSize(coverImage.size)}
+
+                                                        </span>
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            aria-label="Quitar portada"
+
+                                                            onClick={removeCoverImage}
+
+                                                        >
+
+                                                            <Icon icon={X} size={13} />
+
+                                                        </button>
+
+                                                    </div>
+
+                                                )
+                                                : (
+
+                                                    <label className="game-request-file-picker">
+
+                                                        <Icon icon={Paperclip} size={16} />
+
+                                                        Añadir portada
+
+                                                        <input
+
+                                                            type="file"
+
+                                                            accept="image/*"
+
+                                                            onChange={handleCoverSelected}
+
+                                                            hidden
+
+                                                        />
+
+                                                    </label>
+
+                                                )
+
+                                        }
+
+                                    </label>
 
                                     {
 

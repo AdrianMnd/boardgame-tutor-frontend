@@ -594,6 +594,18 @@
 
     height: 58px;
 
+    /*
+     * Sin esto, la regla genérica más abajo (".chat-input
+     * button", pensada para el botón de "Enviar" con texto)
+     * también estira este botón de icono a un ancho mínimo de
+     * 120px en anchos de pantalla intermedios, donde la regla
+     * compacta específica de móvil todavía no ha entrado en
+     * juego — se veía más ancho de lo esperado frente al resto.
+     */
+    min-width: 58px;
+
+    padding: 0;
+
     flex-shrink: 0;
 
     border: 1px solid var(--color-border-strong);
@@ -653,6 +665,10 @@
     width: 58px;
 
     height: 58px;
+
+    min-width: 58px;
+
+    padding: 0;
 
     flex-shrink: 0;
 

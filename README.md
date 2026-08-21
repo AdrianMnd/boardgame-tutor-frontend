@@ -21,14 +21,19 @@ Repositorio del backend: [boardgame-tutor-backend](https://github.com/AdrianMnd/
 ## Características
 
 - **Respuestas en streaming**: el texto aparece progresivamente (Server-Sent Events), no hay que esperar a la respuesta completa.
+- **Memoria conversacional y modo de jugadores**: entiende preguntas de seguimiento, y puede indicarse con cuántos jugadores se está jugando para respuestas más precisas — ambos completamente opcionales.
 - **Pregunta por voz**: dictado con la Web Speech API nativa del navegador, sin backend ni coste adicional.
+- **Respuestas leídas en voz alta** (opcional, con conmutador propio): mismo principio que el dictado, pero de salida — útil con las manos ocupadas con fichas del juego.
 - **Visor de PDF integrado** (`pdf.js`, no un `<iframe>`): salta a la página exacta usada como fuente de cada respuesta, de forma fiable en cualquier dispositivo — incluidos navegadores móviles.
 - **Cuenta de usuario opcional**: registro, login, edición de perfil. Sin cuenta, la aplicación funciona igual de bien — solo cambia dónde se guardan los datos.
 - **Favoritos y categorías personalizadas**: locales en este dispositivo sin cuenta, sincronizados entre dispositivos con cuenta.
 - **Historial de conversación por juego**, con el mismo comportamiento dual local/cuenta.
+- **Valoración rápida de respuestas** (👍/👎), con o sin cuenta.
 - **Tema claro/oscuro**, elegido explícitamente la primera vez (sin autodetectar el sistema), con paleta completa por variables CSS.
-- **Aviso de juegos nuevos**: indicador en la cabecera con los juegos añadidos al catálogo desde la última visita.
+- **Aviso de juegos nuevos**: indicador en la cabecera con los juegos añadidos al catálogo desde la última visita, persistente durante toda la sesión.
 - **Solicitud de juegos nuevos**: formulario para proponer un juego con enlace a BoardGameGeek y PDF del reglamento (opcional).
+- **Panel de administración**: solo visible para la cuenta configurada como administradora — revisión de solicitudes, restablecimiento de contraseñas y resumen de valoraciones.
+- **Instalable como PWA**, con caché de portadas y manuales ya consultados para poder reabrirlos sin conexión.
 - **Pantalla de bienvenida**: recibe al usuario con acceso directo a sus favoritos, sin forzar la entrada a un juego concreto.
 - **Totalmente responsive**: panel de juegos como *drawer* deslizante en móvil, diseño adaptado desde 320px hasta escritorio.
 - **Accesible**: navegación por teclado con atrapado de foco en diálogos (WAI-ARIA), avisos `aria-live` para las respuestas del chat, contraste verificado (WCAG AA).
@@ -40,6 +45,7 @@ Repositorio del backend: [boardgame-tutor-backend](https://github.com/AdrianMnd/
 
 - React 19 + TypeScript, Vite
 - TanStack React Query
+- `vite-plugin-pwa` (instalación y caché offline)
 - `react-pdf` / `pdfjs-dist` (carga diferida)
 - React Markdown + remark-gfm (carga diferida junto con el chat)
 - lucide-react
@@ -77,8 +83,9 @@ Ver [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) para el detalle de cada uno, in
 src/
 ├── assets/            # logo e imágenes propias
 ├── components/
+│   ├── Admin/           # panel de administración (solo cuenta admin)
 │   ├── Auth/           # login, registro, edición de perfil
-│   ├── Chat/            # conversación, mensajes, fuentes (carga diferida)
+│   ├── Chat/            # conversación, mensajes, fuentes, valoraciones (carga diferida)
 │   ├── ErrorBoundary/    # captura errores inesperados de renderizado
 │   ├── GameRequest/       # formulario de solicitud de juegos nuevos
 │   ├── Header/             # cabecera, menú de perfil, novedades

@@ -8,6 +8,8 @@ export interface GameRequestInput {
 
     files: File[];
 
+    coverImage?: File;
+
 }
 
 export class GameRequestService {
@@ -31,6 +33,12 @@ export class GameRequestService {
         for (const file of input.files) {
 
             formData.append("pdfs", file);
+
+        }
+
+        if (input.coverImage) {
+
+            formData.append("cover", input.coverImage);
 
         }
 

@@ -250,7 +250,13 @@ function Chat({
 
     } = useSpeechRecognition({
 
-        onResult: handleVoiceResult
+        onResult: handleVoiceResult,
+
+        // Al terminar de grabar de verdad (no en cada pausa
+        // breve dentro de la grabación), se manda directamente
+        // — sendMessage() ya no hace nada si la pregunta está
+        // vacía, así que no hace falta comprobarlo aquí.
+        onEnd: () => sendMessage()
 
     });
 
@@ -951,7 +957,7 @@ function Chat({
 
                             ? "Escuchando…"
 
-                            : "Escribe tu pregunta…"
+                            : "Pregunta algo…"
 
                     }
 

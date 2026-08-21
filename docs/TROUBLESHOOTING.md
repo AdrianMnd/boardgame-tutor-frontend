@@ -30,6 +30,14 @@ Se compara contra la última vez que se vio el catálogo **en este dispositivo c
 - **`ERR_CONNECTION_REFUSED` hacia `127.0.0.1`**: en Windows, `vite preview` sin `--host` explícito puede escuchar en una interfaz de red distinta a la que usa Playwright — la configuración actual ya fuerza `--host 127.0.0.1` para evitar esto.
 - **Un test falla de forma intermitente, no siempre**: comprobar si hace una aserción justo después de un clic sin esperar confirmación de que React ya procesó ese cambio (ver los comentarios en `e2e/*.spec.ts` — este patrón ya causó varios falsos negativos durante el desarrollo).
 
+## No aparece "Panel de administración" en el menú de perfil
+
+`user.isAdmin` viene del backend (`GET /api/auth/me`), no se calcula en el frontend. Comprobar que `ADMIN_EMAIL` está configurada en el backend y coincide exactamente con el email de la cuenta con la que se ha iniciado sesión.
+
+## El texto a voz no lee nada
+
+Comprobar que el conmutador (icono de altavoz, junto al de dictado) está activado — es opcional y empieza desactivado. Si está activado y sigue sin leer nada, puede que el navegador no soporte `speechSynthesis` (el botón se oculta en ese caso, igual que con el dictado de entrada).
+
 ## Verificación completa antes de dar por buena una entrega
 
 ```bash

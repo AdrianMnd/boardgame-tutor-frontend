@@ -14,6 +14,8 @@ export interface GameRequestListItem {
 
     pdfLinks: string[];
 
+    coverLink?: string;
+
     reviewed: boolean;
 
     createdAt: string;
