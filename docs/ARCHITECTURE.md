@@ -20,6 +20,12 @@ La solución fue renderizar el PDF directamente con `pdf.js` (vía `react-pdf`),
 
 El login es **opcional en todo momento**: la aplicación funciona igual de bien sin cuenta. Lo que cambia es dónde persisten los datos del usuario.
 
+## Recuperación de contraseña olvidada
+
+Un flujo de tres estados dentro del propio `AuthModal`, en modo "login": enlace "¿Has olvidado tu contraseña?" → formulario (solo el email) → confirmación. No es un `mailto:` como en un diseño anterior de esto — manda una solicitud real al backend (`POST /api/password-reset-requests`), que el administrador ve en su panel y resuelve manualmente (no hay recuperación automática por correo — ver [`docs/CONFIGURATION.md`](https://github.com/AdrianMnd/boardgame-tutor-backend/blob/master/docs/CONFIGURATION.md) del backend).
+
+El estado se resetea junto con el resto del modal al cerrarse — reabrir el login siempre empieza por el enlace, nunca deja el formulario o la confirmación anterior a medias.
+
 ## Favoritos, categorías y conversaciones: local o sincronizado, según haya sesión
 
 Los tres siguen el mismo patrón "dual": sin sesión, todo vive en `localStorage`; con sesión, se sincroniza con la cuenta a través de la API, y sigue funcionando entre dispositivos.
@@ -50,7 +56,7 @@ Todo lo que "recuerda" la aplicación entre sesiones **sin cuenta** vive en `loc
 
 ## Solicitud de juegos nuevos
 
-El formulario exige sesión iniciada. Los PDF se mandan como `multipart/form-data`, no JSON — el cliente HTTP (`apiClient`) tiene un método aparte (`postFormData`) que deja que el navegador calcule el `Content-Type` con el `boundary` correcto, en vez de forzar `application/json` como en el resto de peticiones.
+El formulario exige sesión iniciada. Los PDF (y opcionalmente una imagen de portada, campo `cover`) se mandan como `multipart/form-data`, no JSON — el cliente HTTP (`apiClient`) tiene un método aparte (`postFormData`) que deja que el navegador calcule el `Content-Type` con el `boundary` correcto, en vez de forzar `application/json` como en el resto de peticiones. La portada es completamente opcional — el formulario funciona igual sin ella, y el panel de administración solo muestra el enlace "Ver portada" cuando la solicitud la incluyó.
 
 ## Carga diferida (*code splitting*)
 
@@ -64,6 +70,10 @@ Esto reduce el paquete cargado en la primera visita de ~610KB a ~277KB. El resal
 ## Dictado por voz
 
 `useSpeechRecognition` usa la Web Speech API nativa del navegador — no hay ningún proveedor de IA ni backend involucrado. La detección de soporte (`isSupported`) oculta el botón por completo en navegadores sin esta API, en vez de mostrar un botón que fallaría al pulsarlo.
+
+**`continuous: true`, no `false`.** Con `false` (el valor inicial), el navegador corta la grabación sola tras la más mínima pausa al hablar — un problema real reportado en escritorio, donde el micrófono es más sensible. Con `continuous: true`, sigue escuchando hasta que se pulsa el botón de parar o hasta que el propio navegador decide cortar tras un silencio prolongado. Como contrapartida, `onresult` puede llegar varias veces a lo largo de una misma grabación (una por cada frase que se va finalizando) — por eso el resultado se **acumula** en el componente que lo consume, en vez de sustituirse cada vez.
+
+**Envío automático al terminar de grabar.** El *hook* acepta un callback opcional `onEnd`, guardado en un `ref` (igual que `onResult`, para no tener que recrear el objeto `SpeechRecognition` en cada render) y llamado cuando la grabación termina de verdad — nunca en cada pausa intermedia dentro de la propia grabación. `Chat.tsx` lo conecta directamente a `sendMessage()`, que ya no hace nada si la pregunta está vacía, así que no hace falta comprobarlo antes de llamarlo.
 
 ## Texto a voz (leer las respuestas)
 
@@ -99,7 +109,11 @@ Un detalle de compatibilidad: Safari en iOS no soporta la etiqueta estándar `mo
 
 Un enlace en el menú de perfil ("Panel de administración"), visible **solo si `user.isAdmin`** — ese campo lo calcula el propio backend (comparando el email de la cuenta contra `ADMIN_EMAIL`, un secreto que el frontend nunca conoce) y viaja en la respuesta de `/api/auth/me`. El frontend nunca decide por sí mismo quién es administrador, solo respeta lo que le dice el backend.
 
-`AdminPanelModal` reutiliza el mismo patrón de "ajuste en render" que el resto de modales del proyecto para recargar sus datos cada vez que se abre (el modal sigue montado entre aperturas, así que `isOpen` por sí solo no basta para saber cuándo volver a pedir los datos). Combina tres cosas en un único panel: revisar solicitudes de juegos, restablecer contraseñas manualmente, y un resumen de valoraciones — si alguna de las tres falla al cargar, las otras dos siguen funcionando con normalidad.
+`AdminPanelModal` reutiliza el mismo patrón de "ajuste en render" que el resto de modales del proyecto para recargar sus datos cada vez que se abre (el modal sigue montado entre aperturas, así que `isOpen` por sí solo no basta para saber cuándo volver a pedir los datos). Combina cuatro secciones en un único panel — solicitudes de juegos, solicitudes de restablecer contraseña, resumen de valoraciones, y el formulario para restablecer contraseñas manualmente — con cargas independientes entre sí: si una falla, las demás siguen funcionando con normalidad.
+
+**Orden y separación visual**, ajustados tras pruebas reales: el formulario de restablecer contraseña se movió al final del todo (antes quedaba visualmente "en medio", entre las solicitudes de juegos y las valoraciones, algo que no se notó hasta verlo en uso real), con un separador propio (`.admin-reset-password-form-separated`) para que no quede pegado al bloque anterior.
+
+**Vaciar solicitudes y valoraciones**: un botón "Vaciar todas" en cada una de las dos listas, con confirmación del navegador (`window.confirm()`) antes de llamar al endpoint — es una acción destructiva sin deshacer, así que la confirmación no es opcional. Pensado para cuando el panel acumula demasiadas ya gestionadas y deja de ser práctico de revisar.
 
 ## Panel de juegos en móvil
 
@@ -110,6 +124,12 @@ Dos ajustes adicionales llegaron después de las primeras pruebas reales en móv
 - **Título de la cabecera**: con los botones nuevos (novedades, solicitar juego, ajustes, sesión) compitiendo por espacio en pantallas estrechas, el texto del título llegó a recortarse a "Board...". Se resolvió ocultándolo del todo por debajo de 900px (el icono de la marca ya es suficiente identidad visual ahí), en vez de seguir intentando encogerlo.
 - **Paneles desbordados**: los paneles de "Solicitar juego" y "Novedades" se posicionan calculando su distancia al borde derecho a partir del botón que los abre (`usePositionedMenu`) — pero esos dos botones no son los más a la derecha de la cabecera, así que en pantallas estrechas el panel (con ancho fijo) podía empezar fuera de la pantalla por la izquierda. Se arregló en el propio *hook* compartido, limitando esa distancia a un máximo seguro — afecta a los cuatro paneles que lo usan, no solo a esos dos.
 
+Un tercer ajuste llegó tras añadir el botón de silenciar la voz de salida (sección "Texto a voz"): en la caja de preguntas, una regla CSS genérica (`.chat-input button { min-width: 120px; padding: 0 26px; }`, pensada solo para el botón de "Enviar" con su texto) también estiraba los botones de icono (micrófono, silenciar voz) a un ancho mínimo de 120px en anchos de pantalla intermedios, donde la regla compacta específica de móvil todavía no entraba en juego — se veían más anchos de lo esperado frente al resto. Arreglado dándoles a esos dos botones su propio `min-width` explícito, inmune a la regla genérica en cualquier tamaño de pantalla.
+
+## Doble pulsación de "atrás" para salir
+
+En navegador y en móvil, pulsar "atrás" navegaba directamente a la página anterior sin ningún aviso — un problema real al usar la app como PWA en móvil, donde ese gesto es fácil de disparar sin querer. `useBackButtonExitWarning` implementa el patrón habitual en apps nativas: al montar, empuja una entrada extra al historial del navegador; la primera pulsación de "atrás" consume esa entrada (dispara `popstate`, pero no llega a salir de verdad) y muestra un aviso ("Vuelve a pulsar atrás para salir") durante 2 segundos, volviendo a empujar otra entrada para que la próxima pulsación repita el mismo aviso. Si la segunda pulsación llega dentro de esos 2 segundos, no se vuelve a empujar nada — se deja navegar de verdad.
+
 ## Pantalla de bienvenida
 
 Al cargar la aplicación no se autoselecciona el primer juego del catálogo — se muestra una pantalla de bienvenida con accesos rápidos a los juegos favoritos.
@@ -119,3 +139,7 @@ Con varios favoritos y una pantalla baja, el contenido puede desbordar el alto d
 ## Notificaciones de juegos nuevos: por qué son persistentes durante la sesión
 
 `useNewGames` marca todo como visto (`markAllAsSeen()`) al abrir el panel de la campana — pero si eso ocurriera en **cada** apertura, la segunda vez que se abriera el panel en la misma sesión ya no habría nada que mostrar (la lista en vivo estaría vacía, recién marcada como vista la primera vez), aunque no se hubiera recargado la página. `Header.tsx` evita esto con un `ref` que solo permite la captura de la foto fija (ver la sección de aviso de juegos nuevos, arriba) **una vez por sesión** — reabrir el panel más tarde sigue mostrando los mismos juegos, aunque la insignia numérica ya se haya apagado (esa sí sigue leyendo el valor en vivo, así que desaparece tras la primera vista, que es el comportamiento esperado de cualquier aviso).
+
+## Monitorización de errores
+
+`VITE_SENTRY_DSN` (opcional, ver `docs/DEPLOYMENT.md`) activa `@sentry/react`. `initSentry()` se llama al principio de `main.tsx`, antes de montar la aplicación. La captura de errores de renderizado se integra dentro del `ErrorBoundary` ya existente (`componentDidCatch` llama a `captureError`, además de seguir mostrando la pantalla de "Algo ha ido mal" de siempre) — no se creó ningún componente nuevo ni se cambió su arquitectura. Sin la variable, `captureError` no hace nada — verificado explícitamente (los tests existentes de `ErrorBoundary` siguen pasando sin cambios).

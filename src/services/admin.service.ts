@@ -56,6 +56,18 @@ export interface RatingsSummary {
 
 }
 
+export interface PasswordResetRequestItem {
+
+    id: string;
+
+    email: string;
+
+    resolved: boolean;
+
+    createdAt: string;
+
+}
+
 export class AdminService {
 
     async listGameRequests(): Promise<GameRequestListItem[]> {
@@ -79,6 +91,16 @@ export class AdminService {
             `/api/admin/game-requests/${id}/reviewed`,
 
             {}
+
+        );
+
+    }
+
+    async clearGameRequests(): Promise<void> {
+
+        await apiClient.delete<void>(
+
+            "/api/admin/game-requests"
 
         );
 
@@ -109,6 +131,42 @@ export class AdminService {
         return apiClient.get<RatingsSummary>(
 
             "/api/admin/ratings/summary"
+
+        );
+
+    }
+
+    async clearRatings(): Promise<void> {
+
+        await apiClient.delete<void>(
+
+            "/api/admin/ratings"
+
+        );
+
+    }
+
+    async listPasswordResetRequests(): Promise<PasswordResetRequestItem[]> {
+
+        return apiClient.get<PasswordResetRequestItem[]>(
+
+            "/api/admin/password-reset-requests"
+
+        );
+
+    }
+
+    async markPasswordResetRequestResolved(
+
+        id: string
+
+    ): Promise<void> {
+
+        await apiClient.patch<void>(
+
+            `/api/admin/password-reset-requests/${id}/resolved`,
+
+            {}
 
         );
 

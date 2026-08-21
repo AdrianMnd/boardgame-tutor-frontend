@@ -228,23 +228,143 @@
 
 }
 
-.auth-forgot-password-hint {
+.auth-forgot-password-link {
 
-    margin: 4px 0 0;
+    display: block;
+
+    margin: 4px auto 0;
+
+    padding: 0;
+
+    background: none;
+
+    border: none;
 
     color: var(--color-text-light);
 
     font-size: .8rem;
 
+    font-weight: 600;
+
     text-align: center;
+
+    text-decoration: underline;
+
+    cursor: pointer;
 
 }
 
-.auth-forgot-password-hint a {
+.auth-forgot-password-link:hover {
 
     color: var(--color-primary-text);
 
+}
+
+.auth-forgot-password-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 10px;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border-strong);
+
+}
+
+.auth-forgot-password-form input {
+
+    padding: 10px 12px;
+
+    border-radius: 9px;
+
+    border: 1px solid var(--color-border-strong);
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+
+    font-size: .85rem;
+
+}
+
+.auth-forgot-password-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+}
+
+.auth-forgot-password-cancel {
+
+    background: none;
+
+    border: none;
+
+    color: var(--color-text-secondary);
+
+    font-size: .82rem;
+
     font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+.auth-forgot-password-cancel:hover {
+
+    color: var(--color-text);
+
+}
+
+.auth-forgot-password-actions button[type="submit"] {
+
+    padding: 8px 16px;
+
+    border-radius: 8px;
+
+    background: var(--color-primary);
+
+    color: white;
+
+    font-size: .82rem;
+
+    font-weight: 700;
+
+}
+
+.auth-forgot-password-actions button[type="submit"]:disabled {
+
+    opacity: .6;
+
+}
+
+.auth-forgot-password-confirmation {
+
+    margin: 10px 0 0;
+
+    padding: 10px 12px;
+
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    color: var(--color-text-secondary);
+
+    font-size: .82rem;
+
+    text-align: center;
 
 }
 

@@ -2,6 +2,8 @@ import { Component, type ErrorInfo, type ReactNode } from "react";
 
 import "./ErrorBoundary.css";
 
+import { captureError } from "../../config/sentry";
+
 interface Props {
 
     children: ReactNode;
@@ -59,6 +61,8 @@ export class ErrorBoundary
             info.componentStack
 
         );
+
+        captureError(error);
 
     }
 

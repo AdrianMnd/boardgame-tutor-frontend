@@ -10,7 +10,11 @@ import App from "./App";
 
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 
+import { initSentry } from "./config/sentry";
+
 import "./styles/global.css";
+
+initSentry();
 
 
 const queryClient =
