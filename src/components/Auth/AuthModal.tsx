@@ -9,6 +9,7 @@ import { X, LogIn, UserPlus } from "lucide-react";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 import { ApiError } from "../../services/apiError";
+import { passwordResetRequestService } from "../../services/passwordResetRequest.service";
 
 import type { User } from "../../types/User";
 
@@ -97,6 +98,12 @@ function AuthModal({
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+    const [isForgotPasswordSubmitted, setIsForgotPasswordSubmitted] = useState(false);
+    const [isSubmittingForgotPassword, setIsSubmittingForgotPassword] = useState(false);
+    const [forgotPasswordError, setForgotPasswordError] = useState<string | null>(null);
+
     // Vuelve a "login" cada vez que el modal se cierra, sea cual
     // sea el motivo (botón de cerrar, clic fuera, o tras
     // autenticarse con éxito) — así la próxima vez que se abra
@@ -114,6 +121,15 @@ function AuthModal({
 
     }
 
+    if (!isOpen && showForgotPassword) {
+
+        setShowForgotPassword(false);
+        setForgotPasswordEmail("");
+        setIsForgotPasswordSubmitted(false);
+        setForgotPasswordError(null);
+
+    }
+
     if (!isOpen) {
 
         return null;
@@ -126,6 +142,45 @@ function AuthModal({
         setPassword("");
         setDisplayName("");
         setError(null);
+
+    }
+
+    async function handleForgotPasswordSubmit(
+
+        event: React.FormEvent
+
+    ) {
+
+        event.preventDefault();
+
+        setForgotPasswordError(null);
+        setIsSubmittingForgotPassword(true);
+
+        try {
+
+            await passwordResetRequestService.request(
+
+                forgotPasswordEmail
+
+            );
+
+            setIsForgotPasswordSubmitted(true);
+
+        }
+        catch {
+
+            setForgotPasswordError(
+
+                "No se ha podido enviar la solicitud. Inténtalo de nuevo."
+
+            );
+
+        }
+        finally {
+
+            setIsSubmittingForgotPassword(false);
+
+        }
 
     }
 
@@ -492,19 +547,149 @@ function AuthModal({
 
                     {
 
+                        mode === "login" && !showForgotPassword && (
+
+                            <button
+
+                                type="button"
+
+                                className="auth-forgot-password-link"
+
+                                onClick={
+
+                                    () => setShowForgotPassword(true)
+
+                                }
+
+                            >
+
+                                ¿Has olvidado tu contraseña?
+
+                            </button>
+
+                        )
+
+                    }
+
+                    {
+
                         mode === "login" &&
+                        showForgotPassword &&
+                        !isForgotPasswordSubmitted && (
 
-                        import.meta.env.VITE_SUPPORT_EMAIL && (
+                            <form
 
-                            <p className="auth-forgot-password-hint">
+                                className="auth-forgot-password-form"
 
-                                ¿Has olvidado tu contraseña? Escríbenos a{" "}
+                                onSubmit={handleForgotPasswordSubmit}
 
-                                <a href={`mailto:${import.meta.env.VITE_SUPPORT_EMAIL}`}>
+                            >
 
-                                    {import.meta.env.VITE_SUPPORT_EMAIL}
+                                <p className="auth-hint">
 
-                                </a>
+                                    Te llegará la solicitud y te
+
+                                    contactaremos para restablecerla.
+
+                                </p>
+
+                                <input
+
+                                    type="email"
+
+                                    placeholder="Tu email"
+
+                                    required
+
+                                    value={forgotPasswordEmail}
+
+                                    onChange={
+
+                                        event =>
+                                            setForgotPasswordEmail(event.target.value)
+
+                                    }
+
+                                />
+
+                                {
+
+                                    forgotPasswordError && (
+
+                                        <p className="auth-error" role="alert">
+
+                                            {forgotPasswordError}
+
+                                        </p>
+
+                                    )
+
+                                }
+
+                                <div className="auth-forgot-password-actions">
+
+                                    <button
+
+                                        type="button"
+
+                                        className="auth-forgot-password-cancel"
+
+                                        onClick={
+
+                                            () => setShowForgotPassword(false)
+
+                                        }
+
+                                    >
+
+                                        Cancelar
+
+                                    </button>
+
+                                    <button
+
+                                        type="submit"
+
+                                        disabled={isSubmittingForgotPassword}
+
+                                    >
+
+                                        {
+
+                                            isSubmittingForgotPassword
+
+                                                ? "Enviando…"
+
+                                                : "Enviar solicitud"
+
+                                        }
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        )
+
+                    }
+
+                    {
+
+                        mode === "login" &&
+                        isForgotPasswordSubmitted && (
+
+                            <p
+
+                                className="auth-forgot-password-confirmation"
+
+                                role="status"
+
+                            >
+
+                                Solicitud enviada — te contactaremos para
+
+                                restablecer tu contraseña.
 
                             </p>
 

@@ -19,7 +19,8 @@ import { adminService } from "../../services/admin.service";
 
 import type {
     GameRequestListItem,
-    RatingsSummary
+    RatingsSummary,
+    PasswordResetRequestItem
 } from "../../services/admin.service";
 
 interface Props {
@@ -58,9 +59,13 @@ function AdminPanelModal({
 
     const [requests, setRequests] = useState<GameRequestListItem[]>([]);
     const [ratingsSummary, setRatingsSummary] = useState<RatingsSummary | null>(null);
+    const [passwordResetRequests, setPasswordResetRequests] = useState<PasswordResetRequestItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [markingId, setMarkingId] = useState<string | null>(null);
+    const [resolvingResetId, setResolvingResetId] = useState<string | null>(null);
+    const [isClearingRequests, setIsClearingRequests] = useState(false);
+    const [isClearingRatings, setIsClearingRatings] = useState(false);
 
     const [resetEmail, setResetEmail] = useState("");
     const [resetResult, setResetResult] = useState<string | null>(null);
@@ -124,6 +129,16 @@ function AdminPanelModal({
                 // falla, el resto del panel (solicitudes,
                 // restablecer contraseña) sigue siendo
                 // perfectamente utilizable sin él.
+            });
+
+        adminService.listPasswordResetRequests()
+
+            .then(setPasswordResetRequests)
+
+            .catch(() => {
+
+                // Igual que el resumen de valoraciones — no
+                // bloquea el resto del panel si falla.
             });
 
     }, [isOpen, isLoading]);
@@ -220,6 +235,134 @@ function AdminPanelModal({
 
     }
 
+    async function handleResolvePasswordResetRequest(
+
+        id: string
+
+    ) {
+
+        setResolvingResetId(id);
+
+        try {
+
+            await adminService.markPasswordResetRequestResolved(id);
+
+            setPasswordResetRequests(previous =>
+
+                previous.map(item =>
+
+                    item.id === id
+
+                        ? { ...item, resolved: true }
+
+                        : item
+
+                )
+
+            );
+
+        }
+        catch {
+
+            setError(
+
+                "No se ha podido marcar como resuelta. Inténtalo de nuevo."
+
+            );
+
+        }
+        finally {
+
+            setResolvingResetId(null);
+
+        }
+
+    }
+
+    async function handleClearGameRequests() {
+
+        if (
+
+            !window.confirm(
+
+                "¿Vaciar todas las solicitudes de juegos? No se puede deshacer."
+
+            )
+
+        ) {
+
+            return;
+
+        }
+
+        setIsClearingRequests(true);
+
+        try {
+
+            await adminService.clearGameRequests();
+
+            setRequests([]);
+
+        }
+        catch {
+
+            setError(
+
+                "No se han podido vaciar las solicitudes. Inténtalo de nuevo."
+
+            );
+
+        }
+        finally {
+
+            setIsClearingRequests(false);
+
+        }
+
+    }
+
+    async function handleClearRatings() {
+
+        if (
+
+            !window.confirm(
+
+                "¿Vaciar todas las valoraciones? No se puede deshacer."
+
+            )
+
+        ) {
+
+            return;
+
+        }
+
+        setIsClearingRatings(true);
+
+        try {
+
+            await adminService.clearRatings();
+
+            setRatingsSummary({ byGame: [], recentNegative: [] });
+
+        }
+        catch {
+
+            setError(
+
+                "No se han podido vaciar las valoraciones. Inténtalo de nuevo."
+
+            );
+
+        }
+        finally {
+
+            setIsClearingRatings(false);
+
+        }
+
+    }
+
     const pendingCount =
 
         requests.filter(request => !request.reviewed).length;
@@ -287,6 +430,30 @@ function AdminPanelModal({
                             ? `${pendingCount} pendiente${pendingCount === 1 ? "" : "s"} de revisar`
 
                             : "No hay solicitudes pendientes"
+
+                    }
+
+                    {
+
+                        requests.length > 0 && (
+
+                            <button
+
+                                type="button"
+
+                                className="admin-clear-button"
+
+                                disabled={isClearingRequests}
+
+                                onClick={handleClearGameRequests}
+
+                            >
+
+                                {isClearingRequests ? "Vaciando…" : "Vaciar todas"}
+
+                            </button>
+
+                        )
 
                     }
 
@@ -540,7 +707,27 @@ function AdminPanelModal({
 
                         <div className="admin-ratings-section">
 
-                            <h3>Valoraciones de respuestas</h3>
+                            <h3>
+
+                                Valoraciones de respuestas
+
+                                <button
+
+                                    type="button"
+
+                                    className="admin-clear-button"
+
+                                    disabled={isClearingRatings}
+
+                                    onClick={handleClearRatings}
+
+                                >
+
+                                    {isClearingRatings ? "Vaciando…" : "Vaciar todas"}
+
+                                </button>
+
+                            </h3>
 
                             <ul className="admin-ratings-by-game">
 
@@ -642,10 +829,106 @@ function AdminPanelModal({
 
                 }
 
+                {
+
+                    passwordResetRequests.length > 0 && (
+
+                        <div className="admin-password-reset-requests">
+
+                            <h3>Solicitudes de restablecer contraseña</h3>
+
+                            <ul>
+
+                                {
+
+                                    passwordResetRequests.map(item => (
+
+                                        <li
+
+                                            key={item.id}
+
+                                            className={
+
+                                                item.resolved
+
+                                                    ? "admin-password-reset-item resolved"
+
+                                                    : "admin-password-reset-item"
+
+                                            }
+
+                                        >
+
+                                            <span className="admin-password-reset-email">
+
+                                                {item.email}
+
+                                            </span>
+
+                                            {
+
+                                                item.resolved
+
+                                                    ? (
+
+                                                        <span className="admin-request-reviewed-badge">
+
+                                                            <Icon icon={Check} size={14} />
+
+                                                            Resuelta
+
+                                                        </span>
+
+                                                    )
+                                                    : (
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            disabled={resolvingResetId === item.id}
+
+                                                            onClick={
+
+                                                                () => handleResolvePasswordResetRequest(item.id)
+
+                                                            }
+
+                                                        >
+
+                                                            {
+
+                                                                resolvingResetId === item.id
+
+                                                                    ? "Marcando…"
+
+                                                                    : "Marcar como resuelta"
+
+                                                            }
+
+                                                        </button>
+
+                                                    )
+
+                                            }
+
+                                        </li>
+
+                                    ))
+
+                                }
+
+                            </ul>
+
+                        </div>
+
+                    )
+
+                }
 
                 <form
 
-                    className="admin-reset-password-form"
+                    className="admin-reset-password-form admin-reset-password-form-separated"
 
                     onSubmit={handleResetPassword}
 
