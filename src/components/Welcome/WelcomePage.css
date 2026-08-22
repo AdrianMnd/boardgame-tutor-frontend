@@ -268,9 +268,13 @@
 
     .welcome-logo {
 
-        width: 60px;
-
-        height: 60px;
+        /*
+         * En móvil, la cabecera ya muestra el mismo icono justo
+         * encima — tenerlo repetido aquí, tan pegado, no aporta
+         * nada y se ve poco cuidado. Por encima de 768px sí se
+         * mantiene, con la cabecera más espaciada del contenido.
+         */
+        display: none;
 
     }
 
