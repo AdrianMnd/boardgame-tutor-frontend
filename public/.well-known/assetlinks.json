@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.boardgametutor.twa",
+      "sha256_cert_fingerprints": [
+        "EE:88:68:E7:2D:D5:BC:60:0E:EF:74:82:D9:8C:8E:7F:1C:19:61:3A:80:2A:18:60:C9:FA:38:56:E1:BB:0D:70"
+      ]
+    }
+  }
+]
